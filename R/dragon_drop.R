@@ -1,4 +1,20 @@
-dragon_drop <- function(dir.to = getwd(), dir.from = choose.dir(caption = "Select the directory that folders  should be copied from."), folder.name = format(Sys.Date(), format = "%Y-%m"), folder.ext = NULL, sub.folder = NULL, file.type = NULL, tp.list = "to", new.folder = TRUE) {
+#' Drag and drop files from one location to another based on folder name to a specified directory
+#'
+#' @param dir.to character
+#' @param dir.from character
+#' @param folder.name character
+#' @param folder.ext character
+#' @param sub.folder character
+#' @param file.type factor
+#' @param tp.list factor
+#' @param new.folder character
+#'
+#' @return
+#' @export
+#'
+#' @examples
+
+dragon_drop <- function(dir.to = getwd(), dir.from = utils::choose.dir(caption = "Select the directory that folders  should be copied from."), folder.name = format(Sys.Date(), format = "%Y-%m"), folder.ext = NULL, sub.folder = NULL, file.type = NULL, tp.list = "to", new.folder = TRUE) {
 
   tp.list <- if (tp.list == "from") {
     dir(dir.from)

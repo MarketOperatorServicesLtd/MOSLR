@@ -1,15 +1,18 @@
 Package: MOSLR
-Title: What the Package Does (One Line, Title Case)
+Title: MOSL Reports and Utility Functions
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Luke",
+           family = "Austin",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: What license it uses
+           email = "lukeaustin@gmail.com")
+Description: This package automates the MOSL Performance process, including the generation of reports. It also contains many utility functions.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/austl001/MOSLR
 BugReports: https://github.com/austl001/MOSLR/issues
+RoxygenNote: 7.0.2
+Imports: 
+    utils,
+    stats
