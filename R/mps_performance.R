@@ -1,4 +1,9 @@
+
 #' MPS Performance
+#'
+#' Compares the performance across OPS for a given period
+#' for each Trading Party; and compares IPRP performance
+#' versus planned milestones.
 #'
 #' @param period.lag numeric
 #' @param mps_list character
@@ -12,6 +17,11 @@
 #'
 #' @return
 #' @export
+#'
+#' @importFrom dplyr rename mutate select filter left_join group_by summarize
+#' @importFrom stats median
+#' @importFrom utils read.csv write.csv
+#' @importFrom lubridate "%m-%"
 #'
 #' @examples
 

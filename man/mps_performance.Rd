@@ -40,5 +40,7 @@ mps_performance(
 
 }
 \description{
-MPS Performance
+Compares the performance across OPS for a given period
+for each Trading Party; and compares IPRP performance
+versus planned milestones.
 }

@@ -15,6 +15,10 @@
 #' @return
 #' @export
 #'
+#' @importFrom dplyr rename mutate select filter left_join group_by summarize
+#' @importFrom stats median
+#' @importFrom utils read.csv write.csv
+#'
 #' @examples
 
 ops_data_prep <- function(
@@ -78,7 +82,7 @@ ops_data_prep <- function(
           "OPS C5a", "OPS C6a", "OPS F5a", "OPS F5b", "OPS G2a",
           "OPS G4a", "OPS G4b", "OPS H1a", "OPS I1a", "OPS I1b",
           "OPS I8a", "OPS I8b"))) %>%
-    na.omit()
+    stats::na.omit()
 
 
 # Creating summary --------------------------------------------------------
@@ -87,7 +91,7 @@ ops_data_prep <- function(
     group_by(Date, OPS) %>%
     summarize(
       ops.mean.taskcompletion = mean(TaskCompletion, na.rm = TRUE),
-      ops.mean.outstanding=mean(OutstandingOntime,na.rm = TRUE),
+      ops.mean.outstanding = mean(OutstandingOntime,na.rm = TRUE),
       OPS_Median = median(TaskCompletion, na.rm = TRUE),
       TotalTaskVolume = sum(TaskVolume)
     ) %>%
