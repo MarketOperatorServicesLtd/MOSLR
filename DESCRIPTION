@@ -16,5 +16,6 @@ RoxygenNote: 7.0.2
 Imports: 
     utils,
     stats,
-    dplyr, 
-    lubridate
+    dplyr,
+    lubridate,
+    magrittr
