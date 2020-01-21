@@ -15,4 +15,6 @@ BugReports: https://github.com/austl001/MOSLR/issues
 RoxygenNote: 7.0.2
 Imports: 
     utils,
-    stats
+    stats,
+    dplyr, 
+    lubridate

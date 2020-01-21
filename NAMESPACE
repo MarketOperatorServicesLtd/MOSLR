@@ -2,3 +2,4 @@
 
 export(dragon_drop)
 export(mps_data_prep)
+export(mps_performance)
