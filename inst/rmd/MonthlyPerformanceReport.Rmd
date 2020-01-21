@@ -1,0 +1,656 @@
+---
+title: "Monthly Performance Report"
+date: "`r format(Sys.Date(), '%B %Y')`"
+fontsize: 12pt
+header-includes:
+- \usepackage{titling}
+- \pretitle{\begin{center}\LARGE\includegraphics[width=24cm]{mosl_title.png}\\[\bigskipamount]}
+- \posttitle{\end{center}}
+- \usepackage{xcolor}
+- \usepackage{color}
+- \usepackage{fancyhdr} 
+- \usepackage{graphicx} 
+- \usepackage{eurosym}
+- \usepackage{longtable}
+- \usepackage{booktabs}
+- \usepackage{pdflscape}
+- \usepackage{multirow}
+- \usepackage{makecell}
+- \pagestyle{fancy} 
+- \fancyhf{} 
+- \lfoot{MOSL Monthly Performance Report} 
+- \rhead{\includegraphics[width=6cm]{mosl_header.png}} 
+- \rfoot{Page \thepage} 
+classoption: table
+output:
+  pdf_document:
+    fig_height: 3.2
+    fig_width: 8
+    number_section: yes
+    toc: yes
+---
+
+\newpage
+
+# Summary of Performance and MOSL Actions
+
+## Overview
+
+There were `r nrow(flagged_mps_table)` flags for performance issues this month, including `r nrow(flagged_mps_table[flagged_mps_table$Watch_list == "Yes",])` issues that were flagged because they were on the Watch-list. These flags cover `r NROW(unique(flagged_mps_table$Trading.Party.ID))` Trading Parties and the following Market Performance Standards: `r unique(flagged_mps_table$MPS)`. Of the `r nrow(flagged_mps_table[flagged_mps_table$Watch_list == "No",])` performance issues not already on the watch-list:
+
+* `r nrow(flagged_mps_table[flagged_mps_table$Action == "IPRP" & flagged_mps_table$Watch_list == "No",])` have been escalated to an IPRP
+* `r nrow(flagged_mps_table[flagged_mps_table$Action == "Watch" & flagged_mps_table$Watch_list == "No",])` have been placed on the watch-list
+
+Of the `r nrow(unique(flagged_mps_table[flagged_mps_table$Watch_list == "Yes",]))` performance issues on the MPS Watch-list this month:
+
+* `r nrow(flagged_mps_table[flagged_mps_table$Action == "IPRP" & flagged_mps_table$Watch_list == "Yes",])` have been escalated to an IPRP
+* `r nrow(flagged_mps_table[flagged_mps_table$Action == "Watch" & flagged_mps_table$Watch_list == "Yes",])` remain on the watch-list
+* `r nrow(flagged_mps_table[tolower(flagged_mps_table$Action) == "none" & flagged_mps_table$Watch_list == "Yes",])` were removed from the watch-list
+
+There were `r nrow(flagged_milestones_mps[flagged_milestones_mps$Watch_list == "No",])` IPRPs flagged for performance being more than 5% below the planned milestone. Of these: 
+
+* `r nrow(flagged_milestones_mps %>% dplyr::filter(tolower(Action) == "none" & Watch_list == "No"))` have had no action taken against them
+* `r nrow(flagged_milestones_mps %>% dplyr::filter(Action == "Resubmit" & Watch_list == "No"))` have been asked to re-submit an IPRP
+* `r nrow(flagged_milestones_mps %>% dplyr::filter(Action == "Escalate_MPC" & Watch_list == "No"))` have been escalated to MPC / Panel by MOSL
+* `r nrow(flagged_milestones_mps %>% dplyr::filter(Action == "Watch" & Watch_list == "No"))` have been placed on watch with increased scrutiny
+
+There were `r nrow(flagged_milestones_mps[flagged_milestones_mps$Watch_list == "Yes",])` IPRP(s) on the Watch-list. Of these: 
+
+* `r nrow(flagged_milestones_mps %>% dplyr::filter(tolower(Action) == "none" & Watch_list == "Yes"))` have had no action taken against them
+* `r nrow(flagged_milestones_mps %>% dplyr::filter(Action == "Resubmit" & Watch_list == "Yes"))` have been asked to re-submit an IPRP
+* `r nrow(flagged_milestones_mps %>% dplyr::filter(Action == "Escalate_MPC" & Watch_list == "Yes"))` have been escalated to MPC / Panel by MOSL
+* `r nrow(flagged_milestones_mps %>% dplyr::filter(Action == "Watch" & Watch_list == "Yes"))` have been placed on watch with increased scrutiny
+
+There were `r nrow(flagged_iprp_end_mps)` IPRP(s) that reached the end of their plans this month. Of these:
+
+* `r nrow(flagged_iprp_end_mps %>% dplyr::filter(Action == "De-escalate"))` have been de-escalated to temporary watch status
+* `r nrow(flagged_iprp_end_mps %>% dplyr::filter(Action == "Extend"))` have been extended for a further period
+* `r nrow(flagged_iprp_end_mps %>% dplyr::filter(Action == "Watch"))` have been placed on watch and are under review
+
+The tables below summarise the monthly performance triggers and the IPRP milestone flags with the corresponding MOSL actions  and rationale.
+
+## Monthly performance flags and watch-list
+
+```{r echo = FALSE, results = "asis"}
+
+kableExtra::kable(
+  flagged_mps_table, 
+  format = "latex", 
+  caption = "Trading Parties flagged for below peer performance",
+  col.names = c(
+    "Trading Party", 
+    "MPS", 
+    "Action", 
+    "Rationale", 
+    "Watch"),
+  longtable = TRUE, 
+  booktabs = TRUE,
+  linesep = ""
+    ) %>%
+  kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      position = "center", 
+      full_width = FALSE)
+    ) %>%
+  column_spec(4, width = "8.5cm") %>%
+  row_spec(0, bold = TRUE)
+
+```
+
+## IPRP milestone triggers and watch-list
+
+```{r echo = FALSE, results = "asis"}
+
+kableExtra::kable(
+  flagged_milestones_mps%>%
+    dplyr::select(Trading.Party.ID, MPS, Batch, Action, Rationale), 
+  format = "latex", 
+  caption = "IPRPs flagged for performance below monthly milestone",
+  col.names = c(
+    "Trading Party",
+    "MPS",
+    "Batch",
+    "Action",
+    "Rationale"
+    ),
+  longtable = TRUE,
+  booktabs = TRUE,
+  linesep = ""
+  ) %>%
+  kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      position = "center",
+      full_width = FALSE)
+    ) %>%
+   column_spec(5,width = "7cm")%>%
+  row_spec(0, bold = TRUE)
+
+```
+
+## End of IPRPs
+
+```{r echo = FALSE, results = "asis"}
+
+kableExtra::kable(
+  flagged_iprp_end_mps, 
+  format = "latex", 
+  caption = "IPRPs that have reached the end of their plans",
+  col.names = c(
+    "Trading Party",
+    "MPS",
+    "Batch",
+    "Action",
+    "Rationale"
+    ),
+  longtable = TRUE,
+  booktabs = TRUE,
+  linesep = ""
+  ) %>%
+  kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      position = "center",
+      full_width = FALSE)
+    ) %>%
+  column_spec(5,width = "7cm")%>%
+  row_spec(0, bold = TRUE)
+
+```
+
+## Watch-list
+
+The two tables below show the Trading Parties that were on watch prior to this month's actions.
+
+### MPS
+
+There are currently `r nrow(watch_mps)` Trading Parties on watch for MPS performance.
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(watch_mps) > 0) {
+
+  kableExtra::kable(
+    watch_mps, 
+    format = "latex", 
+    caption = "Trading Parties on watch for MPS performance",
+    col.names = c(
+      "Trading Party", "MPS"),
+    longtable = TRUE, 
+    booktabs=TRUE,
+    linesep=""
+      ) %>%
+    kable_styling(
+      latex_options = c(
+        "repeat_header",
+        "hold_position",
+        "striped",
+        position = "center", 
+        full_width = FALSE)
+      ) %>%
+    row_spec(0, bold = TRUE)
+
+}
+
+```
+
+\pagebreak
+
+# Performance Graphs
+
+## Monthly Performance Triggers (flagged Trading Parties only)
+
+Below are graphs for those Trading Parties flagged for below-peer performance by MPS, as indicated in Table 1 above.
+
+```{r message=FALSE, echo=FALSE, error=FALSE, warning=FALSE}
+
+flagged_labels <- c("Task Completion (RHS)","Mean (RHS)","Median (RHS)","Task Share (RHS)")
+
+##producing the MPS flagged graphs as list then using marrangeGrob
+
+plist_flagged = lapply(split(flagged_mps_data_melt, flagged_mps_data_melt$key), function(z) {
+  
+  data <- z
+
+  plot <- ggplot(data) + 
+    geom_bar(
+      aes(
+        x = Date, 
+        y = TaskVolume, 
+        fill = "Task Volume (LHS)"
+        ), 
+      stat = "identity", 
+      position = "dodge", 
+      inherit.aes = FALSE
+      ) +
+    geom_line(
+      aes(
+        x = Date, 
+        y = value * max(data$TaskVolume), 
+        colour = variable, 
+        linetype = variable, 
+        size = variable
+        )
+      ) + 
+    scale_y_continuous(
+      sec.axis = sec_axis(~ . / max(data$TaskVolume), name = "Proportion")
+      ) +
+    scale_fill_manual(
+      NULL, values = "azure3", na.value = "red"
+      ) +
+    scale_size_manual(
+      values = c(1,0.5,0.5,0.5), 
+      na.value = "1", 
+      labels = flagged_labels
+      ) +
+    scale_linetype_manual(
+      values = c(1,2,1,3), 
+      na.value = "1", 
+      labels = flagged_labels
+      ) +
+    scale_colour_manual(
+      values = c("darkorange", "azure4", "dodgerblue4","grey3"), 
+      na.value = "red", 
+      labels = flagged_labels
+      ) +
+    ylab("Volume of tasks") + xlab("Date") +
+    theme(
+      legend.title = element_blank(), 
+      legend.position = "right") +
+    ggtitle(paste(Trading.Party.ID, " (", MPS, ")", sep = ""))
+  
+  }
+)
+
+gridExtra::marrangeGrob(plist_flagged,top=NULL,nrow=1,ncol=1)
+
+
+```
+
+
+\pagebreak
+
+## IPRP Performance Comparison (all plans)
+
+The graphs below depict the performance of each IPRP against its planned milestones, including--but not limited to--those flagged for below-planned performance (as indicated in Table 2).
+
+```{r message=FALSE, echo=FALSE, error=FALSE, warning=FALSE}
+
+
+# Producing the graphs as list then using marrangeGrob to plot them separately --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+iprp_labels <- c("Task Completion (RHS)", "Mean (RHS)", "Median (RHS)", "Task Share (RHS)", "Planned Perf (RHS)")
+
+plist_IPRP = lapply(split(IPRP_plans_melt_mps, IPRP_plans_melt_mps$key), function(v) {
+  
+  data <- v
+
+  plot <- ggplot(data) + 
+    geom_bar(
+      aes(
+        x = Date, 
+        y = TaskVolume, 
+        fill = "Task Volume (LHS)"), 
+      stat = "identity", 
+      position = "dodge", 
+      inherit.aes = FALSE
+      ) +
+    geom_line(
+      aes(
+        x = Date, 
+        y = value * max(data$TaskVolume), 
+        colour = variable, 
+        linetype = variable, 
+        size = variable
+        )
+      ) + 
+    geom_point(
+      aes(
+        x = Date, 
+        y = value * max(data$TaskVolume), 
+        shape = variable, 
+        alpha = variable
+        )
+      ) +
+    scale_y_continuous(
+      sec.axis = sec_axis(~. / max(data$TaskVolume), name = "Proportion")
+      ) +
+    scale_fill_manual(
+      NULL, 
+      values = "azure3", 
+      na.value = "red"
+      ) +
+    scale_size_manual(
+      values = c(1, 0.5, 0.5, 0.5, 1), 
+      na.value = "1", 
+      labels = iprp_labels
+      ) +
+    scale_linetype_manual(
+      values = c(1, 2, 1, 3, 1), 
+      na.value = "1", 
+      labels = iprp_labels
+      ) +
+    scale_colour_manual(
+      values = c("darkorange", "azure4", "dodgerblue4", "grey3", "red"), 
+      na.value="red", 
+      labels = iprp_labels
+      ) +
+    scale_shape_manual(
+      values = c(0, 0, 0, 0, 1), 
+      na.value = 0, 
+      labels = iprp_labels
+      ) +
+    scale_alpha_manual(
+      values = c(0, 0, 0, 0, 1), 
+      na.value = 0, 
+      labels = iprp_labels
+      ) +
+    ylab("Volume of tasks") + xlab("Date") +
+    theme(
+      legend.title = element_blank(), 
+      legend.position = "right"
+      ) +
+    ggtitle(
+      paste0(
+        "Batch ", 
+        max(as.numeric(data$Batch), na.rm = TRUE), 
+        ": ", 
+        Trading.Party.ID, 
+        "  (", 
+        MPS, ")")
+      )
+  
+  }
+)
+
+gridExtra::marrangeGrob(plist_IPRP, top = NULL, nrow = 1, ncol = 1)
+
+
+```
+
+## Watch-list
+
+The graphs below depict the performance of issue(s) on the watch-list (not including IPRPs).
+
+```{r message=FALSE, echo=FALSE, error=FALSE, warning=FALSE}
+
+
+watch_labels <- c("Task Completion (RHS)", "Mean (RHS)", "Median (RHS)", "Task Share (RHS)")
+
+plist_watch = lapply(split(watch_mps_melt, watch_mps_melt$key), function(v) {
+  
+  data <- v
+
+  plot <- ggplot(data) + 
+    geom_bar(
+      aes(
+        x = Date, 
+        y = TaskVolume, 
+        fill = "Task Volume (LHS)"
+        ), 
+      stat = "identity", 
+      position = "dodge", 
+      inherit.aes = FALSE
+      ) +
+    geom_line(
+      aes(
+        x = Date, 
+        y = value * max(data$TaskVolume), 
+        colour = variable, 
+        linetype = variable, 
+        size = variable)
+      ) + 
+    geom_point(
+      aes(
+        x = Date, 
+        y = value * max(data$TaskVolume), 
+        shape = variable, 
+        alpha = variable)
+      ) +
+    scale_y_continuous(
+      sec.axis = sec_axis(~. / max(data$TaskVolume), name = "Proportion")
+      ) +
+    scale_fill_manual(
+      NULL, 
+      values = "azure3", 
+      na.value = "red"
+      ) +
+    scale_size_manual(
+      values = c(1, 0.5, 0.5, 0.5, 1), 
+      na.value = "1", 
+      labels = iprp_labels
+      ) +
+    scale_linetype_manual(
+      values = c(1, 2, 1, 3, 1), 
+      na.value = "1", 
+      labels = iprp_labels
+      ) +
+    scale_colour_manual(
+      values = c("darkorange", "azure4", "dodgerblue4", "grey3", "red"), 
+      na.value = "red", 
+      labels = iprp_labels
+      ) +
+    scale_shape_manual(
+      values = c(0, 0, 0, 0, 1), 
+      na.value = 0, 
+      labels = iprp_labels
+      ) +
+    scale_alpha_manual(
+      values = c(0, 0, 0, 0, 1), 
+      na.value = 0, 
+      labels = iprp_labels
+      ) +
+    ylab("Volume of tasks") + xlab("Date") +
+    theme(
+      legend.title = element_blank(), 
+      legend.position = "right"
+      ) +
+    ggtitle(paste0(Trading.Party.ID,"  (", MPS, ")"))
+  
+  }
+)
+
+gridExtra::marrangeGrob(plist_watch, top = NULL, nrow = 1, ncol = 1)
+
+
+```
+
+
+## Aggregated MPS
+
+The graphs below show the aggregated performance for each MPS.
+
+```{r message=FALSE, echo=FALSE, error=FALSE, warning=FALSE}
+
+label_agg <- c("Mean (RHS)","Median (RHS)")
+
+plist_mps_agg = lapply(split(mps_summary_melt, mps_summary_melt$MPS), function(d) {
+  
+  data <- d
+  
+  ggplot(data) +
+    geom_bar(
+      aes(
+        x = Date, 
+        y = TotalTaskVolume, 
+        fill = "Task Volume (LHS)"), 
+      stat = "identity", 
+      position = "dodge", 
+      inherit.aes = FALSE
+      ) +
+    geom_line(
+      aes(
+        x = Date, 
+        y = value * max(data$TotalTaskVolume), 
+        colour = variable, 
+        linetype = variable)
+      ) +
+    scale_y_continuous(
+      sec.axis = sec_axis(~. / max(data$TotalTaskVolume), name = "Proportion")
+      ) +
+    scale_fill_manual(
+      NULL, values = "azure3"
+      ) +
+    scale_linetype_manual(
+      values = c(2,1), 
+      labels = label_agg
+      ) +
+    scale_colour_manual(
+      values = c("azure4", "dodgerblue4"), 
+      labels = label_agg
+      ) +
+    ylab("Volume of tasks") + xlab("Date") +
+    theme(
+      legend.title = element_blank(), 
+      legend.position = "right"
+      ) +
+    ggtitle(paste(MPS))
+  
+  }
+)
+
+gridExtra::marrangeGrob(plist_mps_agg, top = NULL, nrow = 1, ncol = 1)
+
+
+```
+
+\newpage
+
+# IPRP Analytics
+
+## IPRP Performance: Delta to Plan and Market Level
+
+The graphs below give an indication of whether, overall, Trading Parties are meeting or exceeding their IPRP milestone targets (left-hand side graph); and an indication of whether performance, overall, is  converging with peer-level performance. The graphs are a general guide only, as the data is aggregated across all plans. 
+
+
+```{r message=FALSE, echo=FALSE, error=FALSE, warning=FALSE, fig.width=8, fig.height=4}
+
+plott1 <- iprp_plan_comparison_mps %>%
+  dplyr::filter(Date <= Sys.Date()) %>%
+  dplyr::group_by(Date) %>%
+  dplyr::summarise(mean_delta = mean(Delta, na.rm = TRUE)) %>%
+  ggplot(
+    aes(
+      x = Date, 
+      y = mean_delta)
+    ) + 
+  geom_line() + 
+  geom_point() + 
+  ylab("Mean Difference") + xlab("Date") +
+  geom_label(
+    aes(
+      label = format(round(mean_delta, 2), nsmall = 2))
+    ) + 
+  ggtitle("All batches: mean difference between \n actual and planned performance") +
+  theme_stata(base_size = 11)
+
+plott2 <- iprp_plan_comparison_mps %>%
+  dplyr::filter(Date <= Sys.Date()) %>%
+  dplyr::mutate(delta_to_mean = TaskCompletion - MPS_Mean) %>%
+  dplyr::group_by(Date) %>%
+  dplyr::summarise(mean_delta_to_mean = mean(delta_to_mean, na.rm = TRUE)) %>%
+  ggplot(
+    aes(
+      x = Date, 
+      y = mean_delta_to_mean)
+    ) + 
+  geom_line() + 
+  geom_point() + 
+  ylab("Delta to the Market MPS level") + xlab("Date") +
+  geom_label(
+    aes(
+      label = format(round(mean_delta_to_mean, 2 ), nsmall = 2))
+    ) +
+  ggtitle("All batches: mean difference between \n performance and market MPS level") +
+  ggthemes::theme_stata(base_size = 11)
+  
+plot_list = c(plott1,plott2)
+
+g <- gridExtra::arrangeGrob(plott1, plott2, nrow = 1, ncol = 2)
+
+plot(g)
+
+```
+
+\newpage
+
+## Current Status of IPRPs
+
+The current status of each IPRP is shown in the table below.
+
+```{r message=FALSE, echo=FALSE, error=FALSE, warning=FALSE}
+
+kableExtra::kable(
+  iprp_status_mps, 
+  format = "latex", 
+  caption = "Current status of IPRP(s)", 
+  col.names = c(
+    "Trading Party",
+    "MPS", 
+    "Batch", 
+    "Actual Perf.", 
+    "Planned Perf.", 
+    "Status"), 
+  longtable = TRUE, 
+  booktabs = TRUE, 
+  linesep = ""
+  ) %>%
+  kable_styling(
+    latex_options = 
+      c(
+        "repeat_header",
+        "hold_position",
+        "striped",
+        position= "center", 
+        full_width = TRUE
+        )
+    ) %>%
+  row_spec(0, bold = TRUE)
+
+```
+
+The graphs below depict the changes in status of IPRPs (on-track, close and off-track).
+
+```{r message=FALSE, echo=FALSE, error=FALSE, warning=FALSE, fig.width=8, fig.height=10}
+
+
+ploty <- iprp_plan_comparison_mps %>%
+  dplyr::select(
+    Date, OnTrack, Close, OffTrack, Batch
+    ) %>%
+  tidyr::gather(key = "variable", value = "value", OnTrack, Close, OffTrack) %>%
+  dplyr::mutate(
+    variable2 = factor(variable, levels = c("OffTrack", "Close", "OnTrack"))
+  ) %>%
+  ggplot2::ggplot(
+    aes(
+      x = Date, 
+      y = value, 
+      fill = variable2)
+    ) + 
+  geom_bar(stat = "identity") +
+  labs(
+    title = "IPRP Performance",
+    subtitle = "Count of active plans by month and status"
+    ) +
+  ylab("Count of plans by status") + xlab("") +
+  theme_minimal(base_size = 11) +
+  scale_fill_manual(values = c("darkorange", "azure3", "dodgerblue4")) +
+  theme(
+    legend.position = "top", 
+    legend.title = element_blank()
+    )
+
+plot(ploty)
+
+```

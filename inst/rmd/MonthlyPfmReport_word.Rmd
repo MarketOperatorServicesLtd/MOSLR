@@ -1,0 +1,1166 @@
+---
+title: 'Portfolio Manager Report: `r paste(TRADING.PARTY.NAME, " (",TRADING.PARTY,")", sep = "")`'
+date: "`r format(Sys.Date(), '%B %Y')`"
+fontsize: 12pt
+output:
+  word_document:
+    toc: yes
+    reference_docx: ref_doc.docx
+    fig_caption: true
+header-includes:
+- \usepackage{titling}
+- \pretitle{\begin{center}\LARGE\includegraphics[width=24cm]{mosl_title.png}\\[\bigskipamount]}
+- \posttitle{\end{center}}
+- \usepackage{xcolor}
+- \usepackage{color}
+- \usepackage{fancyhdr}
+- \usepackage{graphicx}
+- \usepackage{eurosym}
+- \usepackage{longtable}
+- \usepackage{booktabs}
+- \usepackage{makecell}
+- \usepackage{pdflscape}
+- \usepackage{multirow}
+- \pagestyle{fancy}
+- \fancyhf{}
+- \lfoot{MOSL Portfolio Manager Report}
+- \rhead{\includegraphics[width=6cm]{mosl_header.png}}
+- \rfoot{Page \thepage}
+classoption: table
+---
+
+##### page break
+
+```{r global_options, include = FALSE} 
+
+knitr::opts_chunk$set(
+  fig.width = 12, 
+  fig.height = 8, 
+  fig.path = 'Figs/',
+  echo = FALSE, 
+  warning = FALSE, 
+  message = FALSE
+  )
+
+```
+
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
+
+# Filtering each data set for the Trading Party and creating TEMP file for the rest of the loop --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+mps_list_pr <- c("MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 7", "MPS 12", "MPS 16", "MPS 17")
+
+mps_data_temp <- mps_data %>% 
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  droplevels()
+
+mps_list <- unique(mps_data_temp$MPS)
+
+mps_data_melt_temp <- mps_data_melt %>%
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  droplevels()
+
+
+mps_performance_table_temp <- mps_data_temp %>% 
+  select(Date, MPS, TaskCompletion) %>% 
+  spread(key = MPS, value = TaskCompletion) %>%
+  mutate_if(is.numeric, format, digits = 2)
+
+
+charges_graph_mps_temp <- charges_graph_mps %>%
+  filter(Trading.Party.ID == TRADING.PARTY)
+
+charges_table_mps_temp <- charges_table_mps %>%
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  select(Date, MPS, Charges) %>%
+  spread(MPS, Charges)
+
+charges_table_mps_temp$Total <- charges_table_mps_temp %>%
+  select(-Date) %>%
+  rowSums(na.rm = TRUE)
+
+
+iprp_status_mps_temp <- iprp_status_mps %>%
+  filter(Trading.Party.ID == TRADING.PARTY, Date == latest_period) %>%
+  mutate(Date = format(Date, "%Y-%m")) %>%
+  select(-Trading.Party.ID)
+
+if (nrow(iprp_status_mps_temp) > 0) {
+  
+  IPRP_list <- iprp_status_mps_temp$MPS %>%
+  droplevels()
+  
+  IPRP_plans_mps_melt_temp <- IPRP_plans_mps_melt %>%
+    filter(
+      Trading.Party.ID == TRADING.PARTY,
+      MPS %in% IPRP_list
+      ) %>%
+  droplevels()
+  
+}
+
+comments_mps <- tracking_mps %>%
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  select(-Trading.Party.ID)%>%
+  select(Date, MPS, Action,Rationale,PFM_Commentary)
+
+tracking_mps_pfm_mpsperf_temp <- tracking_mps_pfm_mpsperf %>%
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  select(-Trading.Party.ID)
+
+tracking_mps_pfm_mile_temp <- tracking_mps_pfm_mile %>%
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  select(-Trading.Party.ID)
+
+tracking_mps_performance_temp <- tracking_mps_performance %>% 
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  select(-Trading.Party.ID)
+
+tracking_mps_milestone_temp <- tracking_mps_milestone %>% 
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  select(-Trading.Party.ID)
+
+tracking_mps_watch_temp <- tracking_mps_watch %>%
+  filter(Trading.Party.ID == TRADING.PARTY)
+
+tracking_mps_requested_temp <- tracking_mps_requested %>%
+  filter(Trading.Party.ID == TRADING.PARTY & !MPS %in% iprp_status_mps_temp$MPS)
+
+mps_summary_mean_temp <- mps_summary %>%
+  select(Date, MPS, MPS_Mean) %>%
+  filter(MPS %in% (mps_list)) %>%
+  spread(MPS, MPS_Mean)
+
+mps_summary_median_temp <- mps_summary %>%
+  select(Date, MPS, MPS_Median) %>%
+  filter(MPS %in% (mps_list)) %>%
+  spread(MPS, MPS_Median)
+
+mps_summary_tasks_temp <- mps_summary %>%
+  select(Date, MPS, TotalTaskVolume) %>%
+  filter(MPS %in% (mps_list)) %>%
+  spread(MPS, TotalTaskVolume)
+
+
+
+
+ops_data_temp <- ops_data %>%
+  filter(Trading.Party.ID == TRADING.PARTY)
+
+ops_list <- unique(ops_data_temp$OPS)
+
+  
+ops_list <- unique(ops_data_temp$OPS)
+
+ops_data_melt_temp <- ops_data_melt %>%
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  droplevels()
+
+
+ops_performance_table_temp <- ops_data_temp %>% 
+  select(Date, OPS, TaskCompletion) %>% 
+  spread(key = OPS, value = TaskCompletion) %>%
+  mutate_if(is.numeric, format, digits = 2)
+
+
+iprp_status_ops_temp <- iprp_status_ops %>%
+  filter(Trading.Party.ID == TRADING.PARTY, Date == latest_period) %>%
+  mutate(Date = format(Date, "%Y-%m")) %>%
+  select(-Trading.Party.ID)
+
+if (nrow(iprp_status_ops_temp) > 0) {
+  
+  IPRP_list_ops <- iprp_status_ops_temp$key 
+  
+  IPRP_plans_ops_melt_temp <- IPRP_plans_ops_melt %>%
+    filter(
+      Trading.Party.ID == TRADING.PARTY,
+      key %in% IPRP_list_ops
+      ) %>%
+  droplevels()
+  
+}
+
+comments_ops <- tracking_ops %>%
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  select(-Trading.Party.ID)%>%
+  select(Category, Date, OPS, Action, Rationale, PFM_Commentary)
+  
+
+tracking_ops_pfm_opsperf_temp <- tracking_ops_pfm_opsperf %>%
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  select(-Trading.Party.ID)
+
+tracking_ops_pfm_mile_temp <- tracking_ops_pfm_mile %>%
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  select(-Trading.Party.ID)
+
+tracking_ops_performance_temp <- tracking_ops_performance %>% 
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  select(-Trading.Party.ID)
+
+tracking_ops_milestone_temp <- tracking_ops_milestone %>% 
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  select(-Trading.Party.ID)
+
+tracking_ops_watch_temp <- tracking_ops_watch %>%
+  filter(Trading.Party.ID == TRADING.PARTY)
+
+tracking_ops_requested_temp <- tracking_ops_requested %>%
+  filter(Trading.Party.ID == TRADING.PARTY & !OPS %in% iprp_status_mps_temp$OPS)%>%
+   mutate(
+     OPS = paste(OPS, substr(Category, nchar(as.character(Category))-2, nchar(as.character(Category))))
+     )
+
+ops_summary_mean_temp <- ops_summary %>%
+  select(Date, OPS, ops.mean.taskcompletion) %>%
+  filter(OPS %in% (ops_list)) %>%
+  spread(OPS, ops.mean.taskcompletion)%>%
+   mutate_if(is.numeric, round, digits = 1)
+
+ops_summary_median_temp <- ops_summary %>%
+  select(Date, OPS, OPS_Median) %>%
+  filter(OPS %in% (ops_list)) %>%
+  spread(OPS, OPS_Median) %>%
+  mutate_if(is.numeric, round, digits = 1)
+
+ops_summary_tasks_temp <- ops_summary %>%
+  select(Date, OPS, TotalTaskVolume) %>%
+  filter(OPS %in% (ops_list)) %>%
+  spread(OPS, TotalTaskVolume)
+  
+
+
+```
+
+# Trading Party MPS Performance
+
+## Charges
+
+```{r message=FALSE, echo=FALSE, error=FALSE, warning=FALSE}
+
+# Creating table of charges by MPS --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+kable (
+  charges_table_mps_temp, 
+  format = "markdown", 
+  caption = "Breakdown of Charges by MPS", 
+  linesep = "",
+  format.args = list(big.mark = ",")
+)
+
+```
+
+
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
+
+#, fig.width = 8, fig.height = 10
+
+# Creating two charges graphs and combines as single plot --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+g1 <- charges_graph_mps_temp %>%
+  ggplot(aes(x = Date, y = Charges, fill = MPS)) + 
+  geom_bar(stat = "identity") + 
+  #theme_stata(base_size = 11) + 
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    text = element_text(size = 20)
+  ) +
+  scale_y_continuous(
+    labels = scales::comma,
+    breaks = pretty_breaks(4)
+    ) +
+  labs(
+    title = "Breakdown of Total MPS Charges by Month and MPS",
+    caption = "Source: MOSL"
+    ) +
+    ylab("Charges (£)") + xlab("")
+
+#not currently plotted:
+
+g2 <- 
+  ggplot(charges_graph_mps_temp, aes(x = Date, y = Charges, fill = MPS)) + 
+  geom_bar(position = "fill", stat = "identity") + 
+  #theme_stata(base_size = 11) + 
+  theme_minimal() +
+  scale_y_continuous(
+    name = "Proportion of Monthly Charge",
+    breaks = c(0, 0.25, 0.5, 0.75, 1)
+  ) +
+  theme(legend.title = element_blank()) +
+  ggtitle("Breakdown of Charges by MPS")
+
+#gg <- gridExtra::arrangeGrob(g1, g2, nrow = 2, ncol = 1)
+
+plot(g1)
+
+```
+
+## MPS Performance
+
+```{r echo = FALSE, results = "asis"}
+
+kable(mps_performance_table_temp, 
+      format = "markdown", 
+      caption = "MPS Performance by Month",
+      linesep = "",
+      format.args = list(big.mark = ",")
+      )
+
+```
+
+## MPS Performance Flags
+
+`r paste(SHORT.NAME, " (", TRADING.PARTY, ")", sep = "")` has had `r nrow(tracking_mps_performance_temp)` performance flag(s).
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(tracking_mps_performance_temp) > 0) {
+
+kable(tracking_mps_performance_temp, 
+      format = "markdown", 
+      caption = "Flags for below peer performance", 
+      col.names = c("Date", "MPS", "Action", "Rationale"), 
+      booktabs = TRUE, 
+      linesep = "",
+      format.args = list(big.mark = ",")
+      )
+
+}
+
+```
+
+<br>
+
+Where an Action is recorded as "Watch", the performance issue will be added to MOSL's watch-list of performance issues. Any performance issue(s) on the watch-list could be closely monitored over a number of months. If the issue is not resolved then it could be escalated to an IPRP. `r TRADING.PARTY` currently has `r nrow(tracking_mps_watch_temp)` performance issues on Watch. 
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(tracking_mps_watch_temp) > 0) {
+
+kable(tracking_mps_watch_temp, 
+      format = "markdown", 
+      caption = "Performance issues currently on Watch", 
+      col.names = c("Trading Party", "MPS"), 
+      booktabs = TRUE,
+      longtable = TRUE,
+      linesep = "",
+      format.args = list(big.mark = ",")
+      )
+
+}
+
+```
+
+<br>
+
+Below is a summary (where applicable) of the commentary that MOSL has received, via the Portfolio Manager, regarding any watch-list items or flagged performance issues:
+
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(tracking_mps_pfm_mpsperf_temp) > 0) {
+
+kable(tracking_mps_pfm_mpsperf_temp, 
+      format = "markdown", 
+      caption = "PFM Commentary", 
+      col.names = c("Date", "MPS", "Commentary"), 
+      booktabs = TRUE,
+      longtable = TRUE,
+      linesep = "",
+      format.args = list(big.mark = ",") %>%
+  column_spec(3, width = "10cm")
+  )
+
+}
+
+```
+
+## Trading Party Performance Graphs (MPS)
+
+MOSL uses performance graphs as a monitoring tool to identify issues. The performance graphs for `r TRADING.PARTY` are shown below.
+
+```{r echo = FALSE, warning = FALSE, results = 'asis', fig.width = 8, fig.height = 4}
+labels <- c("TP On-Time Tasks (RHS)", "Market Mean (RHS)", "Market Median (RHS)", "TP Task Share (RHS)")
+iprp_labels <- c("Task Completion (RHS)", "Mean (RHS)", "Median (RHS)", "Task Share (RHS)", "Planned Perf (RHS)")
+for(standard in unique(mps_data_melt_temp$MPS)) {
+  
+  comments_mps_temp <- comments_mps %>% 
+    filter(MPS == standard)
+  
+  data <- mps_data_melt_temp %>% 
+    filter(MPS == standard)
+  
+  mps_details_temp <- mps_details %>%
+    filter(MPS == standard)
+    
+    if (nrow(iprp_status_mps_temp) > 0) {
+  iprp_data <- IPRP_plans_mps_melt_temp %>% 
+    filter(MPS == standard)
+  }
+  else{
+    iprp_data<-data.frame()
+  }
+  
+  if(nrow(iprp_data)>0){
+   data <- iprp_data
+    
+    plot <- ggplot(data) + 
+      geom_bar(
+        aes(
+          x = data$Date, 
+          y = data$TaskVolume, 
+          fill = "Task Volume (LHS)"
+        ),
+        stat = "identity", 
+        position = "dodge", 
+        inherit.aes = FALSE
+      ) +
+      geom_line(
+        aes(
+          x = data$Date, 
+          y = data$value * max(data$TaskVolume), 
+          colour = data$variable,
+          linetype = data$variable, 
+          size = data$variable
+        )
+      ) + 
+      geom_point(
+        aes(
+          x = data$Date, 
+          y = data$value * max(data$TaskVolume),
+          shape = data$variable, 
+          alpha = data$variable
+        )
+      ) +
+      scale_y_continuous(
+        breaks = pretty_breaks(4),
+        sec.axis = 
+          sec_axis(~. / max(data$TaskVolume), name = "Proportion")
+      ) +
+      scale_fill_manual(NULL, values = "azure3", na.value = "red") +
+      scale_size_manual(values = c(1,0.5,0.5,0.5,1), na.value = "1", labels = iprp_labels) +
+      scale_linetype_manual(values = c(1,2,1,3,1), na.value = "1", labels = iprp_labels) +
+      scale_colour_manual(
+        values = 
+          c("darkorange", "azure4", "dodgerblue4","grey3","red"),
+        na.value = "red", 
+        labels = iprp_labels
+      ) +
+      scale_shape_manual(values = c(0,0,0,0,1), na.value = 0,labels = iprp_labels) +
+      scale_alpha_manual(values = c(0,0,0,0,1), na.value = 0, labels = iprp_labels) +
+      ylab("Volume of tasks") + xlab("Date") +
+      theme(legend.title = element_blank(), legend.position = "right") +
+      labs(title =
+        paste(
+          "Batch ", 
+          max(as.numeric(data$Batch), na.rm = TRUE), 
+          ": ", 
+          data$Trading.Party.ID, 
+          "  (", 
+          data$MPS,
+          ")", 
+          sep = ""),
+        subtitle = 
+          mps_details_temp$Context,
+        caption = paste(
+          mps_details_temp$Details1, "\n", mps_details_temp$Details2, "\n", mps_details_temp$Details3, "\n", mps_details_temp$Details4, sep="")
+      )+theme(
+        plot.caption = element_text(hjust = 0,size = 9)
+        )
+    print(plot)
+  }
+  
+  
+  else {
+ plot <- ggplot(data) + 
+    geom_bar(
+      aes(
+        x = data$Date, 
+        y = data$TaskVolume, 
+        fill="Task Volume (LHS)"
+        ),
+      stat = "identity", 
+      position = "dodge", 
+      inherit.aes = FALSE
+      ) +
+    geom_line(
+      aes(
+        x = data$Date, 
+        y = data$value * max(data$TaskVolume), 
+        colour = data$variable,
+        linetype = data$variable, 
+        size = data$variable
+        )
+      ) + 
+    scale_y_continuous(
+      breaks = pretty_breaks(4),
+      sec.axis = 
+        sec_axis(~. / max(data$TaskVolume), name = "Proportion")
+      ) +
+    scale_fill_manual(NULL, values = "azure3", na.value = "red") +
+    scale_size_manual(values = c(1, 0.5, 0.5, 0.5), na.value = "1", labels = labels) +
+    scale_linetype_manual(values = c(1, 2, 1, 3), na.value = "1", labels = labels) +
+    scale_colour_manual(values = c("darkorange", "azure4", "dodgerblue4", "grey3"), 
+                        na.value = "red", labels = labels) +
+    ylab("Volume of tasks") + xlab("Date") +
+    theme(legend.title = element_blank(), legend.position = "right") +
+    labs(title = 
+              paste(data$Trading.Party.ID, " (", data$MPS, ")", sep=""),
+             subtitle = 
+          mps_details_temp$Context,
+        caption = paste(
+          mps_details_temp$Details1, "\n", mps_details_temp$Details2, "\n", mps_details_temp$Details3, "\n", mps_details_temp$Details4, sep="")
+      )+theme(
+        plot.caption = element_text(hjust = 0,size = 9)
+            )
+ print(plot)
+}
+  
+ if (nrow(comments_mps_temp) > 0) {
+
+   
+print(kable(comments_mps_temp, 
+      format = "markdown", 
+      caption = "Flags for below peer performance", 
+      col.names = c("Date", "MPS", "Action", "Rationale","Pfm commentary"), 
+      booktabs = TRUE, 
+      linesep = "",
+      format.args = list(big.mark = ",")
+      ))
+   
+ }
+
+}
+
+
+```
+
+##### page break
+
+# MPS Performance Rectification
+
+`r if (nrow(iprp_status_mps_temp) > 0) { "## MPS IPRP Status Summary" }`
+
+`r TRADING.PARTY` currently has `r nrow(iprp_status_mps_temp)` active IPRP(s) and has `r nrow(tracking_mps_requested_temp)` IPRP(s) requested`r if(nrow(tracking_mps_requested_temp)>0) {paste(" for",tracking_mps_requested_temp$MPS)}`. Note that this does not include IPRPs that have ended and are awaiting a formal decision. 
+<br>
+
+```{r echo = FALSE, results = "asis"}
+
+if(nrow(iprp_status_mps_temp) > 0){
+
+  kable(
+    iprp_status_mps_temp, 
+    format = "markdown", 
+    caption = "Current status of IPRP(s)", 
+    col.names = c(
+      "Date", 
+      "MPS", 
+      "Batch", 
+      "Actual Perf.", 
+      "Planned Perf.", 
+      "Status"), 
+    longtable = FALSE
+    )
+  
+}
+
+```
+
+<br>
+
+`r if(nrow(tracking_mps_milestone_temp) > 0) { paste("Below is a table summarising details of the IPRP Milestone flags for ", TRADING.PARTY, ".", sep = "") }`
+
+```{r echo = FALSE, results = "asis"}
+
+if(nrow(tracking_mps_milestone_temp) > 0) {
+
+  kable(
+    tracking_mps_milestone_temp, 
+    format = "markdown", 
+    caption = "IPRPs flagged as below milestone",
+    col.names = c(
+      "Date", 
+      "MPS", 
+      "Batch", 
+      "Action", 
+      "Rationale"), 
+    longtable = TRUE, 
+    booktabs = TRUE, 
+    linesep = ""
+    )
+    
+}
+
+```
+
+<br>
+
+`r if (nrow(tracking_mps_pfm_mile_temp) > 0) { paste("Below is a summary of the commentary that MOSL has received via the Portfolio Manager regarding the milestone performance flags:") }` 
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(tracking_mps_pfm_mile_temp) > 0) {
+
+kable(tracking_mps_pfm_mile_temp, 
+      format = "markdown", 
+      caption = "PFM Commentary", 
+      col.names = c("Date", "MPS", "Commentary"), 
+      booktabs = TRUE,
+      longtable = TRUE,
+      linesep = "",
+      format.args = list(big.mark = ",")
+      )
+
+}
+
+```
+
+##### page break
+
+# MPS Market Aggregates
+
+## Mean peer performance
+
+```{r echo = FALSE, results = "asis"}
+
+kable(mps_summary_mean_temp, 
+      format = "markdown", 
+      caption = "Mean peer performance", 
+      booktabs = TRUE, 
+      linesep = "",
+      digits = 1,
+      format.args = list(decimal.mark = ".", big.mark = ",")
+      ) 
+
+```
+
+## Median peer performance
+
+```{r echo = FALSE, results = "asis"}
+
+kable(mps_summary_median_temp, 
+      format = "markdown", 
+      caption = "Median peer performance", 
+      booktabs = TRUE, 
+      linesep = "",
+      digits = 1,
+      format.args = list(decimal.mark = ".", big.mark = ",")
+      )
+
+```
+
+## Aggregate task volumes
+
+```{r echo = FALSE, results = "asis"}
+
+kable(mps_summary_tasks_temp, 
+      format = "markdown", 
+      caption = "Aggregate task volumes", 
+      booktabs = TRUE, 
+      linesep = "",
+      format.args = list(big.mark = ",")
+      )
+
+```
+
+`r if (nrow(ops_data_temp) > 0) { "##### page break"}`
+
+`r if (nrow(ops_data_temp) == 0) { "\\begin{comment}" }`
+# Trading Party OPS Performance
+`r if (nrow(ops_data_temp) == 0) { "\\end{comment}" }`
+
+ 
+`r if (nrow(ops_data_temp)>0){"## OPS Performance"}`
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(ops_data_temp)>0){
+  ops_performance_table_temp1<-ops_performance_table_temp[,1:9]
+ 
+  
+kable(ops_performance_table_temp1, 
+      format = "markdown", 
+      caption = "OPS Performance by Month",
+      linesep = "",
+      format.args = list(big.mark = ",")
+)
+
+
+}
+
+```
+
+<br>
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(ops_data_temp)>0&ncol(ops_performance_table_temp)>9){
+  ops_performance_table_temp2<-ops_performance_table_temp[,c(1,10:ncol(ops_performance_table_temp))]
+  
+
+kable(ops_performance_table_temp2, 
+      format = "markdown", 
+      caption = "OPS Performance by Month",
+      linesep = "",
+      format.args = list(big.mark = ",")
+      )
+}
+
+```
+
+`r if (nrow(ops_data_temp) > 0) { "## OPS Performance Flags" }`
+
+
+`r if (nrow(ops_data_temp) == 0) {"\\begin{comment}"}` 
+`r paste(SHORT.NAME, " (", TRADING.PARTY, ")", sep = "")` has had `r nrow(tracking_ops_performance_temp)` performance flag(s).
+`r if (nrow(ops_data_temp) == 0) {"\\end{comment}"}` 
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(tracking_ops_performance_temp) > 0) {
+
+kable(tracking_ops_performance_temp, 
+      format = "markdown", 
+      caption = "Flags for below peer performance", 
+      col.names = c("Date", "OPS", "Action", "Rationale"), 
+      booktabs = TRUE, 
+      linesep = "",
+      format.args = list(big.mark = ",")
+      )
+
+}
+
+```
+
+<br>
+
+`r if (nrow(ops_data_temp) == 0) {"\\begin{comment}"}` 
+Where an Action is recorded as "Watch", the performance issue will be added to MOSL's watch-list of performance issues. Any performance issue(s) on the watch-list could be closely monitored over a number of months. If the issue is not resolved then it could be escalated to an IPRP. `r TRADING.PARTY` currently has `r nrow(tracking_ops_watch_temp)` performance issues on Watch. 
+`r if (nrow(ops_data_temp) == 0) {"\\end{comment}"}` 
+
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(tracking_ops_watch_temp) > 0) {
+
+kable(tracking_ops_watch_temp, 
+      format = "markdown", 
+      caption = "Performance issues currently on Watch", 
+      col.names = c("Trading Party", "OPS"), 
+      booktabs = TRUE,
+      longtable = TRUE,
+      linesep = "",
+      format.args = list(big.mark = ",")
+      )
+
+}
+
+```
+
+<br>
+
+`r if (nrow(ops_data_temp) == 0) {"\\begin{comment}"}` 
+Below is a summary (where applicable) of the commentary that MOSL has received, via the Portfolio Manager, regarding any watch-list items or flagged performance issues:
+`r if (nrow(ops_data_temp) == 0) {"\\end{comment}"}` 
+
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(tracking_ops_pfm_opsperf_temp) > 0) {
+
+kable(tracking_ops_pfm_opsperf_temp, 
+      format = "markdown", 
+      caption = "PFM Commentary", 
+      col.names = c("Date", "OPS", "Commentary"), 
+      booktabs = TRUE,
+      longtable = TRUE,
+      linesep = "",
+      format.args = list(big.mark = ",") %>%
+  column_spec(3, width = "10cm")
+  )
+
+}
+
+```
+
+
+`r if (nrow(ops_data_temp) > 0) { "## Trading Party Performance Graphs (OPS)" }`
+
+`r if (nrow(ops_data_temp) > 0) { paste("MOSL uses performance graphs as a monitoring tool to identify issues. The performance graphs for ", TRADING.PARTY, " are shown below.", sep = "") }`
+
+```{r message=FALSE, echo=FALSE, error=FALSE, warning=FALSE, results='asis', fig.width=8, fig.height=3.5}
+
+
+if (nrow(ops_data_temp) > 0) {
+  OPS_IPRPs <- c("OPS B5a", "OPS C1a")
+  labels <- c("Performance (RHS)", "Market Mean (RHS)","Threshold (RHS)")
+  iprp_labels <- c("Performance (RHS)", "Market Mean (RHS)","Threshold (RHS)", "Planned Perf (RHS)")
+for(standard in sort(levels(ops_data_melt_temp$key))) {
+  
+  comments_ops_temp <- comments_ops %>%   
+    filter(OPS == standard)%>%
+    mutate(PFM_Commentary = ifelse(is.na(PFM_Commentary), "", PFM_Commentary),
+          OPS = paste(OPS, substr(Category, nchar(as.character(Category))-2, nchar(as.character(Category)))))%>%
+    select(Date, OPS, Action, Rationale, PFM_Commentary)
+
+ 
+  data <- ops_data_melt_temp%>%
+    filter(key==standard)
+    
+ 
+  
+  if (nrow(iprp_status_ops_temp) > 0) {
+  iprp_data <- IPRP_plans_ops_melt_temp %>% 
+    filter(key == standard)
+  }
+  else{
+    iprp_data<-data.frame()
+  }
+  
+  if(nrow(iprp_data)>0){
+   plot <- ggplot(iprp_data) + 
+    geom_bar(
+      aes(
+        x = iprp_data$Date, 
+        y = iprp_data$TaskVolume, 
+        fill="Task Volume (LHS)"
+        ),
+      stat = "identity", 
+      position = "dodge", 
+      inherit.aes = FALSE
+      ) +
+    geom_line(
+      aes(x = iprp_data$Date, 
+        y = iprp_data$value * max(iprp_data$TaskVolume), 
+        colour = iprp_data$variable,
+        linetype = iprp_data$variable, 
+        size = iprp_data$variable
+        )
+      ) + 
+      geom_point(
+        aes(
+          x = iprp_data$Date, 
+          y = iprp_data$value * max(iprp_data$TaskVolume),
+          shape = iprp_data$variable, 
+          alpha = iprp_data$variable
+        )
+      ) + 
+    scale_y_continuous(
+      breaks = pretty_breaks(4),
+      sec.axis = 
+        sec_axis(~. / max(iprp_data$TaskVolume), name = "Proportion")
+      ) +
+      scale_fill_manual(NULL, values = "azure3", na.value = "red") +
+      scale_size_manual(values = c(1,0.5,0.2,1), na.value = "1", labels = iprp_labels) +
+      scale_linetype_manual(values = c(1,2,1,1), na.value = "1", labels = iprp_labels) +
+      scale_colour_manual(
+        values = 
+          c("darkorange", "azure4", "dodgerblue4", "red"),
+        na.value = "red", 
+        labels = iprp_labels
+      ) +
+      scale_shape_manual(values = c(0,0,0,1), na.value = 0,labels = iprp_labels) +
+      scale_alpha_manual(values = c(0,0,0,1), na.value = 0, labels = iprp_labels) +
+    ylab("Volume of tasks") + xlab("Date") +
+    theme(legend.title = element_blank(), legend.position = "right") +
+    ggtitle(paste(iprp_data$key, sep=""))
+ print(plot)
+ 
+ 
+  }
+  
+  
+  else {plot <- ggplot(data) + 
+    geom_bar(
+      aes(
+        x = data$Date, 
+        y = data$TaskVolume, 
+        fill="Task Volume (LHS)"
+        ),
+      stat = "identity", 
+      position = "dodge", 
+      inherit.aes = FALSE
+      ) +
+    geom_line(
+      aes(x = data$Date, 
+        y = data$value * max(data$TaskVolume), 
+        colour = data$variable,
+        linetype = data$variable, 
+        size = data$variable
+        )
+      ) + 
+    scale_y_continuous(
+      breaks = pretty_breaks(4),
+      sec.axis = 
+        sec_axis(~. / max(data$TaskVolume), name = "Proportion")
+      ) +
+    scale_fill_manual(NULL, values = "azure3", na.value = "red") +
+    scale_size_manual(values = c(1, 0.5, 0.2), na.value = "1", labels = labels) +
+    scale_linetype_manual(values = c(1, 2, 1), na.value = "1", labels = labels) +
+    scale_colour_manual(values = c("darkorange",  "azure4","dodgerblue4"), 
+                        na.value = "red", labels = labels) +
+    ylab("Volume of tasks") + xlab("Date") +
+    theme(legend.title = element_blank(), legend.position = "right") +
+    ggtitle(paste(data$key, sep=""))
+ print(plot)
+ 
+}
+  
+ if (nrow(comments_ops_temp) > 0) {
+
+   
+print(kable(comments_ops_temp, 
+      format = "markdown", 
+      caption = "Flags for below peer performance", 
+      col.names = c("Date", "OPS", "Action", "Rationale","Pfm commentary"), 
+      booktabs = TRUE, 
+      linesep = "",
+      format.args = list(big.mark = ",")
+      ))
+   
+ }
+
+}
+}
+
+```
+
+
+`r if (nrow(ops_data_temp) > 0) { "##### page break"}`
+
+`r if (nrow(ops_data_temp) > 0) { "# OPS Performance Rectification" }`
+
+`r if (nrow(iprp_status_ops_temp) > 0) { "## OPS IPRP Status Summary" }`
+
+`r if (nrow(ops_data_temp)==0) { "\\begin{comment}" }`
+
+`r TRADING.PARTY` currently has `r nrow(iprp_status_ops_temp)` active IPRP(s) and has `r nrow(tracking_ops_requested_temp)` IPRP(s) requested`r if(nrow(tracking_ops_requested_temp)>0) {paste(":")}` `r if(nrow(tracking_ops_requested_temp)>0) {paste(c(unique(tracking_ops_requested_temp$OPS)))}`.
+`r if (nrow(ops_data_temp)==0) { "\\end{comment}" }`
+
+<br>
+
+```{r echo = FALSE, results = "asis"}
+
+if(nrow(iprp_status_ops_temp) > 0){
+
+  kable(
+    iprp_status_ops_temp%>%
+      select(Date, OPS, Batch, TaskCompletion, Planned_Perf, Status), 
+    format = "markdown", 
+    caption = "Current status of IPRP(s)", 
+    col.names = c(
+      "Date", 
+      "OPS", 
+      "Batch", 
+      "Actual Perf.", 
+      "Planned Perf.", 
+      "Status"), 
+    longtable = FALSE
+    )
+  
+}
+
+```
+
+<br>
+
+`r if(nrow(tracking_ops_milestone_temp) > 0) { paste("Below is a table summarising details of the IPRP Milestone flags for ", TRADING.PARTY, ".", sep = "") }`
+
+```{r echo = FALSE, results = "asis"}
+
+if(nrow(tracking_ops_milestone_temp) > 0) {
+
+  kable(
+    tracking_mps_milestone_temp, 
+    format = "markdown", 
+    caption = "IPRPs flagged as below milestone",
+    col.names = c(
+      "Date", 
+      "MPS", 
+      "Batch", 
+      "Action", 
+      "Rationale"), 
+    longtable = TRUE, 
+    booktabs = TRUE, 
+    linesep = ""
+    )
+    
+}
+
+```
+
+<br>
+
+`r if (nrow(tracking_ops_pfm_mile_temp) > 0) { paste("Below is a summary of the commentary that MOSL has received via the Portfolio Manager regarding the milestone performance flags:") }` 
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(tracking_ops_pfm_mile_temp) > 0) {
+
+kable(tracking_ops_pfm_mile_temp, 
+      format = "markdown", 
+      caption = "PFM Commentary", 
+      col.names = c("Date", "OPS", "Commentary"), 
+      booktabs = TRUE,
+      longtable = TRUE,
+      linesep = "",
+      format.args = list(big.mark = ",")
+      )
+
+}
+
+```
+
+
+`r if(nrow(ops_data_temp) > 0) { "##### page break" }`
+
+`r if(nrow(ops_data_temp) > 0) { "# OPS Market Aggregates" }`
+
+<br>
+
+`r if(nrow(ops_data_temp) > 0) { "## Mean peer performance" }`
+
+<br>
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(ops_data_temp) > 0) {
+  ops_summary_mean_temp1 <- ops_summary_mean_temp[,1:9]
+  
+  kable(ops_summary_mean_temp1, 
+        format = "markdown", 
+        caption = "Mean peer performance", 
+        booktabs = TRUE, 
+        linesep = "",
+        digits = 1,
+        format.args = list(decimal.mark = ".", big.mark = ",")
+  )
+
+}
+
+```
+
+<br>
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(ops_data_temp) > 0 & ncol(ops_summary_mean_temp)>9) {
+  ops_summary_mean_temp2 <- ops_summary_mean_temp[,c(1,10:ncol(ops_summary_mean_temp))]
+  
+  kable(ops_summary_mean_temp2, 
+        format = "markdown", 
+        caption = "Mean peer performance", 
+        booktabs = TRUE, 
+        linesep = "",
+        digits = 1,
+        format.args = list(decimal.mark = ".", big.mark = ",")
+  )
+
+}
+
+```
+
+<br>
+
+`r if(nrow(ops_data_temp) > 0) { "## Median peer performance" }`
+
+<br>
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(ops_data_temp) > 0) {
+  ops_summary_median_temp1 <- ops_summary_median_temp[,1:9]
+  
+  kable(ops_summary_median_temp1, 
+        format = "markdown", 
+        caption = "Median peer performance", 
+        booktabs = TRUE, 
+        linesep = "",
+        digits = 1,
+        format.args = list(decimal.mark = ".", big.mark = ",")
+        )  
+}
+
+```
+
+<br>
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(ops_data_temp) > 0 & ncol(ops_summary_median_temp) > 9) {
+  ops_summary_median_temp2 <- ops_summary_median_temp[,c(1, 10:ncol(ops_summary_median_temp))]
+  
+  kable(ops_summary_median_temp2, 
+        format = "markdown", 
+        caption = "Median peer performance", 
+        booktabs = TRUE, 
+        linesep = "",
+        digits = 1,
+        format.args = list(decimal.mark = ".", big.mark = ",")
+        )  
+}
+
+```
+
+<br>
+
+`r if(nrow(ops_data_temp) > 0) { "## Aggregate task volumes" }`
+
+<br>
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(ops_data_temp) > 0) {
+
+  ops_summary_tasks_temp1 <- ops_summary_tasks_temp[,1:9]
+  
+  kable(ops_summary_tasks_temp1, 
+        format = "markdown", 
+        caption = "Aggregate task volumes", 
+        booktabs = TRUE, 
+        linesep = "",
+        format.args = list(big.mark = ",")
+        )
+
+}
+
+```
+
+<br>
+
+```{r echo = FALSE, results = "asis"}
+
+if (nrow(ops_data_temp) > 0&ncol(ops_summary_tasks_temp)>9) {
+
+  ops_summary_tasks_temp2 <- ops_summary_tasks_temp[,c(1, 10:ncol(ops_summary_tasks_temp))]
+  
+  kable(ops_summary_tasks_temp2, 
+        format = "markdown", 
+        caption = "Aggregate task volumes", 
+        booktabs = TRUE, 
+        linesep = "",
+        format.args = list(big.mark = ",")
+        )
+
+}
+
+```
+
+
+##### page break
+
+# Appendix
+
+## Performance Criteria
+
+A Trading Party's MPS performance will be flagged when the ratio of on-time task completion to total tasks completed for that MPS falls below the peer mean and peer median level for three consecutive months. "Peer mean" and "peer median" refer, respectively, to the mean and median of all on-time task ratios for every Trading Party in the market. The following MPS are currently subject to this criteria: `r paste(mps_list_pr, sep = ", ")`.
+
+MPS performance will also be flagged when it is lower than the threshold percentage, set by MOSL. This threshold performance can change when MOSL feel appropriate. Currently, only MPS 18 is subject to a threshold (75%).
+
+When evaluating these performance flags, MOSL takes into account other factors, including: performance relative to comparable peers; number of tasks relative to size; and other important Trading Party activities, such as data improvement activity and significant operational changes.
+
+Persistently poor performance could lead to the issue being escalated to MOSL's Performance Resolution process through an Initial Performance Rectification Plan (IPRP). Failure to improve over time at this stage could lead to the issue being further escalated to a Performance Rectification Plan (PRP) overseen by MPC and/or Panel.

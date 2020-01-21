@@ -18,4 +18,11 @@ Imports:
     stats,
     dplyr,
     lubridate,
-    magrittr
+    magrittr,
+    knitr,
+    ggthemes,
+    gridExtra,
+    kableExtra,
+    tidyr,
+    rmarkdown,
+    ggplot2
