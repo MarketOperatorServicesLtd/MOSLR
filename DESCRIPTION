@@ -25,4 +25,5 @@ Imports:
     kableExtra,
     tidyr,
     rmarkdown,
-    ggplot2
+    ggplot2,
+    stringr

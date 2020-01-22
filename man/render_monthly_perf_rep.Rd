@@ -6,41 +6,20 @@
 \usage{
 render_monthly_perf_rep(
   dir = getwd(),
-  period.lag = 1,
-  dir.mps.data = paste0(dir, "/data/rdata/mps_data_clean.Rda"),
-  dir.mps.sum = paste0(dir, "/data/rdata/mps_data_clean.Rda"),
-  dir.iprp.comp = paste0(dir, "/data/rdata/IPRP_plan_comparison_mps.Rda"),
-  tracking.mps = paste0(dir, "/data/inputs/tracking_mps.csv"),
-  iprp.plans = paste0(dir, "/data/inputs/IPRP_plans_mps.csv"),
-  filter.date = "2018-04-01",
-  csv.outputs = paste0(dir, "/data/outputs"),
   dir.output = paste0(dir, "/MonthlyPerfReport"),
   file.name = paste0("MonthlyPerformanceReport-", as.character(format(Sys.Date(),
-    "\%Y-\%m")), ".pdf")
+    "\%Y-\%m")), ".pdf"),
+  ...
 )
 }
 \arguments{
 \item{dir}{character}
 
-\item{period.lag}{numeric}
-
-\item{dir.mps.data}{character}
-
-\item{dir.mps.sum}{character}
-
-\item{dir.iprp.comp}{character}
-
-\item{tracking.mps}{character}
-
-\item{iprp.plans}{character}
-
-\item{filter.date}{date}
-
-\item{csv.outputs}{character}
-
 \item{dir.output}{character}
 
 \item{file.name}{character}
+
+\item{...}{foo}
 }
 \value{
 

@@ -30,6 +30,21 @@ output:
     toc: yes
 ---
 
+```{r echo = FALSE}
+
+flagged_mps_table <- readRDS(file = paste0(dir, "/data/rdata/flagged_mps_table.Rda"))
+flagged_milestones_mps <- readRDS(file = paste0(dir, "/data/rdata/flagged_milestones_mps.Rda"))
+flagged_iprp_end_mps <- readRDS(file = paste0(dir, "/data/rdata/flagged_iprp_end_mps.Rda"))
+watch_mps <- readRDS(file = paste0(dir, "/data/rdata/watch_mps.Rda"))
+flagged_mps_data_melt <- readRDS(file = paste0(dir, "/data/rdata/flagged_mps_data_melt.Rda"))
+IPRP_plans_melt_mps <- readRDS(file = paste0(dir, "/data/rdata/IPRP_plans_melt_mps.Rda"))
+watch_mps_melt <- readRDS(file = paste0(dir, "/data/rdata/watch_mps_melt.Rda"))
+mps_summary_melt <- readRDS(file = paste0(dir, "/data/rdata/mps_summary_melt.Rda"))
+iprp_plan_comparison_mps <- readRDS(file = paste0(dir, "/data/rdata/iprp_plan_comparison_mps.Rda"))
+iprp_status_mps <- readRDS(file = paste0(dir, "/data/rdata/iprp_status_mps.Rda"))
+
+```
+
 \newpage
 
 # Summary of Performance and MOSL Actions
@@ -106,7 +121,7 @@ kableExtra::kable(
 ```{r echo = FALSE, results = "asis"}
 
 kableExtra::kable(
-  flagged_milestones_mps%>%
+  flagged_milestones_mps %>%
     dplyr::select(Trading.Party.ID, MPS, Batch, Action, Rationale), 
   format = "latex", 
   caption = "IPRPs flagged for performance below monthly milestone",
@@ -130,7 +145,7 @@ kableExtra::kable(
       position = "center",
       full_width = FALSE)
     ) %>%
-   column_spec(5,width = "7cm")%>%
+   column_spec(5, width = "7cm")%>%
   row_spec(0, bold = TRUE)
 
 ```
@@ -140,7 +155,8 @@ kableExtra::kable(
 ```{r echo = FALSE, results = "asis"}
 
 kableExtra::kable(
-  flagged_iprp_end_mps, 
+  flagged_iprp_end_mps %>%
+      dplyr::select(Trading.Party.ID, MPS, Batch, Action, Rationale), 
   format = "latex", 
   caption = "IPRPs that have reached the end of their plans",
   col.names = c(
@@ -291,10 +307,8 @@ The graphs below depict the performance of each IPRP against its planned milesto
 
 iprp_labels <- c("Task Completion (RHS)", "Mean (RHS)", "Median (RHS)", "Task Share (RHS)", "Planned Perf (RHS)")
 
-plist_IPRP = lapply(split(IPRP_plans_melt_mps, IPRP_plans_melt_mps$key), function(v) {
+plist_IPRP = lapply(split(IPRP_plans_melt_mps, IPRP_plans_melt_mps$key), function(data) {
   
-  data <- v
-
   plot <- ggplot(data) + 
     geom_bar(
       aes(
@@ -363,11 +377,7 @@ plist_IPRP = lapply(split(IPRP_plans_melt_mps, IPRP_plans_melt_mps$key), functio
     ggtitle(
       paste0(
         "Batch ", 
-        max(as.numeric(data$Batch), na.rm = TRUE), 
-        ": ", 
-        Trading.Party.ID, 
-        "  (", 
-        MPS, ")")
+        max(as.numeric(data$Batch), na.rm = TRUE), ": ", data$Trading.Party.ID, "  (", data$MPS, ")")
       )
   
   }
@@ -387,10 +397,8 @@ The graphs below depict the performance of issue(s) on the watch-list (not inclu
 
 watch_labels <- c("Task Completion (RHS)", "Mean (RHS)", "Median (RHS)", "Task Share (RHS)")
 
-plist_watch = lapply(split(watch_mps_melt, watch_mps_melt$key), function(v) {
+plist_watch = lapply(split(watch_mps_melt, watch_mps_melt$key), function(data) {
   
-  data <- v
-
   plot <- ggplot(data) + 
     geom_bar(
       aes(
@@ -455,7 +463,7 @@ plist_watch = lapply(split(watch_mps_melt, watch_mps_melt$key), function(v) {
       legend.title = element_blank(), 
       legend.position = "right"
       ) +
-    ggtitle(paste0(Trading.Party.ID,"  (", MPS, ")"))
+    ggtitle(paste0(data$Trading.Party.ID,"  (", data$MPS, ")"))
   
   }
 )
@@ -474,9 +482,7 @@ The graphs below show the aggregated performance for each MPS.
 
 label_agg <- c("Mean (RHS)","Median (RHS)")
 
-plist_mps_agg = lapply(split(mps_summary_melt, mps_summary_melt$MPS), function(d) {
-  
-  data <- d
+plist_mps_agg = lapply(split(mps_summary_melt, mps_summary_melt$MPS), function(data) {
   
   ggplot(data) +
     geom_bar(
@@ -514,7 +520,7 @@ plist_mps_agg = lapply(split(mps_summary_melt, mps_summary_melt$MPS), function(d
       legend.title = element_blank(), 
       legend.position = "right"
       ) +
-    ggtitle(paste(MPS))
+    ggtitle(paste(data$MPS))
   
   }
 )
@@ -551,8 +557,7 @@ plott1 <- iprp_plan_comparison_mps %>%
     aes(
       label = format(round(mean_delta, 2), nsmall = 2))
     ) + 
-  ggtitle("All batches: mean difference between \n actual and planned performance") +
-  theme_stata(base_size = 11)
+  ggtitle("All batches: mean difference between \n actual and planned performance")
 
 plott2 <- iprp_plan_comparison_mps %>%
   dplyr::filter(Date <= Sys.Date()) %>%
@@ -571,8 +576,7 @@ plott2 <- iprp_plan_comparison_mps %>%
     aes(
       label = format(round(mean_delta_to_mean, 2 ), nsmall = 2))
     ) +
-  ggtitle("All batches: mean difference between \n performance and market MPS level") +
-  ggthemes::theme_stata(base_size = 11)
+  ggtitle("All batches: mean difference between \n performance and market MPS level")
   
 plot_list = c(plott1,plott2)
 
