@@ -6,15 +6,12 @@
 \usage{
 mps_performance(
   period.lag = 1,
-  mps_list = c("MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 7", "MPS 12", "MPS 16",
+  mps_list = c("MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 5", "MPS 7", "MPS 12", "MPS 16",
     "MPS 17", "MPS 18"),
-  dir = getwd(),
-  dir.mps.data = paste0(dir, "/data/rdata/mps_data_clean.Rda"),
-  dir.iprp.plans = paste0(dir, "/data/inputs/IPRP_plans_mps.csv"),
-  dir.watch.list = paste0(dir, "/data/inputs/tracking_mps.csv"),
-  csv.outputs = paste0(dir, "/data/outputs"),
-  rda.outputs = paste0(dir, "/data/rdata"),
-  dir.mps.tracking = paste0(dir, "/data/tracking/mps")
+  my.dir = getwd(),
+  csv.outputs = paste0(my.dir, "/data/outputs"),
+  rda.outputs = paste0(my.dir, "/data/rdata"),
+  dir.mps.tracking = paste0(my.dir, "/data/tracking/mps")
 )
 }
 \arguments{
@@ -22,13 +19,7 @@ mps_performance(
 
 \item{mps_list}{character}
 
-\item{dir}{character}
-
-\item{dir.mps.data}{character}
-
-\item{dir.iprp.plans}{character}
-
-\item{dir.watch.list}{character}
+\item{my.dir}{character}
 
 \item{csv.outputs}{character}
 

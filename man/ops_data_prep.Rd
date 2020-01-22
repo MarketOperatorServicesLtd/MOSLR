@@ -7,9 +7,9 @@
 ops_data_prep(
   dir = getwd(),
   ops.data = paste0(dir, "/data/inputs/OPS_data.csv"),
-  ops.thresholds = paste0(dir, "/data/inputs/ops_thresholds.csv"),
+  ops.thresholds.kpi = paste0(dir, "/data/inputs/ops_thresholds_kpi.csv"),
+  ops.thresholds.api = paste0(dir, "/data/inputs/ops_thresholds_api.csv"),
   tp.details = paste0(dir, "/data/inputs/tp_details.csv"),
-  os.tasks.threshold = 0.75,
   filter.date = "2019-04-01",
   csv.outputs = paste0(dir, "/data/outputs"),
   rda.outputs = paste0(dir, "/data/rdata")
@@ -20,11 +20,11 @@ ops_data_prep(
 
 \item{ops.data}{character}
 
-\item{ops.thresholds}{character}
+\item{ops.thresholds.kpi}{character}
+
+\item{ops.thresholds.api}{character}
 
 \item{tp.details}{character}
-
-\item{os.tasks.threshold}{numeric}
 
 \item{filter.date}{character}
 

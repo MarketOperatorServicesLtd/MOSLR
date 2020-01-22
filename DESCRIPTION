@@ -26,4 +26,6 @@ Imports:
     tidyr,
     rmarkdown,
     ggplot2,
-    stringr
+    stringr,
+    scales,
+    zoo

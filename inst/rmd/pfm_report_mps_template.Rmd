@@ -1,0 +1,55 @@
+### `r paste0(MPS, ": ", MPS_details$Context[MPS_details == MPS, ])`
+
+MPS description: `r paste0(MPS_details$Details[MPS_details == MPS, ])`
+
+`r SHORT.NAME`'s on-time task performance for `r MPS`  is rated as `r paste0("consistent, very good")`.
+
+Below is a graph showing `r SHORT.NAME`'s historical on-time task completion performance for `r MPS`. 
+
+```{r}
+
+active.iprp <- MPS %in% IPRP_list
+
+mps_data_melt %>%
+  dplyr::filter(
+    MPS == MPS
+    ) %>%
+  MOSLR::plot_mps_perf_graph(data = ., IPRP = active.iprp)
+
+```
+
+```{r}
+
+rationale_temp_table <- tracking %>%
+  filter(MPS == MPS) %>%
+  select(Date, Action, Rationale)
+
+pfm_com_temp_table <- tracking %>%
+  filter(MPS == MPS) %>%
+  select(Date, PFM_Commentary)
+
+```
+
+
+`r SHORT.NAME` have had no IPRPs issued for this standard over the last 12-months. The table below shows recent MOSL actions and rationale regarding this standard.
+
+`r SHORT.NAME` have had no performance issues flagged for this standard over the last 12-months. 
+
+```{r echo = FALSE, eval = nrow(rat_temp_table) > 0}
+
+kable(
+  rat_temp_table
+)
+
+```
+
+The table below shows the PFM commentary received by MOSL.
+There is no PFM commentary associated with this standard.
+
+```{r echo = FALSE, eval = nrow(pfm_temp_table) > 0}
+
+kable(
+  pfm_temp_table
+)
+
+```

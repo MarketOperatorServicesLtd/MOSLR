@@ -19,8 +19,8 @@
 #' @return
 #' @export
 #'
-#' @importFrom dplyr rename mutate select filter left_join group_by summarize case_when
-#' @importFrom tidyr gather spread
+#' @importFrom dplyr rename mutate select filter left_join group_by summarize case_when if_else
+#' @importFrom tidyr gather spread contains
 #' @importFrom stats median
 #' @importFrom utils read.csv write.csv
 #' @importFrom lubridate "%m-%"
@@ -43,7 +43,7 @@ prep_render_monthly_perf_rep <- function(
 ) {
 
   period <- Sys.Date() %m-% months(period.lag)
-  day(period) <- 1
+  lubridate::day(period) <- 1
 
 
   # Importing data ----------------------------------------------------------
@@ -52,17 +52,26 @@ prep_render_monthly_perf_rep <- function(
   mps_summary <- readRDS(file = dir.mps.sum)
   iprp_plan_comparison_mps <- readRDS(file = dir.iprp.comp)
 
-  tracking_mps <- read.csv(tracking.mps) %>%
-    rename("Trading.Party.ID" = ORG_ID) %>%
-    mutate(
+  tracking_mps <- utils::read.csv(tracking.mps) %>%
+    dplyr::rename("Trading.Party.ID" = ORG_ID) %>%
+    dplyr::mutate(
       Date = as.Date(Date, "%d/%m/%Y"),
       Rationale = as.character(Rationale),
       PFM_Commentary = as.character(PFM_Commentary),
       key = paste(Trading.Party.ID, MPS)
     )
 
-  IPRP_plans_mps <- read.csv(file = iprp.plans) %>%
-    mutate(
+  saveRDS(tracking_mps, file = paste0(rda.outputs, "/tracking_mps.Rda"))
+
+#  tracking_mps_summary <- tracking_mps %>%
+ #   dplyr::group(Date, Trading.Party.ID) %>%
+  #  dplyr:summarise(
+
+   # )
+
+
+  IPRP_plans_mps <- utils::read.csv(file = iprp.plans) %>%
+    dplyr::mutate(
       Date = as.Date(Date, format = "%d/%m/%Y"),
       key = as.factor(paste(Trading.Party.ID, MPS))
     )
@@ -73,66 +82,66 @@ prep_render_monthly_perf_rep <- function(
   flagged_cols <- c("Trading.Party.ID", "MPS", "Batch", "Action", "Rationale", "Watch_list")
 
   flagged_mps_table <- tracking_mps %>%
-    filter(
+    dplyr::filter(
       Category == "Performance_Trigger_3m"
       | Category == "Performance_Trigger_6m"
-      | (Category == "Watch_list" & !is.numeric(Batch)
+      | (Category == "Watch_list" & !is.na(Batch)
       ),
       Date == period
     ) %>%
-    mutate(
+    dplyr::mutate(
       Watch_list = (Category == "Watch_list")
     ) %>%
-    select(flagged_cols, -Batch)
+    dplyr::select(flagged_cols, -Batch)
 
   saveRDS(flagged_mps_table, file = paste0(rda.outputs, "/flagged_mps_table.Rda"))
 
 
   flagged_milestones_mps <- tracking_mps %>%
-    filter(
+    dplyr::filter(
       Category == "Milestone_Trigger"
       | (Category == "Watch_list" & !is.na(Batch)
       ),
       Date == period
     ) %>%
-    mutate(
+    dplyr::mutate(
       Watch_list = (Category == "Watch_list")
     ) %>%
-    select(flagged_cols)
+    dplyr::select(flagged_cols)
 
   saveRDS(flagged_milestones_mps, file = paste0(rda.outputs, "/flagged_milestones_mps.Rda"))
 
 
   flagged_iprp_end_mps <- tracking_mps %>%
-    filter(
+    dplyr::filter(
       Category == "IPRP_end",
       Date == period
     ) %>%
-    mutate(
+    dplyr::mutate(
       Watch_list = (Category == "Watch_list")
     ) %>%
-    select(flagged_cols)
+    dplyr::select(flagged_cols)
 
   saveRDS(flagged_iprp_end_mps, file = paste0(rda.outputs, "/flagged_iprp_end_mps.Rda"))
 
   watch_mps <- tracking_mps %>%
-    filter(
+    dplyr::filter(
       Category == "Watch_list",
       Date == period,
       !is.numeric(Batch)
     ) %>%
-    select(Trading.Party.ID, MPS)
+    dplyr::select(Trading.Party.ID, MPS)
 
   saveRDS(watch_mps, file = paste0(rda.outputs, "/watch_mps.Rda"))
 
 
   watch_iprp_mps <- tracking_mps %>%
-    filter(
+    dplyr::filter(
       Category == "Watch_list",
       Date == period,
       !is.na(Batch)
     ) %>%
-    select(Trading.Party.ID, MPS, Batch)
+    dplyr::select(Trading.Party.ID, MPS, Batch)
 
 
   # Combining flagged with mps_data and creating a key ----------------------
@@ -143,13 +152,13 @@ prep_render_monthly_perf_rep <- function(
       mps_data,
       by = c("Trading.Party.ID", "MPS")
     ) %>%
-    mutate(key = paste(Trading.Party.ID, MPS)) %>%
-    filter(
+    dplyr::mutate(key = paste(Trading.Party.ID, MPS)) %>%
+    dplyr::filter(
       Watch_list == "No",
       key %in% tracking_mps$key,
       Date >= filter.date
     ) %>%
-    select(
+    dplyr::select(
       Date,
       Trading.Party.ID,
       MPS,
@@ -166,17 +175,17 @@ prep_render_monthly_perf_rep <- function(
 
 
   flagged_mps_data_melt <-
-    gather(
+    tidyr::gather(
       flagged_mps_data,
       key = "variable",
       value = "value",
       TaskCompletion, MPS_Mean, MPS_Median, TaskShare,
       factor_key = TRUE
     ) %>%
-    mutate(
+    dplyr::mutate(
       category = str_sub(Trading.Party.ID,-1,-1),
       TaskVolume =
-        if_else(
+        dplyr::if_else(
           variable %in% c("MPS_Mean", "MPS_Median", "TaskShare"), 0,
           as.double(TaskVolume)
         ),
@@ -196,25 +205,25 @@ prep_render_monthly_perf_rep <- function(
   # IPRP data for tables and graphs -----------------------------------------
 
   IPRP_tps_mps <- iprp_plan_comparison_mps %>%
-    filter(Date == period) %>%
-    mutate(key = as.factor(paste(Trading.Party.ID, MPS))) %>%
-    select(Trading.Party.ID, MPS, key) %>%
+    dplyr::filter(Date == period) %>%
+    dplyr::mutate(key = as.factor(paste(Trading.Party.ID, MPS))) %>%
+    dplyr::select(Trading.Party.ID, MPS, key) %>%
     droplevels()
 
   IPRP_plans_data_mps <-
-    left_join(
+    dplyr::left_join(
       mps_data,
       IPRP_plans_mps,
       by = c("Date", "Trading.Party.ID", "MPS", "key")
     ) %>%
-    filter(
+    dplyr::filter(
       Date >= filter.date,
       key %in% IPRP_tps_mps$key
     ) %>%
-    group_by(key) %>%
-    mutate(Batch = max(Batch, na.rm = TRUE)) %>%
-    ungroup() %>%
-    select(
+    dplyr::group_by(key) %>%
+    dplyr::mutate(Batch = max(Batch, na.rm = TRUE)) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(
       Date, Trading.Party.ID, MPS, key, Batch,
       TaskCompletion, TaskVolume, TotalTaskVolume,
       MPS_Mean, MPS_Median, TaskShare, Planned_Perf
@@ -223,22 +232,22 @@ prep_render_monthly_perf_rep <- function(
   cols <- c("Trading.Party.ID", "MPS", "key")
 
   IPRP_plans_melt_mps <-
-    gather(
+    tidyr::gather(
       IPRP_plans_data_mps,
       key = "variable",
       value = "value",
       TaskCompletion, MPS_Mean, MPS_Median, TaskShare, Planned_Perf,
       factor_key = TRUE
     ) %>%
-    mutate(
+    dplyr::mutate(
       category = str_sub(as.character(Trading.Party.ID),-1,-1),
       TaskVolume =
-        if_else(
+        dplyr::if_else(
           variable %in% c("MPS_Mean", "MPS_Median", "Planned_Perf", "TaskShare"), 0,
           as.double(TaskVolume)
         )
     ) %>%
-    mutate_at(cols, factor)
+    dplyr::mutate_at(cols, factor)
 
   saveRDS(IPRP_plans_melt_mps, file = paste0(rda.outputs, "/IPRP_plans_melt_mps.Rda"))
 
@@ -246,14 +255,14 @@ prep_render_monthly_perf_rep <- function(
   # Preparing data for watch-list graphs using melt--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   watch_mps_data <-
-    left_join(
+    dplyr::left_join(
       watch_mps,
       mps_data,
       by = c("Trading.Party.ID", "MPS")
     ) %>%
-    filter(Date >="2018-04-01") %>%
-    mutate(key = paste(Trading.Party.ID, MPS)) %>%
-    select(
+    dplyr::filter(Date >="2018-04-01") %>%
+    dplyr::mutate(key = paste(Trading.Party.ID, MPS)) %>%
+    dplyr::select(
       Date,
       Trading.Party.ID,
       MPS,
@@ -267,17 +276,17 @@ prep_render_monthly_perf_rep <- function(
     )
 
   watch_mps_melt <-
-    gather(
+    tidyr::gather(
       watch_mps_data,
       key = "variable",
       value = "value",
       TaskCompletion, MPS_Mean, MPS_Median, TaskShare,
       factor_key = TRUE
     ) %>%
-    mutate(
+    dplyr::mutate(
       category = str_sub(as.character(Trading.Party.ID),-1,-1),
       TaskVolume =
-        if_else(
+        dplyr::if_else(
           variable %in% c("MPS_Mean", "MPS_Median", "TaskShare"),
           0, as.double(TaskVolume)
         ),
@@ -290,17 +299,17 @@ prep_render_monthly_perf_rep <- function(
   # Aggregate MPS graphs ----------------------------------------------------
 
   mps_summary_melt <-
-    gather(
+    tidyr::gather(
       mps_summary,
       key = "variable",
       value = "value",
       MPS_Mean, MPS_Median,
       factor_key = TRUE
     ) %>%
-    filter(Date >= filter.date) %>%
-    mutate(
+    dplyr::filter(Date >= filter.date) %>%
+    dplyr::mutate(
       TotalTaskVolume =
-        if_else(
+        dplyr::if_else(
           variable == "MPS_Mean", 0,
           as.double(TotalTaskVolume)
         )
@@ -313,8 +322,8 @@ prep_render_monthly_perf_rep <- function(
   # Preparing IPRP analytics ------------------------------------------------
 
   iprp_status_mps <- iprp_plan_comparison_mps %>%
-    filter(Date == period) %>%
-    mutate(
+    dplyr::filter(Date == period) %>%
+    dplyr::mutate(
       Status = case_when(
         OnTrack == 1 ~ "On Track",
         Close == 1 ~ "Close",
@@ -322,7 +331,7 @@ prep_render_monthly_perf_rep <- function(
       TaskCompletion = as.numeric(format(TaskCompletion, digits = 1)),
       Planned_Perf = as.numeric(format(Planned_Perf, digits = 1))
     ) %>%
-    select(
+    dplyr::select(
       Batch, Trading.Party.ID, MPS, TaskCompletion,
       Planned_Perf, Status
     )
@@ -333,56 +342,56 @@ prep_render_monthly_perf_rep <- function(
   # Splitting comparison by category ----------------------------------------
 
   iprp_plan_comparison_w <- iprp_plan_comparison_mps %>%
-    mutate(
+    dplyr::mutate(
       category = str_sub(iprp_plan_comparison_mps$Trading.Party.ID, -1, -1)
     ) %>%
-    filter(category == "W", Date == period) %>%
+    dplyr::filter(category == "W", Date == period) %>%
     droplevels()
 
   w_iprps <- iprp_plan_comparison_w %>%
-    group_by(Trading.Party.ID, MPS) %>%
-    summarise(
+    dplyr::group_by(Trading.Party.ID, MPS) %>%
+    dplyr::summarise(
       count = n()
     ) %>%
-    ungroup() %>%
-    spread(
+    dplyr::ungroup() %>%
+    tidyr::spread(
       key = MPS,
       value = count
     ) %>%
-    mutate(
-      IPRP_count = rowSums(select(., contains("MPS")), na.rm = TRUE)
+    dplyr::mutate(
+      IPRP_count = rowSums(dplyr::select(., tidyr::contains("MPS")), na.rm = TRUE)
     )
 
-  write.csv(w_iprps, paste0(csv.outputs, "/w_iprps.csv"))
+  utils::write.csv(w_iprps, paste0(csv.outputs, "/w_iprps.csv"))
 
 
   iprp_plan_comparison_r <- iprp_plan_comparison_mps %>%
-    mutate(
+    dplyr::mutate(
       category = str_sub(iprp_plan_comparison_mps$Trading.Party.ID,-1,-1)
     ) %>%
-    filter(category == "R", Date == period) %>%
+    dplyr::filter(category == "R", Date == period) %>%
     droplevels()
 
   r_iprps <- iprp_plan_comparison_r %>%
-    group_by(Trading.Party.ID, MPS) %>%
-    summarise(
+    dplyr::group_by(Trading.Party.ID, MPS) %>%
+    dplyr::summarise(
       count = n()
     ) %>%
-    ungroup() %>%
-    spread(
+    dplyr::ungroup() %>%
+    tidyr::spread(
       key = MPS,
       value = count
     ) %>%
-    mutate(
+    dplyr::mutate(
       Total = rowSums(select(., -(Trading.Party.ID)), na.rm = TRUE),
     )
   r_iprps <- r_iprps %>%
-    bind_rows(
+    dplyr::bind_rows(
       r_iprps %>%
-        summarise_if(is.numeric, sum, na.rm = TRUE) %>%
-        mutate(Trading.Party.ID = "Total")
+        dplyr::summarise_if(is.numeric, sum, na.rm = TRUE) %>%
+        dplyr::mutate(Trading.Party.ID = "Total")
     )
 
-  write.csv(r_iprps, paste0(csv.outputs, "/r_iprps.csv"))
+  utils::write.csv(r_iprps, paste0(csv.outputs, "/r_iprps.csv"))
 
 }

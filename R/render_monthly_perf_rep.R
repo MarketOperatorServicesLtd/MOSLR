@@ -18,6 +18,7 @@
 #' @examples
 
 render_monthly_perf_rep <- function(
+  rmd.file = "MonthlyPerformanceReport.Rmd",
   dir = getwd(),
   dir.output = paste0(dir, "/MonthlyPerfReport"),
   file.name =
@@ -28,7 +29,7 @@ render_monthly_perf_rep <- function(
 # Render Monthly Performance Report ---------------------------------------
 
   rmarkdown::render(
-    system.file("rmd", "MonthlyPerformanceReport.Rmd", package = "MOSLR"),
+    system.file("rmd", rmd.file, package = "MOSLR"),
     output_file = paste0(dir.output, "/", file.name)
     )
 

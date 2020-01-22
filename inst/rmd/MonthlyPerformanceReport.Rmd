@@ -97,12 +97,13 @@ kableExtra::kable(
     "MPS", 
     "Action", 
     "Rationale", 
-    "Watch"),
+    "Watch"
+    ),
   longtable = TRUE, 
   booktabs = TRUE,
   linesep = ""
-    ) %>%
-  kable_styling(
+  ) %>%
+  kableExtra::kable_styling(
     font_size = 10,
     latex_options = c(
       "repeat_header",
@@ -111,8 +112,8 @@ kableExtra::kable(
       position = "center", 
       full_width = FALSE)
     ) %>%
-  column_spec(4, width = "8.5cm") %>%
-  row_spec(0, bold = TRUE)
+  kableExtra::column_spec(4, width = "8.5cm") %>%
+  kableExtra::row_spec(0, bold = TRUE)
 
 ```
 
@@ -136,7 +137,7 @@ kableExtra::kable(
   booktabs = TRUE,
   linesep = ""
   ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     font_size = 10,
     latex_options = c(
       "repeat_header",
@@ -145,8 +146,8 @@ kableExtra::kable(
       position = "center",
       full_width = FALSE)
     ) %>%
-   column_spec(5, width = "7cm")%>%
-  row_spec(0, bold = TRUE)
+  kableExtra::column_spec(5, width = "7cm")%>%
+  kableExtra::row_spec(0, bold = TRUE)
 
 ```
 
@@ -170,7 +171,7 @@ kableExtra::kable(
   booktabs = TRUE,
   linesep = ""
   ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     font_size = 10,
     latex_options = c(
       "repeat_header",
@@ -179,8 +180,8 @@ kableExtra::kable(
       position = "center",
       full_width = FALSE)
     ) %>%
-  column_spec(5,width = "7cm")%>%
-  row_spec(0, bold = TRUE)
+  kableExtra::column_spec(5,width = "7cm")%>%
+  kableExtra::row_spec(0, bold = TRUE)
 
 ```
 
@@ -206,7 +207,7 @@ if (nrow(watch_mps) > 0) {
     booktabs=TRUE,
     linesep=""
       ) %>%
-    kable_styling(
+    kableExtra::kable_styling(
       latex_options = c(
         "repeat_header",
         "hold_position",
@@ -214,7 +215,7 @@ if (nrow(watch_mps) > 0) {
         position = "center", 
         full_width = FALSE)
       ) %>%
-    row_spec(0, bold = TRUE)
+    kableExtra::row_spec(0, bold = TRUE)
 
 }
 
@@ -238,9 +239,9 @@ plist_flagged = lapply(split(flagged_mps_data_melt, flagged_mps_data_melt$key), 
   
   data <- z
 
-  plot <- ggplot(data) + 
-    geom_bar(
-      aes(
+  plot <- ggplot2::ggplot(data) + 
+    ggplot2::geom_bar(
+      ggplot2::aes(
         x = Date, 
         y = TaskVolume, 
         fill = "Task Volume (LHS)"
@@ -249,8 +250,8 @@ plist_flagged = lapply(split(flagged_mps_data_melt, flagged_mps_data_melt$key), 
       position = "dodge", 
       inherit.aes = FALSE
       ) +
-    geom_line(
-      aes(
+    ggplot2::geom_line(
+      ggplot2::aes(
         x = Date, 
         y = value * max(data$TaskVolume), 
         colour = variable, 
@@ -258,32 +259,32 @@ plist_flagged = lapply(split(flagged_mps_data_melt, flagged_mps_data_melt$key), 
         size = variable
         )
       ) + 
-    scale_y_continuous(
-      sec.axis = sec_axis(~ . / max(data$TaskVolume), name = "Proportion")
+    ggplot2::scale_y_continuous(
+      sec.axis = ggplot2::sec_axis(~ . / max(data$TaskVolume), name = "Proportion")
       ) +
-    scale_fill_manual(
+    ggplot2::scale_fill_manual(
       NULL, values = "azure3", na.value = "red"
       ) +
-    scale_size_manual(
+    ggplot2::scale_size_manual(
       values = c(1,0.5,0.5,0.5), 
       na.value = "1", 
       labels = flagged_labels
       ) +
-    scale_linetype_manual(
+    ggplot2::scale_linetype_manual(
       values = c(1,2,1,3), 
       na.value = "1", 
       labels = flagged_labels
       ) +
-    scale_colour_manual(
+    ggplot2::scale_colour_manual(
       values = c("darkorange", "azure4", "dodgerblue4","grey3"), 
       na.value = "red", 
       labels = flagged_labels
       ) +
-    ylab("Volume of tasks") + xlab("Date") +
-    theme(
-      legend.title = element_blank(), 
+    ggplot2::ylab("Volume of tasks") + ggplot2::xlab("Date") +
+    ggplot2::theme(
+      legend.title = ggplot2::element_blank(), 
       legend.position = "right") +
-    ggtitle(paste(Trading.Party.ID, " (", MPS, ")", sep = ""))
+    ggplot2::ggtitle(paste(Trading.Party.ID, " (", MPS, ")", sep = ""))
   
   }
 )
@@ -309,9 +310,9 @@ iprp_labels <- c("Task Completion (RHS)", "Mean (RHS)", "Median (RHS)", "Task Sh
 
 plist_IPRP = lapply(split(IPRP_plans_melt_mps, IPRP_plans_melt_mps$key), function(data) {
   
-  plot <- ggplot(data) + 
-    geom_bar(
-      aes(
+  plot <- ggplot2::ggplot(data) + 
+    ggplot2::geom_bar(
+      ggplot2::aes(
         x = Date, 
         y = TaskVolume, 
         fill = "Task Volume (LHS)"), 
@@ -319,8 +320,8 @@ plist_IPRP = lapply(split(IPRP_plans_melt_mps, IPRP_plans_melt_mps$key), functio
       position = "dodge", 
       inherit.aes = FALSE
       ) +
-    geom_line(
-      aes(
+    ggplot2::geom_line(
+      ggplot2::aes(
         x = Date, 
         y = value * max(data$TaskVolume), 
         colour = variable, 
@@ -328,53 +329,53 @@ plist_IPRP = lapply(split(IPRP_plans_melt_mps, IPRP_plans_melt_mps$key), functio
         size = variable
         )
       ) + 
-    geom_point(
-      aes(
+    ggplot2::geom_point(
+      ggplot2::aes(
         x = Date, 
         y = value * max(data$TaskVolume), 
         shape = variable, 
         alpha = variable
         )
       ) +
-    scale_y_continuous(
-      sec.axis = sec_axis(~. / max(data$TaskVolume), name = "Proportion")
+    ggplot2::scale_y_continuous(
+      sec.axis = ggplot2::sec_axis(~. / max(data$TaskVolume), name = "Proportion")
       ) +
-    scale_fill_manual(
+    ggplot2::scale_fill_manual(
       NULL, 
       values = "azure3", 
       na.value = "red"
       ) +
-    scale_size_manual(
+    ggplot2::scale_size_manual(
       values = c(1, 0.5, 0.5, 0.5, 1), 
       na.value = "1", 
       labels = iprp_labels
       ) +
-    scale_linetype_manual(
+    ggplot2::scale_linetype_manual(
       values = c(1, 2, 1, 3, 1), 
       na.value = "1", 
       labels = iprp_labels
       ) +
-    scale_colour_manual(
+    ggplot2::scale_colour_manual(
       values = c("darkorange", "azure4", "dodgerblue4", "grey3", "red"), 
       na.value="red", 
       labels = iprp_labels
       ) +
-    scale_shape_manual(
+    ggplot2::scale_shape_manual(
       values = c(0, 0, 0, 0, 1), 
       na.value = 0, 
       labels = iprp_labels
       ) +
-    scale_alpha_manual(
+    ggplot2::scale_alpha_manual(
       values = c(0, 0, 0, 0, 1), 
       na.value = 0, 
       labels = iprp_labels
       ) +
-    ylab("Volume of tasks") + xlab("Date") +
-    theme(
-      legend.title = element_blank(), 
+    ggplot2::ylab("Volume of tasks") + ggplot2::xlab("Date") +
+    ggplot2::theme(
+      legend.title = ggplot2::element_blank(), 
       legend.position = "right"
       ) +
-    ggtitle(
+    ggplot2::ggtitle(
       paste0(
         "Batch ", 
         max(as.numeric(data$Batch), na.rm = TRUE), ": ", data$Trading.Party.ID, "  (", data$MPS, ")")
@@ -399,9 +400,9 @@ watch_labels <- c("Task Completion (RHS)", "Mean (RHS)", "Median (RHS)", "Task S
 
 plist_watch = lapply(split(watch_mps_melt, watch_mps_melt$key), function(data) {
   
-  plot <- ggplot(data) + 
-    geom_bar(
-      aes(
+  plot <- ggplot2::ggplot(data) + 
+    ggplot2::geom_bar(
+      ggplot2::aes(
         x = Date, 
         y = TaskVolume, 
         fill = "Task Volume (LHS)"
@@ -410,60 +411,60 @@ plist_watch = lapply(split(watch_mps_melt, watch_mps_melt$key), function(data) {
       position = "dodge", 
       inherit.aes = FALSE
       ) +
-    geom_line(
-      aes(
+    ggplot2::geom_line(
+      ggplot2::aes(
         x = Date, 
         y = value * max(data$TaskVolume), 
         colour = variable, 
         linetype = variable, 
         size = variable)
       ) + 
-    geom_point(
-      aes(
+    ggplot2::geom_point(
+      ggplot2::aes(
         x = Date, 
         y = value * max(data$TaskVolume), 
         shape = variable, 
         alpha = variable)
       ) +
-    scale_y_continuous(
-      sec.axis = sec_axis(~. / max(data$TaskVolume), name = "Proportion")
+    ggplot2::scale_y_continuous(
+      sec.axis = ggplot2::sec_axis(~. / max(data$TaskVolume), name = "Proportion")
       ) +
-    scale_fill_manual(
+    ggplot2::scale_fill_manual(
       NULL, 
       values = "azure3", 
       na.value = "red"
       ) +
-    scale_size_manual(
+    ggplot2::scale_size_manual(
       values = c(1, 0.5, 0.5, 0.5, 1), 
       na.value = "1", 
       labels = iprp_labels
       ) +
-    scale_linetype_manual(
+    ggplot2::scale_linetype_manual(
       values = c(1, 2, 1, 3, 1), 
       na.value = "1", 
       labels = iprp_labels
       ) +
-    scale_colour_manual(
+    ggplot2::scale_colour_manual(
       values = c("darkorange", "azure4", "dodgerblue4", "grey3", "red"), 
       na.value = "red", 
       labels = iprp_labels
       ) +
-    scale_shape_manual(
+    ggplot2::scale_shape_manual(
       values = c(0, 0, 0, 0, 1), 
       na.value = 0, 
       labels = iprp_labels
       ) +
-    scale_alpha_manual(
+    ggplot2::scale_alpha_manual(
       values = c(0, 0, 0, 0, 1), 
       na.value = 0, 
       labels = iprp_labels
       ) +
-    ylab("Volume of tasks") + xlab("Date") +
-    theme(
-      legend.title = element_blank(), 
+    ggplot2::ylab("Volume of tasks") + ggplot2::xlab("Date") +
+    ggplot2::theme(
+      legend.title = ggplot2::element_blank(), 
       legend.position = "right"
       ) +
-    ggtitle(paste0(data$Trading.Party.ID,"  (", data$MPS, ")"))
+    ggplot2::ggtitle(paste0(data$Trading.Party.ID,"  (", data$MPS, ")"))
   
   }
 )
@@ -484,9 +485,9 @@ label_agg <- c("Mean (RHS)","Median (RHS)")
 
 plist_mps_agg = lapply(split(mps_summary_melt, mps_summary_melt$MPS), function(data) {
   
-  ggplot(data) +
-    geom_bar(
-      aes(
+  ggplot2::ggplot(data) +
+    ggplot2::geom_bar(
+      ggplot2::aes(
         x = Date, 
         y = TotalTaskVolume, 
         fill = "Task Volume (LHS)"), 
@@ -494,33 +495,33 @@ plist_mps_agg = lapply(split(mps_summary_melt, mps_summary_melt$MPS), function(d
       position = "dodge", 
       inherit.aes = FALSE
       ) +
-    geom_line(
-      aes(
+    ggplot2::geom_line(
+      ggplot2::aes(
         x = Date, 
         y = value * max(data$TotalTaskVolume), 
         colour = variable, 
         linetype = variable)
       ) +
-    scale_y_continuous(
-      sec.axis = sec_axis(~. / max(data$TotalTaskVolume), name = "Proportion")
+    ggplot2::scale_y_continuous(
+      sec.axis = ggplot2::sec_axis(~. / max(data$TotalTaskVolume), name = "Proportion")
       ) +
-    scale_fill_manual(
+    ggplot2::scale_fill_manual(
       NULL, values = "azure3"
       ) +
-    scale_linetype_manual(
+    ggplot2::scale_linetype_manual(
       values = c(2,1), 
       labels = label_agg
       ) +
-    scale_colour_manual(
+    ggplot2::scale_colour_manual(
       values = c("azure4", "dodgerblue4"), 
       labels = label_agg
       ) +
-    ylab("Volume of tasks") + xlab("Date") +
-    theme(
-      legend.title = element_blank(), 
+    ggplot2::ylab("Volume of tasks") + ggplot2::xlab("Date") +
+    ggplot2::theme(
+      legend.title = ggplot2::element_blank(), 
       legend.position = "right"
       ) +
-    ggtitle(paste(data$MPS))
+    ggplot2::ggtitle(paste(data$MPS))
   
   }
 )
@@ -545,38 +546,38 @@ plott1 <- iprp_plan_comparison_mps %>%
   dplyr::filter(Date <= Sys.Date()) %>%
   dplyr::group_by(Date) %>%
   dplyr::summarise(mean_delta = mean(Delta, na.rm = TRUE)) %>%
-  ggplot(
-    aes(
+  ggplot2::ggplot(
+    ggplot2::aes(
       x = Date, 
       y = mean_delta)
     ) + 
-  geom_line() + 
-  geom_point() + 
-  ylab("Mean Difference") + xlab("Date") +
+  ggplot2::geom_line() + 
+  ggplot2::geom_point() + 
+  ggplot2::ylab("Mean Difference") + ggplot2::xlab("Date") +
   geom_label(
-    aes(
+    ggplot2::aes(
       label = format(round(mean_delta, 2), nsmall = 2))
     ) + 
-  ggtitle("All batches: mean difference between \n actual and planned performance")
+  ggplot2::ggtitle("All batches: mean difference between \n actual and planned performance")
 
 plott2 <- iprp_plan_comparison_mps %>%
   dplyr::filter(Date <= Sys.Date()) %>%
   dplyr::mutate(delta_to_mean = TaskCompletion - MPS_Mean) %>%
   dplyr::group_by(Date) %>%
   dplyr::summarise(mean_delta_to_mean = mean(delta_to_mean, na.rm = TRUE)) %>%
-  ggplot(
-    aes(
+  ggplot2::ggplot(
+    ggplot2::aes(
       x = Date, 
       y = mean_delta_to_mean)
     ) + 
-  geom_line() + 
-  geom_point() + 
-  ylab("Delta to the Market MPS level") + xlab("Date") +
+  ggplot2::geom_line() + 
+  ggplot2::geom_point() + 
+  ggplot2::ylab("Delta to the Market MPS level") + ggplot2::xlab("Date") +
   geom_label(
-    aes(
+    ggplot2::aes(
       label = format(round(mean_delta_to_mean, 2 ), nsmall = 2))
     ) +
-  ggtitle("All batches: mean difference between \n performance and market MPS level")
+  ggplot2::ggtitle("All batches: mean difference between \n performance and market MPS level")
   
 plot_list = c(plott1,plott2)
 
@@ -609,7 +610,7 @@ kableExtra::kable(
   booktabs = TRUE, 
   linesep = ""
   ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = 
       c(
         "repeat_header",
@@ -619,7 +620,7 @@ kableExtra::kable(
         full_width = TRUE
         )
     ) %>%
-  row_spec(0, bold = TRUE)
+  kableExtra::row_spec(0, bold = TRUE)
 
 ```
 
@@ -637,22 +638,22 @@ ploty <- iprp_plan_comparison_mps %>%
     variable2 = factor(variable, levels = c("OffTrack", "Close", "OnTrack"))
   ) %>%
   ggplot2::ggplot(
-    aes(
+    ggplot2::aes(
       x = Date, 
       y = value, 
       fill = variable2)
     ) + 
-  geom_bar(stat = "identity") +
+  ggplot2::geom_bar(stat = "identity") +
   labs(
     title = "IPRP Performance",
     subtitle = "Count of active plans by month and status"
     ) +
-  ylab("Count of plans by status") + xlab("") +
-  theme_minimal(base_size = 11) +
-  scale_fill_manual(values = c("darkorange", "azure3", "dodgerblue4")) +
-  theme(
+  ggplot2::ylab("Count of plans by status") + ggplot2::xlab("") +
+  ggplot2::theme_minimal(base_size = 11) +
+  ggplot2::scale_fill_manual(values = c("darkorange", "azure3", "dodgerblue4")) +
+  ggplot2::theme(
     legend.position = "top", 
-    legend.title = element_blank()
+    legend.title = ggplot2::element_blank()
     )
 
 plot(ploty)

@@ -1,0 +1,302 @@
+---
+title: 'Portfolio Manager Report: `r paste0(TRADING.PARTY.NAME, " (",TRADING.PARTY,")")`'
+date: "`r format(Sys.Date(), '%B %Y')`"
+fontsize: 12pt
+output:
+  pdf_document:
+    fig_height: 3.2
+    fig_width: 8
+    number_section: yes
+    toc: yes
+    fig_caption: true
+header-includes:
+- \usepackage{titling}
+- \pretitle{\begin{center}\LARGE\includegraphics[width=24cm]{mosl_title.png}\\[\bigskipamount]}
+- \posttitle{\end{center}}
+- \usepackage{xcolor}
+- \usepackage{color}
+- \usepackage{fancyhdr}
+- \usepackage{graphicx}
+- \usepackage{eurosym}
+- \usepackage{longtable}
+- \usepackage{booktabs}
+- \usepackage{makecell}
+- \usepackage{pdflscape}
+- \usepackage{multirow}
+- \pagestyle{fancy}
+- \fancyhf{}
+- \lfoot{MOSL Portfolio Manager Report}
+- \rhead{\includegraphics[width=6cm]{mosl_header.png}}
+- \rfoot{Page \thepage}
+classoption: table
+---
+
+##### page break
+
+```{r global_options, include = FALSE} 
+
+knitr::opts_chunk$set(
+  fig.width = 12, 
+  fig.height = 7, 
+  fig.path = 'Figs/',
+  echo = FALSE, 
+  warning = FALSE, 
+  message = FALSE
+  )
+
+```
+
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
+
+mps_data_clean_temp <- mps_data_clean %>% 
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  droplevels()
+
+mps_data_melt_temp <- mps_data_melt %>%
+  filter(Trading.Party.ID == TRADING.PARTY) %>%
+  droplevels()
+
+data.period <- Sys.Date() %m-% months(1)
+
+perf_status_mps_temp <- perf_status_mps %>%
+  filter(
+    Trading.Party.ID == TRADING.PARTY,
+    Date == data.period
+    ) %>%
+  droplevels()
+
+```
+
+# Market Performance Standards
+
+## Performance Charges
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
+
+mps_data_clean_temp %>%
+  select(
+    Trading.Party.ID, Date, MPS, Charges
+    ) %>%
+  ggplot(
+    aes(x = Date, y = Charges, fill = MPS)
+    ) + 
+  geom_bar(stat = "identity") + 
+  theme(
+    legend.title = element_blank(),
+    text = element_text(size = 20)
+    ) +
+  scale_y_continuous(
+    labels = scales::comma,
+    breaks = pretty_breaks(4)
+    ) +
+  labs(
+    title = "Performance Charges",
+    subtitle = "Breakdown of by month and standard",
+    caption = "Source: MOSL"
+    ) +
+  ylab("Charges (£)") + xlab("")
+
+```
+
+<br>
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
+
+# Creating table of charges by MPS ---------------- 
+
+mps_data_clean_temp %>%
+  filter(
+    Date >= max(mps_data_clean_temp$Date) %m-% months(12)
+    ) %>%
+  select(Date, MPS, Charges) %>%
+  mutate(Date = format(Date, "%Y-%m")) %>% 
+  spread(MPS, Charges) %>%
+  mutate(
+    Total = roWSums(select(., -Date), na.rm = TRUE)
+    ) %>%
+  kable (
+    format = "markdown", 
+    caption = "Breakdown of Charges by MPS", 
+    linesep = "",
+    format.args = list(big.mark = ",")
+    )
+
+```
+
+## On-Time Task Completion
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
+
+mps_data_clean_temp %>%
+  select(
+    Trading.Party.ID, Date, MPS, Charges
+    ) %>%
+  ggplot(
+    aes(x = Date, y = Charges, fill = MPS)
+    ) + 
+  geom_bar(stat = "identity") + 
+  theme(
+    legend.title = element_blank(),
+    text = element_text(size = 20)
+    ) +
+  scale_y_continuous(
+    labels = scales::comma,
+    breaks = pretty_breaks(4)
+    ) +
+  labs(
+    title = "Performance Charges",
+    subtitle = "Breakdown of by month and standard",
+    caption = "Source: MOSL"
+    ) +
+  ylab("Charges (£)") + xlab("")
+
+```
+
+```{r echo = FALSE, results = "asis"}
+
+mps_data_clean_temp %>% 
+  filter(
+    Date >= max(mps_data_clean_temp$Date) %m-% months(12)
+    ) %>%
+  select(
+    Date, MPS, TaskCompletion
+    ) %>% 
+  mutate(
+    TaskCompletion = format(TaskCompletion, digits = 2)
+    ) %>%
+  spread(key = MPS, value = TaskCompletion) %>%
+  kable(
+    format = "markdown", 
+    caption = "MPS Performance by Month",
+    linesep = "",
+    format.args = list(big.mark = ",")
+    )
+
+```
+
+## Performance Issues
+
+In this month `r SHORT.NAME` has:
+
+``` {r echo = FALSE}
+
+perf_status_mps_temp %>%
+  dplyr::filter(
+    Date == data.period
+    ) %>%
+  dplyr::select(Category, Action, MPS) %>%
+  tidyr::drop_na() %>%
+  tidyr::spread(Category, Action) %>%
+  kable(
+    format = "markdown", 
+    caption = "Summary of recent flags and actions",
+    linesep = ""
+  )
+
+```
+
+*	`r `  flag(s) for performance issues (not including those that were already on watch), covering: `r unique(tracking_mps_temp[tracking_mps_temp$Category == "Performance_Trigger_3m", "MPS"]))`
+*	`r nrow(temp_table[temp_table$Category == "Watch_list", ])` performance issues on watch, covering: `r unique(temp_table[temp_table$Category == "Watch_list", "MPS"])`
+*	`r nrow(iprp_status_mps, ])` performance issues on an IPRP, covering: `r paste(IPRP_list)`
+
+Of the `r nrow(temp_table[temp_table$Category == "Performance_Trigger_3m", ])` performance issues flagged this month (not including those already on watch):
+
+*	`r nrow(temp_table[temp_table$Category == "Performance_Trigger_3m" & temp_table$Action == "none", ])` had no action taken
+*	`r nrow(temp_table[temp_table$Category == "Performance_Trigger_3m" & temp_table$Action == "Watch", ])` were put on watch
+*	`r nrow(temp_table[temp_table$Category == "Performance_Trigger_3m" & temp_table$Action == "IPRP", ])` were escalated to an IPRP
+
+Where an Action is recorded as “Watch”, the performance issue will be added to MOSL’s watch-list of performance issues. Any performance issue(s) on the watch-list will be closely monitored for improvement each month until it is removed from the list. If the issue is not resolved, then it could be escalated to an IPRP. 
+
+`r paste(SHORT.NAME)` had `r nrow(temp_table[temp_table$Category == "Watch_list", ])` performance issues on watch at the beginning of CURRENT-MONTH, covering: MPS 2 and MPS 16. Of these:
+
+*	`r nrow(temp_table[temp_table$Category == "Watch_list" & Action == "none", ])` performance issue(s) were taken off watch
+*	`r nrow(temp_table[temp_table$Category == "Watch_list" & Action == "Watch", ])` performance issue(s) remain on watch
+*	`r nrow(temp_table[temp_table$Category == "Watch_list" & Action == "IPRP", ])` performance issue(s) were escalated to an IPRP
+
+See section Z for more information on each MPS, including further commentary (if applicable) on the above performance issues, historical performance and any IPRPs currently active. 
+
+## MPS Analysis
+
+As part of its analysis of historical MPS performance, MOSL categorises performance over a 6-month period according to consistency and by comparing performance to the market mean performance over the same period. For example, mean performance over six-months at, or close to, the mean market level, in most months (i.e. 3 or more of the last 6 months) would be rated as “consistent, good”. 
+
+See Appendix I for further information of how MOSL categorises MPS performance. 
+
+```{r, echo = FALSE, results = "asis"}
+
+res <- lapply(unique(mps_data_temp$MPS), function (MPS) {
+  
+  knitr::knit_child(
+    "pfm_report_mps_template.Rmd", envir = environment(), quiet = TRUE
+  )
+  
+})
+
+cat(unlist(res), sep = "\n")
+
+```
+
+##### page break
+
+## MPS Market Aggregates
+
+### Mean peer performance
+
+```{r echo = FALSE, results = "asis"}
+
+kable(
+  mps_summary_mean, 
+  format = "markdown", 
+  caption = "Mean peer performance", 
+  booktabs = TRUE, 
+  linesep = "",
+  digits = 1,
+  format.args = list(decimal.mark = ".", big.mark = ",")
+  ) 
+
+```
+
+### Median peer performance
+
+```{r echo = FALSE, results = "asis"}
+
+kable(
+  mps_summary_median, 
+  format = "markdown", 
+  caption = "Median peer performance", 
+  booktabs = TRUE, 
+  linesep = "",
+  digits = 1,
+  format.args = list(decimal.mark = ".", big.mark = ",")
+  )
+
+```
+
+### Aggregate task volumes
+
+```{r echo = FALSE, results = "asis"}
+
+kable(
+  mps_summary_tasks, 
+  format = "markdown", 
+  caption = "Aggregate task volumes", 
+  booktabs = TRUE, 
+  linesep = "",
+  format.args = list(big.mark = ",")
+  )
+
+```
+
+##### page break
+
+# Appendix
+
+## Performance Criteria
+
+A Trading Party's MPS performance will be flagged when the ratio of on-time task completion to total tasks completed for that MPS falls below the peer mean and peer median level for three consecutive months. "Peer mean" and "peer median" refer, respectively, to the mean and median of all on-time task ratios for every Trading Party in the market. The following MPS are currently subject to this criteria: MPS 1, MPS 2, MPS 3, MPS 4, MPS 7, MPS 12, MPS 16, MPS 17.
+
+MPS performance will also be flagged when it is lower than the threshold percentage, set by MOSL. This threshold performance can change when MOSL feel appropriate. Currently, only MPS 18 is subject to a threshold (75%).
+
+When evaluating these performance flags, MOSL takes into account other factors, including: performance relative to comparable peers; number of tasks relative to size; and other important Trading Party activities, such as data improvement activity and significant operational changes.
+
+Persistently poor performance could lead to the issue being escalated to MOSL's Performance Resolution process through an Initial Performance Rectification Plan (IPRP). Failure to improve over time at this stage could lead to the issue being further escalated to a Performance Rectification Plan (PRP) overseen by MPC and / or Panel.

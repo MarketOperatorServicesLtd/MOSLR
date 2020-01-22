@@ -5,6 +5,7 @@
 \title{Render Rmarkdown Monthly Performance Report}
 \usage{
 render_monthly_perf_rep(
+  rmd.file = "MonthlyPerformanceReport.Rmd",
   dir = getwd(),
   dir.output = paste0(dir, "/MonthlyPerfReport"),
   file.name = paste0("MonthlyPerformanceReport-", as.character(format(Sys.Date(),
