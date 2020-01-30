@@ -5,15 +5,33 @@
 \title{Run Monthly PFM Report}
 \usage{
 run_monthly_pfm_report(
+  my.dir = getwd(),
   tp.list = NULL,
   prep.data = TRUE,
   load.data = TRUE,
-  output.dir = paste0(dir, "/"),
-  excluded.list = c("AQUAFLOW-R")
+  excluded.list = NULL,
+  rmd.file = "MonthlyPfmReport_word.Rmd",
+  output.file = paste0(TRADING.PARTY, "_pfm-report_", format(Sys.Date(), "\%Y-\%m"),
+    ".pdf"),
+  output.dir = paste0(my.dir, "/PfmReports/", format(Sys.Date(), "\%Y-\%m"))
 )
 }
 \arguments{
-\item{excluded.list}{}
+\item{my.dir}{character}
+
+\item{tp.list}{character}
+
+\item{prep.data}{character}
+
+\item{load.data}{character}
+
+\item{excluded.list}{character}
+
+\item{rmd.file}{character}
+
+\item{output.file}{character}
+
+\item{output.dir}{character}
 }
 \value{
 

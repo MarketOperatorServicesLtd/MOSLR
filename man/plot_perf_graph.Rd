@@ -6,13 +6,14 @@
 \usage{
 plot_perf_graph(
   data,
-  include.iprp = TRUE,
-  sec.axis.name = "Proportion",
+  include.iprp = FALSE,
+  sec.axis.name = "",
+  fill.label = "Task Volume",
   fill.manual = "azure3",
-  y.lab = "Volume of tasks",
-  x.lab = "Date",
-  tp.name = FALSE,
-  graph.title = NULL
+  y.lab = "Tasks",
+  x.lab = "",
+  graph.title = NULL,
+  sub.title = NULL
 )
 }
 \arguments{
@@ -22,13 +23,13 @@ plot_perf_graph(
 
 \item{sec.axis.name}{character}
 
+\item{fill.label}{character}
+
 \item{fill.manual}{character}
 
 \item{y.lab}{character}
 
 \item{x.lab}{chracter}
-
-\item{tp.name}{logical}
 
 \item{graph.title}{character}
 }

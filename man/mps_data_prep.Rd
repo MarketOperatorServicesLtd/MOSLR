@@ -5,15 +5,15 @@
 \title{MPS Data Preparation}
 \usage{
 mps_data_prep(
-  dir = getwd(),
-  mps.data = paste0(dir, "/data/inputs/MPS_data.csv"),
-  mps.thresholds = paste0(dir, "/data/inputs/mps_thresholds.csv"),
-  csv.outputs = paste0(dir, "/data/outputs"),
-  rda.outputs = paste0(dir, "/data/rdata")
+  my.dir = getwd(),
+  mps.data = paste0(my.dir, "/data/inputs/MPS_data.csv"),
+  mps.thresholds = paste0(my.dir, "/data/inputs/mps_thresholds.csv"),
+  csv.outputs = paste0(my.dir, "/data/outputs"),
+  rda.outputs = paste0(my.dir, "/data/rdata")
 )
 }
 \arguments{
-\item{dir}{character}
+\item{my.dir}{character}
 
 \item{mps.data}{character}
 

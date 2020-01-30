@@ -10,9 +10,11 @@
 #' @param rmd.file  character
 #' @param output.file character
 #' @param my.dir character
+#' @param data.period date
 #'
 #' @return
 #' @export
+#' @importFrom lubridate %m-%
 #'
 #' @examples
 
@@ -22,7 +24,7 @@ run_monthly_pfm_report <- function(
   prep.data = TRUE,
   load.data = TRUE,
   excluded.list = NULL,
-  rmd.file = "MonthlyPfmReport_word.Rmd",
+  rmd.file = "MonthlyPfmReport_pdf.Rmd",
   output.file =
     paste0(
       TRADING.PARTY,
@@ -35,24 +37,27 @@ run_monthly_pfm_report <- function(
       my.dir,
       "/PfmReports/",
       format(Sys.Date(), "%Y-%m")
-      )
+      ),
+  data.period = Sys.Date() %m-% months(1)
   ) {
 
   if (prep.data) {
 
-    prep_mps_render_monthly_pfm_report()
-    prep_ops_render_monthly_pfm_report()
+    my_dir <- my.dir
+
+    MOSLR::process_monthly_tracker_mps(my.dir = my_dir)
+    #MOSLR::process_monthly_tracker_ops()
 
   }
 
   if (load.data) {
 
     tp_details <- utils::read.csv(paste0(my.dir, "/data/inputs/tp_details.csv"))
+    MPS_details <- utils::read.csv(paste0(my.dir, "/data/inputs/MPS_details.csv")) %>%
+      dplyr::mutate(MPS = as.character(MPS))
     mps_data_clean <- readRDS(paste0(my.dir, "/data/rdata/mps_data_clean.Rda"))
-    mps_data_melt <- readRDS(paste0(my.dir, "/data/rdata/mps_data_melt .Rda"))
-    charges_graph_mps <- readRDS(paste0(my.dir, "/data/rdata/charges_graph_mps .Rda"))
-    charges_table_mps <- readRDS(paste0(my.dir, "/data/rdata/charges_table_mps.Rda"))
-    tracking_mps <- readRDS(paste0(my.dir, "/data/rdata/tracking_mps.Rda"))
+    mps_data_melt <- readRDS(paste0(my.dir, "/data/rdata/mps_data_melt.Rda"))
+    perf_status_mps <- readRDS(paste0(my.dir, "/data/rdata/perf_status_mps.Rda"))
     mps_summary <- readRDS(paste0(my.dir, "/data/rdata/mps_summary.Rda"))
 
   }
@@ -69,11 +74,13 @@ run_monthly_pfm_report <- function(
 
   if (is.null(tp.list)) {
 
-    render_list <- mps_data %>%
-      filter(!Trading.Party.ID %in% excluded.list) %>%
-      select(Trading.Party.ID) %>%
-      droplevels() %>%
-      mutate(Trading.Party.ID = as.character(Trading.Party.ID))
+    render_list <- mps_data_clean %>%
+      dplyr::filter(!Trading.Party.ID %in% excluded.list) %>%
+      dplyr::select(Trading.Party.ID) %>%
+      dplyr::droplevels() %>%
+      dplyr::mutate(
+        Trading.Party.ID = as.character(Trading.Party.ID)
+        )
     render_list <- unique(render_list$Trading.Party.ID)
 
   } else {
@@ -86,12 +93,6 @@ run_monthly_pfm_report <- function(
 
     TRADING.PARTY.NAME <- tp_details$TradingPartyName[tp_details$Trading.Party.ID == TRADING.PARTY, drop = TRUE]
     SHORT.NAME <- tp_details$TradingPartyName[tp_details$Trading.Party.ID == TRADING.PARTY, drop = TRUE]
-
-    mps_data_clean
-    mps_data_melt
-    charges_graph_mps
-    charges_table_mps
-    tracking_mps
 
     rmarkdown::render(
       input = system.file("rmd", rmd.file, package = "MOSLR"),

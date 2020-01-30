@@ -12,9 +12,7 @@
 #' @return
 #' @export
 #'
-#' @importFrom dplyr rename mutate select filter left_join group_by summarise ungroup
 #' @importFrom stats median
-#' @importFrom utils utils::read.csv utils::write.csv
 #'
 #' @examples
 
@@ -52,9 +50,7 @@ mps_data_prep <- function(
       TaskCompletion,
       TaskVolume,
       Charges
-    )
-
-  mps_data_clean <- mps_data_clean %>%
+    ) %>%
     dplyr::left_join(
       mps_thresholds,
       by = c("MPS")

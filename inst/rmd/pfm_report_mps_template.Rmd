@@ -1,55 +1,37 @@
-### `r paste0(MPS, ": ", MPS_details$Context[MPS_details == MPS, ])`
 
-MPS description: `r paste0(MPS_details$Details[MPS_details == MPS, ])`
+### `r paste0(MPS_CHUNK, ": ", MPS_details$Context[MPS_details$MPS == MPS_CHUNK])`
 
-`r SHORT.NAME`'s on-time task performance for `r MPS`  is rated as `r paste0("consistent, very good")`.
+MPS description: `r MPS_details$Details[MPS_details$MPS == MPS_CHUNK]`
 
-Below is a graph showing `r SHORT.NAME`'s historical on-time task completion performance for `r MPS`. 
+`r SHORT.NAME`'s on-time task performance for `r MPS_CHUNK`  is rated as `r paste0(perf_status_mps_temp$Consistency[perf_status_mps_temp$MPS == MPS_CHUNK], ", ", perf_status_mps_temp$PerfRating[perf_status_mps_temp$MPS == MPS_CHUNK])`.
 
-```{r}
+Below is a graph showing `r SHORT.NAME`'s historical on-time task completion performance for `r MPS_CHUNK`. 
 
-active.iprp <- MPS %in% IPRP_list
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 7}
 
-mps_data_melt %>%
+active.iprp <- MPS_CHUNK %in% perf_status_mps_temp$MPS[perf_status_mps_temp$ActiveIPRP]
+
+graph <- mps_data_melt_temp %>%
   dplyr::filter(
-    MPS == MPS
+    MPS == MPS_CHUNK
     ) %>%
-  MOSLR::plot_mps_perf_graph(data = ., IPRP = active.iprp)
+  droplevels() %>%
+  MOSLR::plot_perf_graph(
+    data = ., 
+    include.iprp = active.iprp,
+    graph.title = MPS_CHUNK,
+    sub.title = MPS_details$Context[MPS_details$MPS == MPS_CHUNK]
+    )
+
+plot(graph)
 
 ```
-
-```{r}
-
-rationale_temp_table <- tracking %>%
-  filter(MPS == MPS) %>%
-  select(Date, Action, Rationale)
-
-pfm_com_temp_table <- tracking %>%
-  filter(MPS == MPS) %>%
-  select(Date, PFM_Commentary)
-
-```
-
 
 `r SHORT.NAME` have had no IPRPs issued for this standard over the last 12-months. The table below shows recent MOSL actions and rationale regarding this standard.
 
 `r SHORT.NAME` have had no performance issues flagged for this standard over the last 12-months. 
 
-```{r echo = FALSE, eval = nrow(rat_temp_table) > 0}
-
-kable(
-  rat_temp_table
-)
-
-```
 
 The table below shows the PFM commentary received by MOSL.
 There is no PFM commentary associated with this standard.
 
-```{r echo = FALSE, eval = nrow(pfm_temp_table) > 0}
-
-kable(
-  pfm_temp_table
-)
-
-```

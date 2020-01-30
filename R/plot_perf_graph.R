@@ -14,6 +14,7 @@
 #' @param x.lab chracter
 #' @param graph.title character
 #' @param fill.label character
+#' @param sub.title character
 #'
 #' @return
 #' @export
@@ -63,12 +64,19 @@ plot_perf_graph <- function(
     colour.values <- c("darkorange", "azure4", "dodgerblue4", "grey3")
     labels <- c(
       "On-Time Tasks", "Market Mean", "Market Median", "Task Share"
-    )
+      )
 
     }
 
   graph <- data %>%
     tidyr::drop_na(value) %>%
+    droplevels() %>%
+    {if (!include.iprp) {
+      dplyr::filter(., variable != "Planned_Perf")
+    } else {
+        dplyr::select(., dplyr::everything())
+      }
+      } %>%
     ggplot2::ggplot() +
     ggplot2::geom_bar(
       ggplot2::aes(
