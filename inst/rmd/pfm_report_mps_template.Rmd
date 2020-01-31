@@ -1,37 +1,189 @@
 
 ### `r paste0(MPS_CHUNK, ": ", MPS_details$Context[MPS_details$MPS == MPS_CHUNK])`
 
-MPS description: `r MPS_details$Details[MPS_details$MPS == MPS_CHUNK]`
+> `r MPS_details$Details[MPS_details$MPS == MPS_CHUNK]`
 
-`r SHORT.NAME`'s on-time task performance for `r MPS_CHUNK`  is rated as `r paste0(perf_status_mps_temp$Consistency[perf_status_mps_temp$MPS == MPS_CHUNK], ", ", perf_status_mps_temp$PerfRating[perf_status_mps_temp$MPS == MPS_CHUNK])`.
+`r SHORT.NAME`'s on-time task performance for `r MPS_CHUNK`  is rated as **`r paste0(perf_status_mps_temp$Consistency[perf_status_mps_temp$MPS == MPS_CHUNK], ", ", perf_status_mps_temp$PerfRating[perf_status_mps_temp$MPS == MPS_CHUNK])`**.
 
-Below is a graph showing `r SHORT.NAME`'s historical on-time task completion performance for `r MPS_CHUNK`. 
+Below is a graph showing `r SHORT.NAME`'s historical on-time task completion performance for `r MPS_CHUNK`. MOSL action points and IPRP milestones are shown, if applicable. 
 
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 7}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
 
-active.iprp <- MPS_CHUNK %in% perf_status_mps_temp$MPS[perf_status_mps_temp$ActiveIPRP]
+on.iprp <- perf_status_mps_temp$IPRP[perf_status_mps_temp$MPS == MPS_CHUNK]
 
-graph <- mps_data_melt_temp %>%
+graph <- perf_status_mps %>%
   dplyr::filter(
-    MPS == MPS_CHUNK
+    TaskVolume > 0
     ) %>%
-  droplevels() %>%
-  MOSLR::plot_perf_graph(
+  MOSLR::mps_plot_perf_graph(
     data = ., 
-    include.iprp = active.iprp,
+    load.data = FALSE,
+    melt.data = TRUE,
+    Standard = MPS_CHUNK,
+    TradParty = TRADING.PARTY,
+    filter.date.from = data.period %m-% months(11),
+    filter.date.to = data.period, 
+    action.points = TRUE,
+    include.iprp = on.iprp,
     graph.title = MPS_CHUNK,
-    sub.title = MPS_details$Context[MPS_details$MPS == MPS_CHUNK]
-    )
+    sub.title = MPS_details$Context[MPS_details$MPS == MPS_CHUNK],
+    x.lab = "Performance"
+    ) +
+  ggplot2::theme(
+    text = ggplot2::element_text(size = 15)
+  )
 
-plot(graph)
+tryCatch(
+  expr = {
+    plot(graph)
+    },
+  error = function(e){
+    message("Error printing MPS performance graph")
+    print(e)
+  }
+  )
 
 ```
 
-`r SHORT.NAME` have had no IPRPs issued for this standard over the last 12-months. The table below shows recent MOSL actions and rationale regarding this standard.
+`r MPS_CHUNK` has had:
 
-`r SHORT.NAME` have had no performance issues flagged for this standard over the last 12-months. 
+* `r perf_status_mps_temp$SumPerf3m[perf_status_mps_temp$MPS == MPS_CHUNK]` performance flags
+* `r perf_status_mps_temp$CumWatch[perf_status_mps_temp$MPS == MPS_CHUNK]` watch flags
 
+`r if (on.iprp) { paste0(MPS_CHUNK, " is currently on an IPRP. See below for further details.") } else { paste0(MPS_CHUNK, " is not on an IPRP.") }`
 
-The table below shows the PFM commentary received by MOSL.
-There is no PFM commentary associated with this standard.
+<br> 
 
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE} 
+
+RATIONALE_CHUNK <- nrow(perf_status_mps %>% dplyr::filter(Trading.Party.ID == TRADING.PARTY, MPS == MPS_CHUNK, Action != "")) > 0
+
+PFM_COMM_CHUNK <- nrow(perf_status_mps %>% dplyr::filter(Trading.Party.ID == TRADING.PARTY, MPS == MPS_CHUNK, !is.na(PFM_Commentary), PFM_Commentary != "")) > 0
+
+```
+
+`r if (RATIONALE_CHUNK) { paste0("The table below shows the rationale for MOSL actions regarding ",  paste0(MPS_CHUNK), ".") }`
+
+``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis", eval = RATIONALE_CHUNK}
+
+perf_status_mps %>%
+  dplyr::filter(
+    Trading.Party.ID == TRADING.PARTY,
+    MPS == MPS_CHUNK,
+    Action != ""
+    ) %>%
+  dplyr::select(
+    Date, Action, Rationale
+    ) %>%
+  dplyr::mutate(
+    Date = format(Date, "%Y-%m")
+    ) %>%
+  kableExtra::kable(
+    format = "latex", 
+    caption = "Rationale for Recent MOSL Actions",
+    linesep = "",
+    longtable = TRUE, 
+    booktabs = TRUE
+    ) %>%
+  kableExtra::column_spec(3, width = "10cm") %>%
+  kableExtra::kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      #full_width = TRUE,
+      "striped"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
+
+```
+
+<br> 
+
+`r if (PFM_COMM_CHUNK) { paste0("The table below shows the commentary MOSL has received from Portfolio Managers regarding ",  paste0(MPS_CHUNK), ".") }`
+
+``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis", eval = PFM_COMM_CHUNK}
+
+perf_status_mps %>%
+  dplyr::filter(
+    Trading.Party.ID == TRADING.PARTY,
+    MPS == MPS_CHUNK,
+    !is.na(PFM_Commentary), 
+    PFM_Commentary != ""
+    ) %>%
+  dplyr::select(
+    Date, PFM_Commentary
+    ) %>%
+  dplyr::mutate(
+    Date = format(Date, "%Y-%m")
+    ) %>%
+  kableExtra::kable(
+    format = "latex", 
+    caption = "Rationale for Recent MOSL Actions",
+    linesep = "",
+    longtable = TRUE, 
+    booktabs = TRUE,
+    col.names = c("Date", "Portfolio Manager Commentary")
+    ) %>%
+  kableExtra::column_spec(2, width = "12cm") %>%
+  kableExtra::kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
+
+```
+
+<br> 
+
+`r if (on.iprp) { paste0("A summary of ", SHORT.NAME, "'s performance against its IPRP is shown in the table below.") }`
+
+``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis", eval = on.iprp}
+
+perf_status_mps %>%
+  dplyr::filter(
+    Trading.Party.ID == TRADING.PARTY,
+    MPS == MPS_CHUNK,
+    ) %>%
+  dplyr::select(
+    Date, TaskCompletion, Planned_Perf, DeltaQuant, Status
+    ) %>%
+  tidyr::drop_na() %>%
+  dplyr::mutate(
+    Date = format(Date, "%Y-%m"),
+    TaskCompletion = format(TaskCompletion, digits = 2),
+    DeltaQuant = format(DeltaQuant * 100, digits = 2)
+    ) %>%
+  kableExtra::kable(
+    format = "latex", 
+    caption = "IPRP Performance Tracking",
+    linesep = "",
+    longtable = TRUE, 
+    booktabs = TRUE,
+    col.names = c("Date", "Actual Performance", "Planned Performance", "Difference (%)", "IPRP Status"),
+    align = rep("c", 5)
+    ) %>%
+  kableExtra::column_spec(1:5, width = "2.5cm") %>%
+  kableExtra::kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
+
+```
+
+<br> 
+
+`r if (on.iprp) { paste0("For this plan there have been:") }`
+
+`r if (on.iprp) { paste0("* ",  perf_status_mps_temp$CumResubmit[perf_status_mps_temp$MPS == MPS_CHUNK], " resubmission(s)") }`
+`r if (on.iprp) { paste0("* ",  sum(perf_status_mps_temp$UnderReview[perf_status_mps_temp$MPS == MPS_CHUNK]), " review(s)") }`

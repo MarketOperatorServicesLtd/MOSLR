@@ -18,39 +18,44 @@
 
 mps_data_prep <- function(
   my.dir = getwd(),
-  mps.data = paste0(my.dir, "/data/inputs/MPS_data.csv"),
-  mps.thresholds = paste0(my.dir, "/data/inputs/mps_thresholds.csv"),
+  mps.data = utils::read.csv(paste0(my.dir, "/data/inputs/MPS_data.csv")),
+  mps.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/mps_thresholds.csv")),
   csv.outputs = paste0(my.dir, "/data/outputs"),
-  rda.outputs = paste0(my.dir, "/data/rdata")
+  rda.outputs = paste0(my.dir, "/data/rdata"),
+  save.output = TRUE
   ) {
 
   # Importing raw data ------------------------------------------------------
 
-
-  mps_data <- utils::read.csv(mps.data)
-  mps_thresholds <- utils::read.csv(mps.thresholds)
+  mps_data <- mps.data
+  mps_thresholds <- mps.thresholds
 
 
   # Importing and cleaning MPS data -----------------------------------------
 
   mps_data_clean <- mps_data %>%
-    dplyr::mutate(
-      Date = as.Date(Date, format = "%d/%m/%Y"),
-      TaskCompletion = (Number.of.tasks.completed.on.time / Total.number.of.tasks.compeleted.within.Period)
-    ) %>%
     dplyr::rename(
       Charges = Total.Performance.Charge.Value,
       TaskVolume = Total.number.of.tasks.compeleted.within.Period,
-      MPS = Market.Performance.Standard.No.
-    ) %>%
+      MPS = Market.Performance.Standard.No.,
+      OnTimeTasks = Number.of.tasks.completed.on.time
+      ) %>%
+    dplyr::mutate(
+      Date = as.Date(Date, format = "%d/%m/%Y"),
+      TaskCompletion = OnTimeTasks / TaskVolume
+      ) %>%
+    dplyr::arrange(
+      Date, Trading.Party.ID, MPS
+      ) %>%
     dplyr::select(
       Date,
       Trading.Party.ID,
       MPS,
       TaskCompletion,
       TaskVolume,
-      Charges
-    ) %>%
+      Charges,
+      OnTimeTasks
+      ) %>%
     dplyr::left_join(
       mps_thresholds,
       by = c("MPS")
@@ -74,18 +79,19 @@ mps_data_prep <- function(
       MPS_Mean = mean(TaskCompletion, na.rm = TRUE),
       MPS_Median = median(TaskCompletion, na.rm = TRUE),
       TotalTaskVolume = sum(TaskVolume)
-    ) %>%
+      ) %>%
     dplyr::arrange(MPS, Date) %>%
     dplyr::ungroup()
 
-  utils::write.csv(mps_summary, file = paste0(csv.outputs, "/mps_summary.csv"))
-  saveRDS(mps_summary, file = paste0(rda.outputs, "/mps_summary.Rda"))
-
-
-  mps_data_clean <- dplyr::left_join(mps_summary, mps_data_clean, by = c("Date", "MPS")) %>%
+  mps_data_clean <-
+    dplyr::left_join(
+      mps_summary,
+      mps_data_clean,
+      by = c("Date", "MPS")
+      ) %>%
     dplyr::mutate(
       TaskShare = TaskVolume / TotalTaskVolume,
-      BelowPeer = if_else (
+      BelowPeer = dplyr::if_else (
         mps_threshold > 0,
         TaskCompletion < mps_threshold,
         TaskCompletion < MPS_Mean
@@ -93,8 +99,11 @@ mps_data_prep <- function(
       key = as.factor(paste(Trading.Party.ID, MPS))
     )
 
-  utils::write.csv(mps_data_clean, paste0(csv.outputs, "/MPS_data_clean.csv"))
-  saveRDS(mps_data_clean, file = paste0(rda.outputs, "/mps_data_clean.Rda"))
+  if (save.output) {
+    saveRDS(mps_summary, file = paste0(rda.outputs, "/mps_summary.Rda"))
+    utils::write.csv(mps_data_clean, paste0(csv.outputs, "/MPS_data_clean.csv"))
+    saveRDS(mps_data_clean, file = paste0(rda.outputs, "/mps_data_clean.Rda"))
+    }
 
   invisible(mps_data_clean)
 

@@ -1,8 +1,8 @@
 
-#' Render Rmarkdown Monthly Performance Report
+#' Render Performance Report
 #'
 #' This function renders the Monthly Performance Report
-#' using the relevant .Rmd file.
+#' to be shared with MPC.
 #'
 #' @param dir character
 #' @param dir.output character
@@ -17,7 +17,7 @@
 #'
 #' @examples
 
-render_monthly_perf_rep <- function(
+render_PERF_report <- function(
   rmd.file = "MonthlyPerformanceReport.Rmd",
   dir = getwd(),
   dir.output = paste0(dir, "/MonthlyPerfReport"),

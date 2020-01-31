@@ -25,49 +25,17 @@ header-includes:
 - \usepackage{multirow}
 - \pagestyle{fancy}
 - \fancyhf{}
-- \lfoot{MOSL Portfolio Manager Report}
+- \lfoot{MOSL Performance Report}
 - \rhead{\includegraphics[width=6cm]{mosl_header.png}}
 - \rfoot{Page \thepage}
 classoption: table
 ---
 
-```{r global_options, include = FALSE} 
-
-knitr::opts_chunk$set(
-  fig.width = 12, 
-  fig.height = 7, 
-  fig.path = 'Figs/',
-  echo = FALSE, 
-  warning = FALSE, 
-  message = FALSE
-  )
-
-```
-
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
-
-mps_data_clean_temp <- mps_data_clean %>% 
-  dplyr::filter(Trading.Party.ID == TRADING.PARTY) %>%
-  droplevels()
-
-mps_data_melt_temp <- mps_data_melt %>%
-  dplyr::filter(Trading.Party.ID == TRADING.PARTY) %>%
-  droplevels()
-
-perf_status_mps_temp <- perf_status_mps %>%
-  dplyr::filter(
-    Trading.Party.ID == TRADING.PARTY,
-    Date == data.period
-    ) %>%
-  droplevels()
-
-```
-
 # Market Performance Standards
 
 ## Performance Charges
 
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
 
 mps_data_clean_temp %>%
   dplyr::select(
@@ -79,7 +47,7 @@ mps_data_clean_temp %>%
   ggplot2::geom_bar(stat = "identity") + 
   ggplot2::theme(
     legend.title = ggplot2::element_blank(),
-    text = ggplot2::element_text(size = 20)
+    text = ggplot2::element_text(size = 15)
     ) +
   ggplot2::scale_y_continuous(
     labels = scales::comma,
@@ -87,7 +55,7 @@ mps_data_clean_temp %>%
     ) +
   ggplot2::labs(
     title = "Performance Charges",
-    subtitle = "Breakdown of by month and standard",
+    subtitle = "Breakdown by month and standard",
     caption = "Source: MOSL"
     ) +
   ggplot2::ylab("Charges (£)") + ggplot2::xlab("")
@@ -100,7 +68,7 @@ mps_data_clean_temp %>%
 
 mps_data_clean_temp %>%
   dplyr::filter(
-    Date >= max(mps_data_clean_temp$Date) %m-% months(12)
+    Date >= max(mps_data_clean_temp$Date) %m-% months(11)
     ) %>%
   dplyr::select(Date, MPS, Charges) %>%
   dplyr::mutate(Date = format(Date, "%Y-%m")) %>% 
@@ -109,100 +77,221 @@ mps_data_clean_temp %>%
     Total = rowSums(dplyr::select(., -Date), na.rm = TRUE)
     ) %>%
   kableExtra::kable (
-    format = "markdown", 
+    format = "latex", 
     caption = "Breakdown of Charges by MPS", 
     linesep = "",
-    format.args = list(big.mark = ",")
-    )
+    format.args = list(big.mark = ","),
+    booktabs = TRUE,
+    align = "c"
+    ) %>%
+  kableExtra::kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      position = "center", 
+      full_width = FALSE,
+      "scale_down"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
+
 
 ```
 
 ## On-Time Task Completion
 
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
+
+
+rect_df <- data.frame(
+  xmin = rep(min(mps_data_clean_temp$Date), 4), 
+  xmax = rep(max(mps_data_clean_temp$Date), 4), 
+  ymin = c(0.9, 0.8, 0.7, 0), 
+  ymax = c(1, 0.9, 0.8, 0.7), 
+  cat = 
+    factor(
+      c("Very good", "Good", "Poor", "Very poor"), 
+      levels = c("Very good", "Good", "Poor", "Very poor")
+      )
+  )
 
 mps_data_clean_temp %>%
-  dplyr::select(
-    Trading.Party.ID, Date, MPS, Charges
+  dplyr::left_join(
+    dplyr::filter(
+      dplyr::select(
+        mps_sum_TradingParties, 
+        Trading.Party.ID, Date, 
+        Agg_Perf_roll
+        ), 
+      Trading.Party.ID == TRADING.PARTY
+      ),
+    by = c("Date")
     ) %>%
-  ggplot2::ggplot(
-    ggplot2::aes(x = Date, y = Charges, fill = MPS)
-    ) + 
-  ggplot2::geom_bar(stat = "identity") + 
+  dplyr::mutate(
+    MPS = factor(
+        MPS,
+        levels = c(
+          "MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 5", "MPS 6", "MPS 7",
+          "MPS 8", "MPS 9", "MPS 10", "MPS 12", "MPS 13", "MPS 14",
+          "MPS 15", "MPS 16", "MPS 17", "MPS 18", "MPS 19"
+          )
+        )
+    ) %>%
+  droplevels() %>%
+  ggplot2::ggplot() + 
+  ggplot2::geom_line(
+    ggplot2::aes(
+      x = Date, 
+      y = TaskCompletion, 
+      colour = MPS
+      )
+    ) +
+  ggplot2::geom_line(
+    ggplot2::aes(
+      x = Date, 
+      y = Agg_Perf_roll,
+      colour = "Agg. Performance"
+      ),
+    linetype = "dashed",
+    size = 1
+    ) +
+  ggplot2::geom_rect(
+      data = rect_df, 
+      ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = cat), 
+      alpha = 0.1
+      ) +
+    ggplot2::scale_fill_manual(
+      values = c("green4", "greenyellow", "orange1", "orangered1")
+      ) +
   ggplot2::theme(
     legend.title = ggplot2::element_blank(),
-    text = ggplot2::element_text(size = 20)
+    text = ggplot2::element_text(size = 15)
     ) +
   ggplot2::scale_y_continuous(
-    labels = scales::comma,
     breaks = scales::pretty_breaks(4)
     ) +
   ggplot2::labs(
-    title = "Performance Charges",
-    subtitle = "Breakdown of by month and standard",
-    caption = "Source: MOSL"
+    title = paste0("MPS On-Time Task Completion: ", SHORT.NAME),
+    subtitle = "Breakdown by month and standard",
+    caption = "Source: MOSL\nNote: Aggregate performance corresponds to the 6-month average of aggregate MPS performance"
     ) +
-  ggplot2::ylab("Charges (£)") + ggplot2::xlab("")
+  ggplot2::ylab("") + ggplot2::xlab("")
 
 ```
 
-```{r echo = FALSE, results = "asis"}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
 mps_data_clean_temp %>% 
   dplyr::filter(
     Date >= max(mps_data_clean_temp$Date) %m-% months(12)
     ) %>%
+  dplyr::mutate(
+    TaskCompletion = format(TaskCompletion, digits = 2),
+    Date = format(Date, "%Y-%m")
+    ) %>%
   dplyr::select(
     Date, MPS, TaskCompletion
-    ) %>% 
-  dplyr::mutate(
-    TaskCompletion = format(TaskCompletion, digits = 2)
     ) %>%
   tidyr::spread(key = MPS, value = TaskCompletion) %>%
   kableExtra::kable(
-    format = "markdown", 
+    format = "latex", 
     caption = "MPS Performance by Month",
     linesep = "",
-    format.args = list(big.mark = ",")
-    )
+    format.args = list(big.mark = ","),
+    booktabs = TRUE,
+    align = "c"
+    ) %>%
+  kableExtra::kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      position = "center", 
+      full_width = FALSE,
+      "scale_down"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
+
+```
+
+`r SHORT.NAME`'s 6-month average aggregate MPS performance is `r format(mps_sum_TradingParties_temp$Agg_Perf_roll, digits = 2)`, which currently ranks as:
+
+* `r scales::ordinal(mps_sum_TradingParties_temp$rank_all)` out of `r mps_sum_TradingParties_temp$n_all` for all Trading Parties
+* `r scales::ordinal(mps_sum_TradingParties_temp$rank_type)` out of `r paste0(mps_sum_TradingParties_temp$n_type, " ", mps_sum_TradingParties_temp$tp_type)`s
+* `r scales::ordinal(mps_sum_TradingParties_temp$rank_subtype)` out of `r mps_sum_TradingParties_temp$n_subtype` trading parties with licence type `r mps_sum_TradingParties_temp$sub_type`
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 6}
+
+mps_sum_TradingParties %>%
+  dplyr::filter(
+    sub_type == as.character(mps_sum_TradingParties_temp$sub_type),
+    Date == data.period
+    ) %>%
+  ggplot2::ggplot() +
+  ggplot2::geom_bar(
+    ggplot2::aes(
+      x = reorder(ShortName, Agg_Perf_roll), 
+      y = Agg_Perf_roll,
+      fill = dplyr::if_else(Trading.Party.ID == TRADING.PARTY, "highlight", "normal")
+      ), 
+    stat = "identity",
+    show.legend = FALSE) +
+  ggplot2::scale_fill_manual(values = c("grey4", "azure4")) +
+  ggplot2::coord_flip() +
+  ggplot2::theme(
+    text = ggplot2::element_text(size = 15)
+    ) +
+  ggplot2::labs(
+    title = "Ranking of Aggregate MPS Performance",
+    subtitle = 
+      paste0(
+        "6-month mean of aggregate MPS performance by Trading Party (", 
+        mps_sum_TradingParties$sub_type, ")"
+        ),
+    caption = "Source: MOSL"
+    ) +
+  ggplot2::ylab("") + ggplot2::xlab("")
 
 ```
 
 ## Performance Issues
 
-At the beginning of this period, `r SHORT.NAME` had:
+At the beginning of the period (`r format(data.period, "%Y-%m")`), `r SHORT.NAME` had `r nrow(perf_status_mps_temp)` standards being monitored by MOSL. A summary of each standard is shown in the table below: 
 
-* `r sum(perf_status_mps_temp$ActiveIPRP, na.rm = TRUE)` performance issue(s) on an active IPRP
-* `r sum(perf_status_mps_temp$Pending, na.rm = TRUE)` performance issue(s) on an IPRP but MOSL is awaiting further details of the plan(s)
-* `r sum(perf_status_mps_temp$UnderReview, na.rm = TRUE)` performance issue(s) being reviewed by MOSL for an IPRP or an extension of an IPRP
-* `r sum(perf_status_mps_temp$IPRPend, na.rm = TRUE)` performance issue(s) that reached the end of a plan
-
-Of the performance issue(s) on an active IPRP:
-
-* `r sum(perf_status_mps_temp$MilestoneFlag, na.rm = TRUE)` are underperforming versus the milestones contained in the plan
-
-Of those performance standards not on an IPRP or under a review:
-
-* `r sum(perf_status_mps_temp$PerfFlag3m & !(perf_status_mps_temp$ActiveIPRP | perf_status_mps_temp$Pending | perf_status_mps_temp$UnderReview), na.rm = TRUE)` were flagged for poor performance
-
-In this period, `r SHORT.NAME` has:
-
-``` {r echo = FALSE}
+``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
 perf_status_mps_temp %>%
-  dplyr::select(MPS, Action, ActiveIPRP, PerfFlag3m) %>%
+  dplyr::select(
+    MPS, SecondaryCategory, Consistency, PerfRating, Status, Action
+    ) %>%
   kableExtra::kable(
-    format = "markdown", 
-    caption = "Summary of recent flags and actions",
-    linesep = ""
-  )
+    format = "latex", 
+    caption = "Current MPS Categorisation and MOSL Actions",
+    linesep = "",
+    booktabs = TRUE,
+    col.names = c("MPS", "Category", "Consistency", "Performance Rating", "IPRP Status", "MOSL Action"),
+    align = c("llcccc")
+    ) %>%
+  kableExtra::column_spec(4:6, width = "2.5cm") %>%
+  kableExtra::kable_styling(
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      position = "center", 
+      full_width = FALSE,
+      "scale_down"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
 
 ```
 
-Where an Action is recorded as “Watch”, the performance issue will be added to MOSL’s watch-list of performance issues. Any performance issue(s) on the watch-list will be closely monitored for improvement each month until it is removed from the list. If the issue is not resolved, then it could be escalated to an IPRP. 
-`r paste(SHORT.NAME)` had X performance issues on watch at the beginning of CURRENT-MONTH, covering: MPS 2 and MPS 16. Of these:
-
-See section Z for more information on each MPS, including further commentary (if applicable) on the above performance issues, historical performance and any IPRPs currently active. 
+<br>
 
 ## MPS Analysis
 
@@ -210,9 +299,11 @@ As part of its analysis of historical MPS performance, MOSL categorises performa
 
 See Appendix I for further information of how MOSL categorises MPS performance. 
 
-```{r, echo = FALSE, results = "asis"}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
-res <- lapply(unique(as.character(mps_data_clean_temp$MPS)), function (MPS_CHUNK) {
+mps_list <- unique(as.character(perf_status_mps_temp$MPS))
+
+res <- lapply(mps_list, function (MPS_CHUNK) {
   
   knitr::knit_child(
     "pfm_report_mps_template.Rmd", envir = environment(), quiet = TRUE
@@ -226,74 +317,107 @@ cat(unlist(res), sep = "\n")
 
 ## MPS Market Aggregates
 
-### Mean peer performance
-
-```{r echo = FALSE, results = "asis"}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
 mps_summary %>% 
   dplyr::select(
     Date, MPS, MPS_Mean
     ) %>% 
   dplyr::filter(
-    Date >= Sys.Date() %m-% months(12)
+    Date >= data.period %m-% months(11)
     ) %>% 
+  dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
   tidyr::spread(MPS, MPS_Mean) %>%
   kableExtra::kable(
-    format = "markdown", 
+    format = "latex", 
     caption = "Mean peer performance", 
-    booktabs = TRUE, 
     linesep = "",
     digits = 1,
-    format.args = list(decimal.mark = ".", big.mark = ",")
-    ) 
+    format.args = list(decimal.mark = ".", big.mark = ","),
+    booktabs = TRUE,
+    align = "c"
+    ) %>%
+  kableExtra::kable_styling(
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      "scale_down"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
 
 ```
 
-### Median peer performance
+<br>
 
-```{r echo = FALSE, results = "asis"}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
 mps_summary %>% 
   dplyr::select(
     Date, MPS, MPS_Median
     ) %>% 
   dplyr::filter(
-    Date >= Sys.Date() %m-% months(12)
+    Date >= data.period %m-% months(11)
     ) %>% 
+  dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
   tidyr::spread(MPS, MPS_Median) %>%
   kableExtra::kable(
-    format = "markdown", 
+    format = "latex", 
     caption = "Median peer performance", 
-    booktabs = TRUE, 
     linesep = "",
     digits = 1,
-    format.args = list(decimal.mark = ".", big.mark = ",")
-    ) 
+    format.args = list(decimal.mark = ".", big.mark = ","),
+    booktabs = TRUE,
+    align = "c"
+    ) %>%
+  kableExtra::kable_styling(
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      "scale_down"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
 
 ```
 
-### Aggregate task volumes
+<br>
 
-```{r echo = FALSE, results = "asis"}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
 mps_summary %>% 
   dplyr::select(
     Date, MPS, TotalTaskVolume
     ) %>% 
   dplyr::filter(
-    Date >= Sys.Date() %m-% months(12)
+    Date >= data.period %m-% months(11)
     ) %>% 
+  dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
   tidyr::spread(MPS, TotalTaskVolume) %>%
   kableExtra::kable(
-    format = "markdown", 
+    format = "latex", 
     caption = "Total Task Volume", 
-    booktabs = TRUE, 
     linesep = "",
     digits = 1,
-    format.args = list(decimal.mark = ".", big.mark = ",")
-    ) 
+    format.args = list(decimal.mark = ".", big.mark = ","),
+    booktabs = TRUE,
+    align = "c"
+    ) %>%
+  kableExtra::kable_styling(
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      "scale_down"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
 
 ```
+
+\newpage
 
 # Appendix
 

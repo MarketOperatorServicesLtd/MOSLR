@@ -1,5 +1,5 @@
 
-#' Plot Performance Graph
+#' Plot Performance Graph (MPS)
 #'
 #' This function produces a grasph with two #' independent
 #' axis. The left-handside corresponds to a single variable
@@ -15,15 +15,31 @@
 #' @param graph.title character
 #' @param fill.label character
 #' @param sub.title character
+#' @param my.dir character
+#' @param load.data logical
+#' @param melt.data logical
+#' @param TradParty character
+#' @param Standard character
+#' @param filter.date.from date
+#' @param filter.date.to date
+#' @param action.points logical
 #'
 #' @return
 #' @export
 #'
 #' @examples
 
-plot_perf_graph <- function(
-  data,
+mps_plot_perf_graph <- function(
+  my.dir = getwd(),
+  data = NULL,
+  load.data = TRUE,
+  melt.data = TRUE,
   include.iprp = FALSE,
+  TradParty,
+  Standard,
+  filter.date.from = "2018-04-01",
+  filter.date.to = Sys.Date(),
+  action.points = FALSE,
   sec.axis.name = "",
   fill.label = "Task Volume",
   fill.manual = "azure3",
@@ -35,7 +51,7 @@ plot_perf_graph <- function(
 
   if (is.null(graph.title)) {
 
-    graph_title <- data$MPS }
+    graph_title <- Standard }
 
   else {
 
@@ -68,7 +84,117 @@ plot_perf_graph <- function(
 
     }
 
-  graph <- data %>%
+
+  if (is.null(data)) {
+
+  if (load.data) {
+
+    my_dir = my.dir
+
+    data <- readRDS(paste0(my_dir, "/data/rdata/perf_status_mps.Rda")) %>%
+      dplyr::filter(
+        Trading.Party.ID == TradParty,
+        MPS == Standard,
+        Date >= filter.date.from,
+        Date <= filter.date.to,
+        TaskVolume > 0
+      ) %>%
+      dplyr::select(
+        Date,
+        Trading.Party.ID,
+        MPS,
+        key,
+        TaskCompletion,
+        TaskVolume,
+        MPS_Mean,
+        MPS_Median,
+        TaskShare,
+        Planned_Perf,
+        Action
+      )
+
+
+  } else {
+
+    data <- MOSLR::mps_process_tracker(
+      my.dir = my_dir,
+      keep.vars = TRUE,
+      save.output = FALSE
+      ) %>%
+      dplyr::filter(
+        Trading.Party.ID == TradParty,
+        MPS == Standard,
+        Date >= filter.date.from,
+        Date <= filter.date.to,
+        TaskVolume > 0
+      ) %>%
+      dplyr::select(
+        Date,
+        Trading.Party.ID,
+        MPS,
+        key,
+        TaskCompletion,
+        TaskVolume,
+        MPS_Mean,
+        MPS_Median,
+        TaskShare,
+        Planned_Perf,
+        Action
+      )
+    }
+  } else {
+
+    data <- data %>%
+      dplyr::filter(
+        Trading.Party.ID == TradParty,
+        MPS == Standard,
+        Date >= filter.date.from,
+        Date <= filter.date.to,
+        TaskVolume > 0
+        ) %>%
+      dplyr::select(
+        Date,
+        Trading.Party.ID,
+        MPS,
+        key,
+        TaskCompletion,
+        TaskVolume,
+        MPS_Mean,
+        MPS_Median,
+        TaskShare,
+        Planned_Perf,
+        Action
+      )
+
+  }
+
+
+  if (melt.data) {
+
+    data_melt <- data %>%
+      tidyr::gather(
+        key = "variable",
+        value = "value",
+        TaskCompletion, MPS_Mean, MPS_Median, TaskShare, Planned_Perf
+        ) %>%
+      dplyr::mutate(
+        TaskVolume =
+          dplyr::if_else (
+            variable %in%
+              c("MPS_Mean", "MPS_Median", "Planned_Perf", "TaskShare"),
+            0, as.double(TaskVolume)
+          ),
+        variable = factor(variable, levels = c("TaskCompletion", "MPS_Mean", "MPS_Median", "TaskShare", "Planned_Perf"))
+      )
+
+  } else {
+
+    melt_data <- data
+
+    }
+
+
+  graph <- data_melt %>%
     tidyr::drop_na(value) %>%
     droplevels() %>%
     {if (!include.iprp) {
@@ -149,6 +275,34 @@ plot_perf_graph <- function(
       title = graph_title,
       subtitle = sub.title
     )
+
+
+  if (action.points) {
+
+    actions <- data %>%
+      dplyr::select(Date, Action, TaskCompletion) %>%
+      dplyr::filter(Action != "")
+
+    graph <- graph +
+      ggrepel::geom_label_repel(
+        data = actions,
+        ggplot2::aes(
+          x = Date,
+          y = TaskCompletion * max(data$TaskVolume),
+          label = Action
+          ),
+        size = 4,
+        alpha = 0.7
+        ) +
+      ggplot2::geom_point(
+        data = actions,
+        ggplot2::aes(
+          x = Date,
+          y = TaskCompletion * max(data$TaskVolume)
+          )
+        )
+  }
+
 
   return(graph)
 

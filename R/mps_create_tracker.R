@@ -5,14 +5,14 @@
 #' by MPS and compares IPRP performance versus planned milestones.
 #' This is done prior to analysis and Pfm commentary being added.
 #'
-#' @param mps_list character
 #' @param rda.outputs character
 #' @param dir.mps.tracking character
 #' @param my.dir character
 #' @param period date
 #' @param period.only logical
-#' @param save.output  logical
+#' @param save.output logical
 #' @param keep.vars logical
+#' @param iprp.list character
 #'
 #' @return
 #' @export
@@ -21,21 +21,21 @@
 #'
 #' @examples
 
-create_monthly_tracker <- function(
+mps_create_tracker <- function(
   period = Sys.Date() %m-% months(1),
-  mps_list =
-    c("MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 5", "MPS 7",
-      "MPS 12", "MPS 16", "MPS 17", "MPS 18"
-      ),
   my.dir = getwd(),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   dir.mps.tracking = paste0(my.dir, "/data/tracking/mps"),
   period.only = TRUE,
   save.output = TRUE,
-  keep.vars = FALSE
+  keep.vars = FALSE,
+  iprp.list = NULL,
+  filter.category = c("IPRP: on-track", "Performance normal")
   ) {
 
 # Setting parameters ------------------------------------------------------
+
+  period <- as.Date(period)
 
   lubridate::day(period) <- 1
 
@@ -44,13 +44,20 @@ create_monthly_tracker <- function(
     } else {
       var_list <-
         c(
-        "Date", "Category", "Trading.Party.ID", "MPS", "Action",
+        "Date", "SecondaryCategory", "Trading.Party.ID", "MPS", "Action",
         "Rationale", "PFM_Commentary", "ActiveIPRP", "IPRPend",
         "MilestoneFlag", "PerfFlag3m", "PerfFlag6m", "OnWatch",
         "OnWatchIPRPend",  "Consistency", "PerfRating"
         )
       }
 
+  if (is.null(iprp.list)) {
+    iprp_list <- c("MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 7",
+                   "MPS 12", "MPS 16", "MPS 17", "MPS 18"
+                   )
+    } else {
+      iprp_list <- iprp.list
+      }
 
 # Importing data ----------------------------------------------------------
 
@@ -64,18 +71,17 @@ create_monthly_tracker <- function(
       Trading.Party.ID, MPS
       ) %>%
     dplyr::mutate(
-      PlanEndDate = max(Date),
-      IPRPend = PlanEndDate == Date
+      PlanEndDate = max(Date)
       ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   tracking_sheet <- utils::read.csv(paste0(my.dir, "/data/inputs/tracking_mps.csv")) %>%
     dplyr::mutate(
-      Date = as.Date(Date, format = "%d/%m/%Y"),
+      Date = as.Date(Date, format = "%d/%m/%Y") %m-% months(-1),
       key = as.factor(paste(Trading.Party.ID, MPS))
       ) %>%
     dplyr::select(
-      Date, Action, key
+      Date, Action, key, Template_Sent, Response_Received
     )
 
 
@@ -91,20 +97,27 @@ create_monthly_tracker <- function(
       by = c("Date", "key")
       ) %>%
     dplyr::mutate(
+      Action = tolower(Action),
       Delta = TaskCompletion - Planned_Perf,
       DeltaQuant = Delta / Planned_Perf,
-      MilestoneFlag = TaskCompletion < Planned_Perf,
       TaskCompletion = as.numeric(format(TaskCompletion, digits = 1)),
       Planned_Perf = as.numeric(format(Planned_Perf, digits = 1)),
-      Status = case_when(
+      Status = dplyr::case_when(
         (DeltaQuant > 0.05) ~ "Outperform",
         (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ "OnTrack",
         (DeltaQuant < -0.05) ~ "OffTrack"
         ),
+      OnWatch = Action == "watch",
+      OnWatchIPRPend = Action == "de-escalate" | Action == "watch_iprpend",
+      MilestoneFlag = TaskCompletion < Planned_Perf,
+      IPRPend = PlanEndDate == Date,
+      Pending = Template_Sent != "" & Response_Received == "",
+      UnderReview =
+        Action == "review" | Action == "re-submit" | Action == "extend" | Action == "escalate",
       ActiveIPRP = !is.na(Status),
-      MilestoneFlag = Status == "OffTrack",
-      OnWatch = Action == "Watch",
-      OnWatchIPRPend = (Action == "De-escalate" | Action == "IPRP_end")
+      InactiveIPRP = IPRPend | Pending | (UnderReview & !ActiveIPRP),
+      IPRP = ActiveIPRP | InactiveIPRP,
+      IPRPeligible = MPS %in% iprp_list
       ) %>%
     droplevels() %>%
     dplyr::arrange(Trading.Party.ID, MPS, Date) %>%
@@ -129,23 +142,36 @@ create_monthly_tracker <- function(
           rolling.mean < 0.8 & rolling.mean >= 0.7 ~ "Poor",
           rolling.mean < 0.7 ~ "Very Poor",
           TRUE ~ "Insufficient data"
-        )
+          ),
+      SumPerf3m = tidyr::replace_na(zoo::rollapply(PerfFlag3m, 12, sum, align = "right", fill = NA), 0),
+      SumPerf6m = tidyr::replace_na(zoo::rollapply(PerfFlag6m, 12, sum, align = "right", fill = NA), 0)
       ) %>%
     dplyr::ungroup() %>%
+    dplyr::mutate_if(is.logical, ~tidyr::replace_na(., FALSE)) %>%
     dplyr::mutate(
-      Category =
-      case_when(
-        OnWatch ~ "Watch_list",
-        #PerfFlag6m ~ "Performance_Trigger_6m",
-        PerfFlag3m ~ "Performance_Trigger_3m",
-        MilestoneFlag ~ "Milestone_Trigger",
-        IPRPend ~ "IPRP_end",
-        OnWatchIPRPend ~ "IPRP_end_watch",
-        TRUE ~ "None"
+      PrimaryCategory =
+        dplyr::case_when(
+          !IPRP ~ "Performance Monitoring",
+          IPRP ~ "Performance Resolution"
         ),
+      SecondaryCategory =
+        dplyr::case_when(
+          OnWatch ~ "Watch: performance",
+          OnWatchIPRPend ~ "Watch: IPRP end",
+          !IPRP & !OnWatch & PerfFlag6m & !PerfFlag3m ~ "Performance flag: 6 month",
+          !IPRP & !OnWatch & PerfFlag3m ~ "Performance flag: 3 month",
+          ActiveIPRP & MilestoneFlag ~ "IPRP: off-track",
+          ActiveIPRP & !MilestoneFlag ~ "IPRP: on-track",
+          IPRPend ~ "IPRP: end",
+          IPRP & UnderReview ~ "IPRP: under review",
+          TRUE ~ "Normal monitoring"
+          ),
       Action = "tbd",
       Rationale = "tbd",
       PFM_Commentary = "tbd"
+      ) %>%
+    dplyr::filter(
+      !(SecondaryCategory %in% filter.category)
       ) %>%
     {if (!keep.vars) {
       dplyr::select(., var_list)

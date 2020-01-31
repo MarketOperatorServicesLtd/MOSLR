@@ -17,7 +17,7 @@
 #'
 #' @examples
 
-melt_mps_data <- function(
+mps_melt_data <- function(
   my.dir = getwd(),
   mps.data = readRDS(paste0(my.dir, "/data/rdata/mps_data_clean.Rda")),
   filter.date.from = "2018-04-01",

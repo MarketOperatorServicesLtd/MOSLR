@@ -28,4 +28,5 @@ Imports:
     ggplot2,
     stringr,
     scales,
-    zoo
+    zoo,
+    ggrepel
