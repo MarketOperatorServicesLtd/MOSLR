@@ -80,7 +80,9 @@ render_PFM_report <- function(
   if (is.null(tp.list)) {
 
     render_list <- mps_data_clean %>%
-      dplyr::filter(!Trading.Party.ID %in% excluded.list) %>%
+      dplyr::filter(
+        !(Trading.Party.ID %in% excluded.list)
+        ) %>%
       dplyr::select(Trading.Party.ID) %>%
       droplevels() %>%
       dplyr::mutate(

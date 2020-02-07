@@ -11,8 +11,6 @@ render_PFM_report(
   load.data = TRUE,
   excluded.list = NULL,
   rmd.file = "MonthlyPfmReport_pdf.Rmd",
-  output.file = paste0(TRADING.PARTY, "_pfm-report_", format(Sys.Date(), "\%Y-\%m"),
-    ".pdf"),
   output.dir = paste0(my.dir, "/PfmReports/", format(Sys.Date(), "\%Y-\%m")),
   data.period = Sys.Date() \%m-\% months(1)
 )
@@ -30,11 +28,11 @@ render_PFM_report(
 
 \item{rmd.file}{character}
 
-\item{output.file}{character}
-
 \item{output.dir}{character}
 
 \item{data.period}{date}
+
+\item{output.file}{character}
 }
 \value{
 

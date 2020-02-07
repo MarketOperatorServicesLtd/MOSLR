@@ -104,7 +104,7 @@ mps_plot_perf_graph <- function(
         Trading.Party.ID,
         MPS,
         key,
-        TaskCompletion,
+        OnTimeTaskCompletion,
         TaskVolume,
         MPS_Mean,
         MPS_Median,
@@ -133,7 +133,7 @@ mps_plot_perf_graph <- function(
         Trading.Party.ID,
         MPS,
         key,
-        TaskCompletion,
+        OnTimeTaskCompletion,
         TaskVolume,
         MPS_Mean,
         MPS_Median,
@@ -157,7 +157,7 @@ mps_plot_perf_graph <- function(
         Trading.Party.ID,
         MPS,
         key,
-        TaskCompletion,
+        OnTimeTaskCompletion,
         TaskVolume,
         MPS_Mean,
         MPS_Median,
@@ -175,7 +175,7 @@ mps_plot_perf_graph <- function(
       tidyr::gather(
         key = "variable",
         value = "value",
-        TaskCompletion, MPS_Mean, MPS_Median, TaskShare, Planned_Perf
+        OnTimeTaskCompletion, MPS_Mean, MPS_Median, TaskShare, Planned_Perf
         ) %>%
       dplyr::mutate(
         TaskVolume =
@@ -184,7 +184,7 @@ mps_plot_perf_graph <- function(
               c("MPS_Mean", "MPS_Median", "Planned_Perf", "TaskShare"),
             0, as.double(TaskVolume)
           ),
-        variable = factor(variable, levels = c("TaskCompletion", "MPS_Mean", "MPS_Median", "TaskShare", "Planned_Perf"))
+        variable = factor(variable, levels = c("OnTimeTaskCompletion", "MPS_Mean", "MPS_Median", "TaskShare", "Planned_Perf"))
       )
 
   } else {
@@ -280,7 +280,7 @@ mps_plot_perf_graph <- function(
   if (action.points) {
 
     actions <- data %>%
-      dplyr::select(Date, Action, TaskCompletion) %>%
+      dplyr::select(Date, Action, OnTimeTaskCompletion) %>%
       dplyr::filter(Action != "")
 
     graph <- graph +
@@ -288,7 +288,7 @@ mps_plot_perf_graph <- function(
         data = actions,
         ggplot2::aes(
           x = Date,
-          y = TaskCompletion * max(data$TaskVolume),
+          y = OnTimeTaskCompletion * max(data$TaskVolume),
           label = Action
           ),
         size = 4,
@@ -298,7 +298,7 @@ mps_plot_perf_graph <- function(
         data = actions,
         ggplot2::aes(
           x = Date,
-          y = TaskCompletion * max(data$TaskVolume)
+          y = OnTimeTaskCompletion * max(data$TaskVolume)
           )
         )
   }

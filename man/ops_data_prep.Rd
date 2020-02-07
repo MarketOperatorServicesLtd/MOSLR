@@ -5,32 +5,24 @@
 \title{OPS Data Preparation}
 \usage{
 ops_data_prep(
-  dir = getwd(),
-  ops.data = paste0(dir, "/data/inputs/OPS_data.csv"),
-  ops.thresholds.kpi = paste0(dir, "/data/inputs/ops_thresholds_kpi.csv"),
-  ops.thresholds.api = paste0(dir, "/data/inputs/ops_thresholds_api.csv"),
-  tp.details = paste0(dir, "/data/inputs/tp_details.csv"),
-  filter.date = "2019-04-01",
-  csv.outputs = paste0(dir, "/data/outputs"),
-  rda.outputs = paste0(dir, "/data/rdata")
+  my.dir = getwd(),
+  ops.data = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_data.csv")),
+  ops.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/ops_thresholds.csv")),
+  csv.outputs = paste0(my.dir, "/data/outputs"),
+  rda.outputs = paste0(my.dir, "/data/rdata"),
+  save.output = TRUE
 )
 }
 \arguments{
-\item{dir}{character}
+\item{my.dir}{character}
 
 \item{ops.data}{character}
-
-\item{ops.thresholds.kpi}{character}
-
-\item{ops.thresholds.api}{character}
-
-\item{tp.details}{character}
-
-\item{filter.date}{character}
 
 \item{csv.outputs}{character}
 
 \item{rda.outputs}{character}
+
+\item{save.output}{logical}
 }
 \value{
 

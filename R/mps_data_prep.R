@@ -42,7 +42,7 @@ mps_data_prep <- function(
       ) %>%
     dplyr::mutate(
       Date = as.Date(Date, format = "%d/%m/%Y"),
-      TaskCompletion = OnTimeTasks / TaskVolume
+      OnTimeTaskCompletion = OnTimeTasks / TaskVolume
       ) %>%
     dplyr::arrange(
       Date, Trading.Party.ID, MPS
@@ -51,10 +51,14 @@ mps_data_prep <- function(
       Date,
       Trading.Party.ID,
       MPS,
-      TaskCompletion,
+      OnTimeTaskCompletion,
       TaskVolume,
       Charges,
       OnTimeTasks
+      ) %>%
+    dplyr::left_join(
+      tp_details,
+      by = c("Trading.Party.ID")
       ) %>%
     dplyr::left_join(
       mps_thresholds,
@@ -67,7 +71,8 @@ mps_data_prep <- function(
           "MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 5", "MPS 6", "MPS 7",
           "MPS 8", "MPS 9", "MPS 10", "MPS 12", "MPS 13", "MPS 14",
           "MPS 15", "MPS 16", "MPS 17", "MPS 18", "MPS 19"
-        ))
+        )),
+      key = as.factor(paste(Trading.Party.ID, MPS))
       )
 
 
@@ -76,12 +81,12 @@ mps_data_prep <- function(
   mps_summary <- mps_data_clean %>%
     dplyr::group_by(Date, MPS) %>%
     dplyr::summarise(
-      MPS_Mean = mean(TaskCompletion, na.rm = TRUE),
-      MPS_Median = median(TaskCompletion, na.rm = TRUE),
+      MPS_Mean = mean(OnTimeTaskCompletion, na.rm = TRUE),
+      MPS_Median = median(OnTimeTaskCompletion, na.rm = TRUE),
       TotalTaskVolume = sum(TaskVolume)
       ) %>%
-    dplyr::arrange(MPS, Date) %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>%
+    dplyr::arrange(MPS, Date)
 
   mps_data_clean <-
     dplyr::left_join(
@@ -93,11 +98,10 @@ mps_data_prep <- function(
       TaskShare = TaskVolume / TotalTaskVolume,
       BelowPeer = dplyr::if_else (
         mps_threshold > 0,
-        TaskCompletion < mps_threshold,
-        TaskCompletion < MPS_Mean
-        ),
-      key = as.factor(paste(Trading.Party.ID, MPS))
-    )
+        OnTimeTaskCompletion < mps_threshold,
+        OnTimeTaskCompletion < MPS_Mean
+        )
+      )
 
   if (save.output) {
     saveRDS(mps_summary, file = paste0(rda.outputs, "/mps_summary.Rda"))
