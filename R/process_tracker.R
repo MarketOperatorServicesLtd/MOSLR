@@ -22,7 +22,7 @@
 #'
 #' @examples
 
-mps_process_tracker <- function(
+process_tracker <- function(
   my.dir = getwd(),
   standard.data,
   iprp.plans,

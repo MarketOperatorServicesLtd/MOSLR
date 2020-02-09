@@ -1,33 +1,32 @@
+### `r paste0(MPS_CHUNK, ": ", MPS_details$Context[MPS_details$MPS == MPS_CHUNK])`
 
-### `r paste0(MPS_CHUNK, ": ", Standards_details$Context[Standards_details$Standard == MPS_CHUNK])`
+> `r MPS_details$Details[MPS_details$MPS == MPS_CHUNK]`
 
-> `r Standards_details$Details[Standards_details$Standard == MPS_CHUNK]`
-
-`r SHORT.NAME`'s on-time task performance for `r MPS_CHUNK` is rated as:
-
-* `r paste0(perf_status_mps_temp$Consistency[perf_status_mps_temp$Standard == MPS_CHUNK], ", ", perf_status_mps_temp$PerfRating[perf_status_mps_temp$Standard == MPS_CHUNK])`
+`r SHORT.NAME`'s on-time task performance for `r MPS_CHUNK`  is rated as **`r paste0(perf_status_mps_temp$Consistency[perf_status_mps_temp$MPS == MPS_CHUNK], ", ", perf_status_mps_temp$PerfRating[perf_status_mps_temp$MPS == MPS_CHUNK])`**.
 
 Below is a graph showing `r SHORT.NAME`'s historical on-time task completion performance for `r MPS_CHUNK`. MOSL action points and IPRP milestones are shown, if applicable. 
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
 
-on.iprp <- perf_status_mps_temp$IPRP[perf_status_mps_temp$Standard == MPS_CHUNK]
+on.iprp <- perf_status_mps_temp$IPRP[perf_status_mps_temp$MPS == MPS_CHUNK]
 
 graph <- perf_status_mps %>%
   dplyr::filter(
     TaskVolume > 0
     ) %>%
   MOSLR::mps_plot_perf_graph(
-    df = ., 
+    data = ., 
     load.data = FALSE,
-    standard = MPS_CHUNK,
-    trading.party = TRADING.PARTY,
-    period.start = data.period %m-% months(11),
-    period.end = data.period, 
+    melt.data = TRUE,
+    Standard = MPS_CHUNK,
+    TradParty = TRADING.PARTY,
+    filter.date.from = data.period %m-% months(11),
+    filter.date.to = data.period, 
     action.points = TRUE,
     include.iprp = on.iprp,
     graph.title = MPS_CHUNK,
-    sub.title = Standards_details$Context[Standards_details$Standard == MPS_CHUNK],
+    sub.title = MPS_details$Context[MPS_details$MPS == MPS_CHUNK],
+    x.lab = "Performance"
     ) +
   ggplot2::theme(
     text = ggplot2::element_text(size = 15)
@@ -38,6 +37,7 @@ tryCatch(
     plot(graph)
     },
   error = function(e){
+    message("Error printing MPS performance graph")
     print(e)
   }
   )
@@ -46,8 +46,8 @@ tryCatch(
 
 `r MPS_CHUNK` has had:
 
-* `r perf_status_mps_temp$SumPerf3m[perf_status_mps_temp$Standard == MPS_CHUNK]` performance flags
-* `r perf_status_mps_temp$CumWatch[perf_status_mps_temp$Standard == MPS_CHUNK]` watch flags
+* `r perf_status_mps_temp$SumPerf3m[perf_status_mps_temp$MPS == MPS_CHUNK]` performance flags
+* `r perf_status_mps_temp$CumWatch[perf_status_mps_temp$MPS == MPS_CHUNK]` watch flags
 
 `r if (on.iprp) { paste0(MPS_CHUNK, " is currently on an IPRP. See below for further details.") } else { paste0(MPS_CHUNK, " is not on an IPRP.") }`
 
@@ -55,9 +55,9 @@ tryCatch(
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE} 
 
-RATIONALE_CHUNK <- nrow(perf_status_mps %>% dplyr::filter(Trading.Party.ID == TRADING.PARTY, Standard == MPS_CHUNK, Action != "")) > 0
+RATIONALE_CHUNK <- nrow(perf_status_mps %>% dplyr::filter(Trading.Party.ID == TRADING.PARTY, MPS == MPS_CHUNK, Action != "")) > 0
 
-PFM_COMM_CHUNK <- nrow(perf_status_mps %>% dplyr::filter(Trading.Party.ID == TRADING.PARTY, Standard == MPS_CHUNK, !is.na(PFM_Commentary), PFM_Commentary != "")) > 0
+PFM_COMM_CHUNK <- nrow(perf_status_mps %>% dplyr::filter(Trading.Party.ID == TRADING.PARTY, MPS == MPS_CHUNK, !is.na(PFM_Commentary), PFM_Commentary != "")) > 0
 
 ```
 
@@ -68,7 +68,7 @@ PFM_COMM_CHUNK <- nrow(perf_status_mps %>% dplyr::filter(Trading.Party.ID == TRA
 perf_status_mps %>%
   dplyr::filter(
     Trading.Party.ID == TRADING.PARTY,
-    Standard == MPS_CHUNK,
+    MPS == MPS_CHUNK,
     Action != ""
     ) %>%
   dplyr::select(
@@ -107,7 +107,7 @@ perf_status_mps %>%
 perf_status_mps %>%
   dplyr::filter(
     Trading.Party.ID == TRADING.PARTY,
-    Standard == MPS_CHUNK,
+    MPS == MPS_CHUNK,
     !is.na(PFM_Commentary), 
     PFM_Commentary != ""
     ) %>%
@@ -147,15 +147,15 @@ perf_status_mps %>%
 perf_status_mps %>%
   dplyr::filter(
     Trading.Party.ID == TRADING.PARTY,
-    Standard == MPS_CHUNK,
+    MPS == MPS_CHUNK,
     ) %>%
   dplyr::select(
-    Date, OnTimeTaskCompletion, Planned_Perf, DeltaQuant, Status
+    Date, TaskCompletion, Planned_Perf, DeltaQuant, Status
     ) %>%
   tidyr::drop_na() %>%
   dplyr::mutate(
     Date = format(Date, "%Y-%m"),
-    OnTimeTaskCompletion = format(OnTimeTaskCompletion, digits = 2),
+    TaskCompletion = format(TaskCompletion, digits = 2),
     DeltaQuant = format(DeltaQuant * 100, digits = 2)
     ) %>%
   kableExtra::kable(
@@ -184,5 +184,5 @@ perf_status_mps %>%
 
 `r if (on.iprp) { paste0("For this plan there have been:") }`
 
-`r if (on.iprp) { paste0("* ",  perf_status_mps_temp$CumResubmit[perf_status_mps_temp$Standard == MPS_CHUNK], " resubmission(s)") }`
-`r if (on.iprp) { paste0("* ",  sum(perf_status_mps_temp$UnderReview[perf_status_mps_temp$Standard == MPS_CHUNK]), " review(s)") }`
+`r if (on.iprp) { paste0("* ",  perf_status_mps_temp$CumResubmit[perf_status_mps_temp$MPS == MPS_CHUNK], " resubmission(s)") }`
+`r if (on.iprp) { paste0("* ",  sum(perf_status_mps_temp$UnderReview[perf_status_mps_temp$MPS == MPS_CHUNK]), " review(s)") }`

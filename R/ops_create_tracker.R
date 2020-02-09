@@ -43,7 +43,7 @@ ops_create_tracker <- function(
   } else {
     var_list <-
       c(
-        "Date", "SecondaryCategory", "Trading.Party.ID", "OPS",
+        "Date", "SecondaryCategory", "Trading.Party.ID", "Standard",
         "PerformanceMeasure",
         "Action","Rationale", "PFM_Commentary", "ActiveIPRP", "IPRPend",
         "MilestoneFlag", "PerfFlag3m", "PerfFlag6m", "OnWatch",
@@ -69,7 +69,7 @@ ops_create_tracker <- function(
       Date = as.Date(Date, format = "%d/%m/%Y")
       ) %>%
     dplyr::group_by(
-      Trading.Party.ID, OPS, PerformanceMeasure
+      Trading.Party.ID, Standard, PerformanceMeasure
       ) %>%
     dplyr::mutate(
       PlanEndDate = max(Date)
@@ -81,7 +81,7 @@ ops_create_tracker <- function(
       Date = as.Date(Date, format = "%d/%m/%Y") %m-% months(-1)
       ) %>%
     dplyr::select(
-      Date, Action, Trading.Party.ID, OPS, PerformanceMeasure, Template_Sent, Response_Received
+      Date, Action, Trading.Party.ID, Standard, PerformanceMeasure, Template_Sent, Response_Received
       )
 
 
@@ -90,11 +90,11 @@ ops_create_tracker <- function(
   monthly_tracking <- ops_data_clean %>%
     dplyr::left_join(
       IPRP_plans,
-      by = c("Date", "OPS", "Trading.Party.ID", "PerformanceMeasure")
+      by = c("Date", "Standard", "Trading.Party.ID", "PerformanceMeasure")
       ) %>%
     dplyr::left_join(
       tracking_sheet,
-      by = c("Date", "Trading.Party.ID", "OPS", "PerformanceMeasure")
+      by = c("Date", "Trading.Party.ID", "Standard", "PerformanceMeasure")
       ) %>%
     dplyr::mutate(
       Action = tolower(Action),
@@ -117,11 +117,11 @@ ops_create_tracker <- function(
       ActiveIPRP = !is.na(Status),
       InactiveIPRP = IPRPend | Pending | (UnderReview & !ActiveIPRP),
       IPRP = ActiveIPRP | InactiveIPRP,
-      IPRPeligible = OPS %in% iprp_list
+      IPRPeligible = Standard %in% iprp_list
     ) %>%
     droplevels() %>%
-    dplyr::arrange(Trading.Party.ID, OPS, Date) %>%
-    dplyr::group_by(Trading.Party.ID, OPS, PerformanceMeasure) %>%
+    dplyr::arrange(Trading.Party.ID, Standard, Date) %>%
+    dplyr::group_by(Trading.Party.ID, Standard, PerformanceMeasure) %>%
     dplyr::mutate(
       PerfFlag3m = zoo::rollapply(BelowPeer, 3, mean, align = "right", fill = NA) == 1,
       PerfFlag6m = zoo::rollapply(BelowPeer, 6, mean, align = "right", fill = NA) >= 0.5,

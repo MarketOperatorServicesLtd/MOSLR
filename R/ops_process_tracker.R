@@ -35,7 +35,7 @@ ops_process_tracker <- function(
   } else {
     var_list <-
       c(
-        "Date", "SecondaryCategory", "Trading.Party.ID", "OPS", "PerformanceMeasure",
+        "Date", "SecondaryCategory", "Trading.Party.ID", "Standard", "PerformanceMeasure",
         "Action", "Rationale", "PFM_Commentary", "PerfFlag3m", "PerfFlag6m",
         "ActiveIPRP", "IPRPend", "MilestoneFlag", "Pending", "UnderReview",
         "OnWatchIPRPend",  "OnWatch", "Consistency", "PerfRating", "IPRPeligible",
@@ -70,7 +70,7 @@ ops_process_tracker <- function(
       PFM_Commentary = as.character(PFM_Commentary)
       ) %>%
     dplyr::select(
-      Date, Trading.Party.ID, OPS, PerformanceMeasure, Action,
+      Date, Trading.Party.ID, Standard, PerformanceMeasure, Action,
       Rationale, PFM_Commentary, Response_Received
       )
 
@@ -82,12 +82,12 @@ ops_process_tracker <- function(
   perf_status_ops <- monthly_tracking_pre %>%
     dplyr::full_join(
       monthly_tracking_post,
-      by = c("Date", "Trading.Party.ID", "OPS", "PerformanceMeasure")
+      by = c("Date", "Trading.Party.ID", "Standard", "PerformanceMeasure")
       ) %>%
     dplyr::mutate(
       Action = tolower(Action),
-      OPS = factor(
-        OPS,
+      Standard = factor(
+        Standard,
         levels = c(
           "OPS A1a", "OPS A2a", "OPS A2b", "OPS A2c", "OPS A3a",
           "OPS A3b", "OPS A4a",
@@ -95,11 +95,12 @@ ops_process_tracker <- function(
           "OPS C1b", "OPS C2a", "OPS C3a", "OPS C4a", "OPS C4b",
           "OPS C5a", "OPS C6a", "OPS F5a", "OPS F5b", "OPS G2a",
           "OPS G4a", "OPS G4b", "OPS H1a", "OPS I1a", "OPS I1b",
-          "OPS I8a", "OPS I8b")
+          "OPS I8a", "OPS I8b"
+          )
         )
       ) %>%
-    dplyr::arrange(Date, Trading.Party.ID, OPS) %>%
-    dplyr::group_by(Trading.Party.ID, OPS, PerformanceMeasure) %>%
+    dplyr::arrange(Date, Trading.Party.ID, Standard) %>%
+    dplyr::group_by(Trading.Party.ID, Standard, PerformanceMeasure) %>%
     dplyr::mutate(
       Action = tidyr::replace_na(Action, ""),
       CumWatch = cumsum(OnWatch),

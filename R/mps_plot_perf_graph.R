@@ -6,7 +6,6 @@
 #' plotted as a bar, and the right-handside corresponds to
 #' multiple lines.
 #'
-#' @param data data.frame
 #' @param include.iprp logical
 #' @param sec.axis.name character
 #' @param fill.manual character
@@ -15,14 +14,14 @@
 #' @param graph.title character
 #' @param fill.label character
 #' @param sub.title character
+#' @param period.start date
+#' @param period.end date
+#' @param action.points logical
+#' @param trading.party character
+#' @param standard character
+#' @param df dataframe
 #' @param my.dir character
 #' @param load.data logical
-#' @param melt.data logical
-#' @param TradParty character
-#' @param Standard character
-#' @param filter.date.from date
-#' @param filter.date.to date
-#' @param action.points logical
 #'
 #' @return
 #' @export
@@ -30,17 +29,16 @@
 #' @examples
 
 mps_plot_perf_graph <- function(
-  my.dir = getwd(),
-  data = NULL,
-  load.data = TRUE,
-  melt.data = TRUE,
+  df,
+  load.data = FALSE,
+  my.dir = NULL,
   include.iprp = FALSE,
-  TradParty,
-  Standard,
-  filter.date.from = "2018-04-01",
-  filter.date.to = Sys.Date(),
+  trading.party,
+  standard,
+  period.start = "2018-04-01",
+  period.end = Sys.Date(),
   action.points = FALSE,
-  sec.axis.name = "",
+  sec.axis.name = "Performance",
   fill.label = "Task Volume",
   fill.manual = "azure3",
   y.lab = "Tasks",
@@ -49,11 +47,14 @@ mps_plot_perf_graph <- function(
   sub.title = NULL
   ){
 
+  period.start <- as.Date(period.start)
+  period.end <- as.Date(period.end)
+
   if (is.null(graph.title)) {
 
-    graph_title <- Standard }
+    graph_title <- paste0(trading.party, " (", standard, ")")
 
-  else {
+    } else {
 
       graph_title <- graph.title
 
@@ -84,125 +85,64 @@ mps_plot_perf_graph <- function(
 
     }
 
+if (load.data & is.null(df)) {
 
-  if (is.null(data)) {
+  df <- readRDS(paste0(my.dir, "/data/rdata/perf_status_mps.Rda"))
 
-  if (load.data) {
+}
 
-    my_dir = my.dir
 
-    data <- readRDS(paste0(my_dir, "/data/rdata/perf_status_mps.Rda")) %>%
-      dplyr::filter(
-        Trading.Party.ID == TradParty,
-        MPS == Standard,
-        Date >= filter.date.from,
-        Date <= filter.date.to,
-        TaskVolume > 0
+  graph_data <- df %>%
+    dplyr::filter(
+      Trading.Party.ID == trading.party,
+      Standard == standard,
+      Date >= period.start,
+      Date <= period.end,
+      TaskVolume > 0
       ) %>%
-      dplyr::select(
-        Date,
-        Trading.Party.ID,
-        MPS,
-        key,
-        OnTimeTaskCompletion,
-        TaskVolume,
-        MPS_Mean,
-        MPS_Median,
-        TaskShare,
-        Planned_Perf,
-        Action
-      )
-
-
-  } else {
-
-    data <- MOSLR::mps_process_tracker(
-      my.dir = my_dir,
-      keep.vars = TRUE,
-      save.output = FALSE
+    dplyr::select(
+      Date,
+      Trading.Party.ID,
+      Standard,
+      OnTimeTaskCompletion,
+      TaskVolume,
+      MPS_Mean,
+      MPS_Median,
+      TaskShare,
+      Planned_Perf
       ) %>%
-      dplyr::filter(
-        Trading.Party.ID == TradParty,
-        MPS == Standard,
-        Date >= filter.date.from,
-        Date <= filter.date.to,
-        TaskVolume > 0
+    dplyr::arrange(
+      Standard, Date
       ) %>%
-      dplyr::select(
-        Date,
-        Trading.Party.ID,
-        MPS,
-        key,
-        OnTimeTaskCompletion,
-        TaskVolume,
-        MPS_Mean,
-        MPS_Median,
-        TaskShare,
-        Planned_Perf,
-        Action
-      )
-    }
-  } else {
-
-    data <- data %>%
-      dplyr::filter(
-        Trading.Party.ID == TradParty,
-        MPS == Standard,
-        Date >= filter.date.from,
-        Date <= filter.date.to,
-        TaskVolume > 0
-        ) %>%
-      dplyr::select(
-        Date,
-        Trading.Party.ID,
-        MPS,
-        key,
-        OnTimeTaskCompletion,
-        TaskVolume,
-        MPS_Mean,
-        MPS_Median,
-        TaskShare,
-        Planned_Perf,
-        Action
-      )
-
-  }
-
-
-  if (melt.data) {
-
-    data_melt <- data %>%
-      tidyr::gather(
-        key = "variable",
-        value = "value",
-        OnTimeTaskCompletion, MPS_Mean, MPS_Median, TaskShare, Planned_Perf
-        ) %>%
-      dplyr::mutate(
-        TaskVolume =
-          dplyr::if_else (
-            variable %in%
-              c("MPS_Mean", "MPS_Median", "Planned_Perf", "TaskShare"),
-            0, as.double(TaskVolume)
-          ),
-        variable = factor(variable, levels = c("OnTimeTaskCompletion", "MPS_Mean", "MPS_Median", "TaskShare", "Planned_Perf"))
-      )
-
-  } else {
-
-    melt_data <- data
-
-    }
-
-
-  graph <- data_melt %>%
+    tidyr::gather(
+      key = "variable",
+      value = "value",
+      OnTimeTaskCompletion, MPS_Mean, MPS_Median, TaskShare, Planned_Perf
+      ) %>%
+    dplyr::mutate(
+      TaskVolume =
+        dplyr::if_else (
+          variable %in%
+            c("MPS_Mean", "MPS_Median", "Planned_Perf", "TaskShare"),
+          0, as.double(TaskVolume)
+        ),
+      variable = factor(
+        variable,
+        levels = c(
+          "OnTimeTaskCompletion", "MPS_Mean", "MPS_Median", "TaskShare", "Planned_Perf"
+          )
+        )
+      ) %>%
     tidyr::drop_na(value) %>%
     droplevels() %>%
     {if (!include.iprp) {
       dplyr::filter(., variable != "Planned_Perf")
-    } else {
+      } else {
         dplyr::select(., dplyr::everything())
       }
-      } %>%
+      }
+
+  graph <- graph_data %>%
     ggplot2::ggplot() +
     ggplot2::geom_bar(
       ggplot2::aes(
@@ -217,7 +157,7 @@ mps_plot_perf_graph <- function(
     ggplot2::geom_line(
       ggplot2::aes(
         x = Date,
-        y = value * max(data$TaskVolume),
+        y = value * max(graph_data$TaskVolume),
         colour = variable,
         linetype = variable,
         size = variable
@@ -226,7 +166,7 @@ mps_plot_perf_graph <- function(
     ggplot2::geom_point(
       ggplot2::aes(
         x = Date,
-        y = value * max(data$TaskVolume),
+        y = value * max(graph_data$TaskVolume),
         shape = variable,
         alpha = variable
         )
@@ -234,7 +174,7 @@ mps_plot_perf_graph <- function(
     ggplot2::scale_y_continuous(
       breaks = scales::pretty_breaks(4),
       sec.axis =
-        ggplot2::sec_axis(~. / max(data$TaskVolume), name = sec.axis.name)
+        ggplot2::sec_axis(~. / max(graph_data$TaskVolume), name = sec.axis.name)
       ) +
     ggplot2::scale_fill_manual(
       values = fill.manual,
@@ -279,16 +219,22 @@ mps_plot_perf_graph <- function(
 
   if (action.points) {
 
-    actions <- data %>%
-      dplyr::select(Date, Action, OnTimeTaskCompletion) %>%
-      dplyr::filter(Action != "")
+    actions <- df %>%
+      dplyr::select(Date, Trading.Party.ID, Standard, Action, OnTimeTaskCompletion) %>%
+      dplyr::filter(
+        Trading.Party.ID == trading.party,
+        Standard == standard,
+        Date >= period.start,
+        Date <= period.end,
+        Action != ""
+        )
 
     graph <- graph +
       ggrepel::geom_label_repel(
         data = actions,
         ggplot2::aes(
           x = Date,
-          y = OnTimeTaskCompletion * max(data$TaskVolume),
+          y = OnTimeTaskCompletion * max(graph_data$TaskVolume),
           label = Action
           ),
         size = 4,
@@ -298,7 +244,7 @@ mps_plot_perf_graph <- function(
         data = actions,
         ggplot2::aes(
           x = Date,
-          y = OnTimeTaskCompletion * max(data$TaskVolume)
+          y = OnTimeTaskCompletion * max(graph_data$TaskVolume)
           )
         )
   }

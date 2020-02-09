@@ -44,7 +44,7 @@ mps_create_tracker <- function(
     } else {
       var_list <-
         c(
-        "Date", "SecondaryCategory", "Trading.Party.ID", "MPS", "Action",
+        "Date", "SecondaryCategory", "Trading.Party.ID", "Standard", "Action",
         "Rationale", "PFM_Commentary", "ActiveIPRP", "IPRPend",
         "MilestoneFlag", "PerfFlag3m", "PerfFlag6m", "OnWatch",
         "OnWatchIPRPend",  "Consistency", "PerfRating"
@@ -71,7 +71,7 @@ mps_create_tracker <- function(
       Date = as.Date(Date, format = "%d/%m/%Y")
       ) %>%
     dplyr::group_by(
-      Trading.Party.ID, MPS
+      Trading.Party.ID, Standard
       ) %>%
     dplyr::mutate(
       PlanEndDate = max(Date)
@@ -81,7 +81,7 @@ mps_create_tracker <- function(
   tracking_sheet <- utils::read.csv(paste0(my.dir, "/data/inputs/tracking_mps.csv")) %>%
     dplyr::mutate(
       Date = as.Date(Date, format = "%d/%m/%Y") %m-% months(-1),
-      key = as.factor(paste(Trading.Party.ID, MPS))
+      key = as.factor(paste(Trading.Party.ID, Standard))
       ) %>%
     dplyr::select(
       Date, Action, key, Template_Sent, Response_Received
@@ -93,7 +93,7 @@ mps_create_tracker <- function(
   monthly_tracking <- mps_data_clean %>%
     dplyr::left_join(
       IPRP_plans,
-      by = c("Date", "MPS", "Trading.Party.ID")
+      by = c("Date", "Standard", "Trading.Party.ID")
       ) %>%
     dplyr::left_join(
       tracking_sheet,
@@ -120,11 +120,11 @@ mps_create_tracker <- function(
       ActiveIPRP = !is.na(Status),
       InactiveIPRP = IPRPend | Pending | (UnderReview & !ActiveIPRP),
       IPRP = ActiveIPRP | InactiveIPRP,
-      IPRPeligible = MPS %in% iprp_list
+      IPRPeligible = Standard %in% iprp_list
       ) %>%
     droplevels() %>%
-    dplyr::arrange(Trading.Party.ID, MPS, Date) %>%
-    dplyr::group_by(Trading.Party.ID, MPS) %>%
+    dplyr::arrange(Trading.Party.ID, Standard, Date) %>%
+    dplyr::group_by(Trading.Party.ID, Standard) %>%
     dplyr::mutate(
       PerfFlag3m = zoo::rollapply(BelowPeer, 3, mean, align = "right", fill = NA) == 1,
       PerfFlag6m = zoo::rollapply(BelowPeer, 6, mean, align = "right", fill = NA) >= 0.5,

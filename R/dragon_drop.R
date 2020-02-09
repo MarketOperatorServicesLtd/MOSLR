@@ -1,45 +1,90 @@
 #' Drag and drop files from one location to another based on folder name to a specified directory
 #'
-#' @param dir.to character
-#' @param dir.from character
+#' @param destination character
+#' @param origin character
 #' @param folder.name character
 #' @param folder.ext character
 #' @param sub.folder character
 #' @param file.type factor
-#' @param tp.list factor
+#' @param folder.list factor
 #' @param new.folder character
+#' @param distribute logical
 #'
 #' @return
 #' @export
 #'
 #' @examples
 
-dragon_drop <- function(dir.to = getwd(), dir.from = utils::choose.dir(caption = "Select the directory that folders  should be copied from."), folder.name = format(Sys.Date(), format = "%Y-%m"), folder.ext = NULL, sub.folder = NULL, file.type = NULL, tp.list = "to", new.folder = TRUE) {
+dragon_drop <- function(
+  origin =
+    utils::choose.dir(caption = "Select the origin directory that folders or file(s) should be copied from."),
+  destination =
+    utils::choose.dir(caption = "Select the destination directory that folders or file(s) should be copied to."),
+  folder.name = format(Sys.Date(), format = "%Y-%m"),
+  folder.ext = NULL,
+  sub.folder = NULL,
+  file.type = NULL,
+  folder.list = "destination",
+  new.folder = TRUE,
+  distribute = FALSE
+  ){
 
-  tp.list <- if (tp.list == "from") {
-    dir(dir.from)
-  } else if (tp.list == "to") {
+  folder.list <- if (folder.list == "origin") {
+
+    dir(origin)
+
+  } else if (folder.list == "destination") {
+
     if (is.null(folder.ext)) {
-      dir(dir.to)
+
+      dir(destination)
+
     } else {
-      gsub(folder.ext, "", dir(dir.to)[grep(paste0("*.", folder.ext, "$"), dir(dir.to))])
+
+      gsub(
+        folder.ext, "",
+        dir(destination)[grep(paste0("*.", folder.ext, "$"), dir(destination))]
+        )
     }
-  } else if (is.vector(tp.list) & is.character(tp.list)) {
-    tp.list
+
+  } else if (is.vector(folder.list) & is.character(folder.list)) {
+
+    folder.list
+
   } else {
-    stop("error: specify tp.list as either \"from\" or \"to\" or a valid character vector of relevant ORG IDs")
+
+    stop("error: specify folder.list as either \"from\" or \"to\" or a valid character vector of relevant folder names")
+
   }
 
-  for (i in tp.list) {
+  for (i in folder.list) {
 
     if (new.folder) {
-      dir.create(file.path(dir.to, paste0(i, ifelse (is.null(folder.ext), "", folder.ext)), ifelse (is.null(sub.folder), "", sub.folder), folder.name))
+      dir.create(
+        file.path(
+          destination,
+          paste0(i, ifelse (is.null(folder.ext), "", folder.ext)),
+          ifelse (is.null(sub.folder), "", sub.folder),
+          folder.name
+          )
+        )
     }
 
     file.copy(
-      from = list.files(file.path(dir.from, i), pattern = file.type, full.names = TRUE),
-      to = file.path(dir.to, paste0(i, folder.ext), ifelse (is.null(sub.folder), "", sub.folder), folder.name)
-    )
+      from =
+        list.files(
+          file.path(origin, ifelse (distribute, "", i)),
+          pattern = file.type,
+          full.names = TRUE
+          ),
+      to =
+        file.path(
+          destination,
+          paste0(i, folder.ext),
+          ifelse (is.null(sub.folder), "", sub.folder),
+          folder.name
+          )
+      )
 
   }
 

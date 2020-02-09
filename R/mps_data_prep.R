@@ -20,6 +20,8 @@ mps_data_prep <- function(
   my.dir = getwd(),
   mps.data = utils::read.csv(paste0(my.dir, "/data/inputs/MPS_data.csv")),
   mps.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/mps_thresholds.csv")),
+  tp.details = utils::read.csv(paste0(my.dir, "/data/inputs/tp_details.csv")),
+  Standards.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")),
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   save.output = TRUE
@@ -37,7 +39,6 @@ mps_data_prep <- function(
     dplyr::rename(
       Charges = Total.Performance.Charge.Value,
       TaskVolume = Total.number.of.tasks.compeleted.within.Period,
-      MPS = Market.Performance.Standard.No.,
       OnTimeTasks = Number.of.tasks.completed.on.time
       ) %>%
     dplyr::mutate(
@@ -45,54 +46,54 @@ mps_data_prep <- function(
       OnTimeTaskCompletion = OnTimeTasks / TaskVolume
       ) %>%
     dplyr::arrange(
-      Date, Trading.Party.ID, MPS
+      Date, Trading.Party.ID, Standard
       ) %>%
     dplyr::select(
       Date,
       Trading.Party.ID,
-      MPS,
+      Standard,
       OnTimeTaskCompletion,
       TaskVolume,
       Charges,
       OnTimeTasks
       ) %>%
     dplyr::left_join(
-      tp_details,
-      by = c("Trading.Party.ID")
+      dplyr::select(Standards.details, Standard, Group),
+      by = c("Standard")
       ) %>%
     dplyr::left_join(
       mps_thresholds,
-      by = c("MPS")
+      by = c("Standard")
       ) %>%
     dplyr::mutate(
-      MPS = factor(
-        MPS,
+      Standard = factor(
+        Standard,
         levels = c(
           "MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 5", "MPS 6", "MPS 7",
           "MPS 8", "MPS 9", "MPS 10", "MPS 12", "MPS 13", "MPS 14",
           "MPS 15", "MPS 16", "MPS 17", "MPS 18", "MPS 19"
         )),
-      key = as.factor(paste(Trading.Party.ID, MPS))
+      key = as.factor(paste(Trading.Party.ID, Standard))
       )
 
 
-  # Creating summary grouped by MPS with market metrics by month ------------
+  # Creating summary grouped by Standard with market metrics by month ------------
 
   mps_summary <- mps_data_clean %>%
-    dplyr::group_by(Date, MPS) %>%
+    dplyr::group_by(Date, Standard) %>%
     dplyr::summarise(
       MPS_Mean = mean(OnTimeTaskCompletion, na.rm = TRUE),
       MPS_Median = median(OnTimeTaskCompletion, na.rm = TRUE),
       TotalTaskVolume = sum(TaskVolume)
       ) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(MPS, Date)
+    dplyr::arrange(Standard, Date)
 
   mps_data_clean <-
     dplyr::left_join(
       mps_summary,
       mps_data_clean,
-      by = c("Date", "MPS")
+      by = c("Date", "Standard")
       ) %>%
     dplyr::mutate(
       TaskShare = TaskVolume / TotalTaskVolume,

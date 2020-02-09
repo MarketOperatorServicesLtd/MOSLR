@@ -6,14 +6,14 @@
 \usage{
 mps_plot_perf_graph(
   my.dir = getwd(),
-  data = NULL,
+  df = NULL,
   load.data = TRUE,
   melt.data = TRUE,
   include.iprp = FALSE,
   TradParty,
   Standard,
-  filter.date.from = "2018-04-01",
-  filter.date.to = Sys.Date(),
+  period.start = "2018-04-01",
+  period.end = Sys.Date(),
   action.points = FALSE,
   sec.axis.name = "",
   fill.label = "Task Volume",
@@ -27,7 +27,7 @@ mps_plot_perf_graph(
 \arguments{
 \item{my.dir}{character}
 
-\item{data}{data.frame}
+\item{df}{dataframe}
 
 \item{load.data}{logical}
 
@@ -39,9 +39,9 @@ mps_plot_perf_graph(
 
 \item{Standard}{character}
 
-\item{filter.date.from}{date}
+\item{period.start}{date}
 
-\item{filter.date.to}{date}
+\item{period.end}{date}
 
 \item{action.points}{logical}
 

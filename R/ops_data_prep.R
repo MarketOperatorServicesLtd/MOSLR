@@ -18,12 +18,13 @@
 ops_data_prep <- function(
   my.dir = getwd(),
   ops.data = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_data.csv")),
+  ops.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")),
   ops.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/ops_thresholds.csv")),
+  ops.charges = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_Charges.csv")),
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   save.output = TRUE
   ) {
-
 
 
   # Cleaning data -----------------------------
@@ -43,7 +44,7 @@ ops_data_prep <- function(
 
   tasks_completed <- ops_data_clean %>%
     dplyr::select(
-      Trading.Party.ID, Date, OPS,
+      Trading.Party.ID, Date, Standard,
       TaskCompletion, TaskVolumeCompleted
       ) %>%
     dplyr::rename(
@@ -56,7 +57,7 @@ ops_data_prep <- function(
 
   tasks_outstanding <- ops_data_clean %>%
     dplyr::select(
-      Trading.Party.ID, Date, OPS,
+      Trading.Party.ID, Date, Standard,
       OutstandingOntime, TaskVolumeOutstanding
       ) %>%
     dplyr::rename(
@@ -69,28 +70,41 @@ ops_data_prep <- function(
 
   ops_data_clean <- base::rbind(tasks_completed, tasks_outstanding)
 
+  ops.charges <- ops.charges %>%
+    dplyr::mutate(
+      Date = as.Date(Date, format = "%d/%m/%Y")
+      )
+
 
 # Creating summary --------------------------------------------------------
 
   ops_summary <- ops_data_clean %>%
-    dplyr::group_by(Date, OPS, PerformanceMeasure) %>%
+    dplyr::group_by(Date, Standard, PerformanceMeasure) %>%
     dplyr::summarise(
       OPS_Mean = mean(Performance, na.rm = TRUE),
       OPS_Median = median(Performance, na.rm = TRUE),
       TotalTaskVolume = sum(TaskVolume, na.rm = TRUE)
       ) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(OPS, Date)
+    dplyr::arrange(Standard, Date)
 
   ops_data_clean <-
     dplyr::left_join(
       ops_data_clean,
       ops_summary,
-      by = c("Date", "OPS", "PerformanceMeasure")
+      by = c("Date", "Standard", "PerformanceMeasure")
       ) %>%
     dplyr::left_join(
       ops.thresholds,
-      by = c("OPS", "PerformanceMeasure")
+      by = c("Standard", "PerformanceMeasure")
+      ) %>%
+    dplyr::left_join(
+      ops.charges,
+      by = c("Trading.Party.ID", "Date", "Standard")
+      ) %>%
+    dplyr::left_join(
+      ops.details,
+      by = c("Standard")
       ) %>%
     dplyr::mutate(
       TaskShare = TaskVolume / TotalTaskVolume,
@@ -99,8 +113,8 @@ ops_data_prep <- function(
         Performance < Threshold,
         Performance < OPS_Mean
         ),
-      OPS = factor(
-        OPS,
+      Standard = factor(
+        Standard,
         levels = c(
           "OPS A1a", "OPS A2a", "OPS A2b", "OPS A2c", "OPS A3a",
           "OPS A3b", "OPS A4a",
@@ -114,9 +128,9 @@ ops_data_prep <- function(
 
 
   if (save.output) {
-  utils::write.csv(ops_summary, paste0(csv.outputs, "/ops_summary.csv"))
-  utils::write.csv(ops_data_clean, paste0(csv.outputs, "/OPS_data_clean.csv"))
-  saveRDS(ops_data_clean, file = paste0(rda.outputs, "/ops_data_clean.Rda"))
+    saveRDS(ops_summary, file = paste0(rda.outputs, "/ops_summary.Rda"))
+    utils::write.csv(ops_data_clean, paste0(csv.outputs, "/ops_data_clean.csv"))
+    saveRDS(ops_data_clean, file = paste0(rda.outputs, "/ops_data_clean.Rda"))
   }
 
   invisible(ops_data_clean)

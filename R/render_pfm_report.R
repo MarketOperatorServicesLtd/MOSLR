@@ -38,26 +38,32 @@ render_PFM_report <- function(
   data.period = Sys.Date() %m-% months(1)
   ) {
 
+  my_dir <- my.dir
   data.period <- as.Date(data.period)
 
   if (prep.data) {
 
-    #MOSLR::mps_process_tracker()
-    #MOSLR::process_monthly_tracker_ops()
+    MOSLR::mps_process_tracker(my.dir = my_dir, save.output = TRUE, period.create = data.period)
+    MOSLR::ops_process_tracker(my.dir = my_dir, save.output = TRUE, period.create = data.period)
 
   }
 
   if (load.data) {
 
     tp_details <- utils::read.csv(paste0(my.dir, "/data/inputs/tp_details.csv"))
-    MPS_details <- utils::read.csv(paste0(my.dir, "/data/inputs/MPS_details.csv")) %>%
-      dplyr::mutate(MPS = as.character(MPS))
+    Standards_details <- utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")) %>%
+      dplyr::mutate(Standard = as.character(Standard))
+
     mps_data_clean <- readRDS(paste0(my.dir, "/data/rdata/mps_data_clean.Rda"))
-    mps_data_melt <- readRDS(paste0(my.dir, "/data/rdata/mps_data_melt.Rda"))
     perf_status_mps <- readRDS(paste0(my.dir, "/data/rdata/perf_status_mps.Rda"))
     mps_summary <- readRDS(paste0(my.dir, "/data/rdata/mps_summary.Rda"))
 
-    mps_sum_TradingParties <- mps_sum_TradingParties(df = mps_data_clean, tp.details = tp_details)
+    ops_data_clean <- readRDS(paste0(my.dir, "/data/rdata/ops_data_clean.Rda"))
+    perf_status_ops <- readRDS(paste0(my.dir, "/data/rdata/perf_status_ops.Rda"))
+    ops_summary <- readRDS(paste0(my.dir, "/data/rdata/ops_summary.Rda"))
+
+    mps_aggregate_perf <- mps_aggregate_perf(df = mps_data_clean, tp.details = tp_details)
+    ops_aggregate_perf <- ops_aggregate_perf(df = ops_data_clean, tp.details = tp_details)
 
   }
 
@@ -81,7 +87,7 @@ render_PFM_report <- function(
 
     render_list <- mps_data_clean %>%
       dplyr::filter(
-        !(Trading.Party.ID %in% excluded.list)
+        !Trading.Party.ID %in% excluded.list
         ) %>%
       dplyr::select(Trading.Party.ID) %>%
       droplevels() %>%
@@ -98,16 +104,14 @@ render_PFM_report <- function(
 
   for (TRADING.PARTY in render_list) {
 
+    # Trading Party names ----------------
+
     TRADING.PARTY.NAME <- tp_details$TradingPartyName[tp_details$Trading.Party.ID == TRADING.PARTY, drop = TRUE]
     SHORT.NAME <- tp_details$ShortName[tp_details$Trading.Party.ID == TRADING.PARTY, drop = TRUE]
 
-    mps_data_clean_temp <- mps_data_clean %>%
-      dplyr::filter(
-        Trading.Party.ID == TRADING.PARTY
-        ) %>%
-      droplevels()
+    # MPS data ----------------
 
-    mps_data_melt_temp <- mps_data_melt %>%
+    mps_data_clean_temp <- mps_data_clean %>%
       dplyr::filter(
         Trading.Party.ID == TRADING.PARTY
         ) %>%
@@ -120,12 +124,36 @@ render_PFM_report <- function(
         ) %>%
       droplevels()
 
-    mps_sum_TradingParties_temp <- mps_sum_TradingParties %>%
+    mps_aggregate_perf_temp <- mps_aggregate_perf %>%
       dplyr::filter(
         Trading.Party.ID == TRADING.PARTY,
         Date == data.period
         ) %>%
       droplevels()
+
+
+    # OPS data ----------------
+
+    ops_data_clean_temp <- ops_data_clean %>%
+      dplyr::filter(
+        Trading.Party.ID == TRADING.PARTY
+        ) %>%
+      droplevels()
+
+    perf_status_ops_temp <- perf_status_ops %>%
+      dplyr::filter(
+        Trading.Party.ID == TRADING.PARTY,
+        Date == data.period
+        ) %>%
+      droplevels()
+
+    ops_aggregate_perf_temp <- ops_aggregate_perf %>%
+      dplyr::filter(
+        Trading.Party.ID == TRADING.PARTY,
+        Date == data.period
+        ) %>%
+      droplevels()
+
 
     tryCatch(
 

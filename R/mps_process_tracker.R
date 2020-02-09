@@ -35,7 +35,7 @@ mps_process_tracker <- function(
   } else {
     var_list <-
       c(
-        "Date", "SecondaryCategory", "Trading.Party.ID", "MPS", "Action",
+        "Date", "SecondaryCategory", "Trading.Party.ID", "Standard", "Action",
         "Rationale", "PFM_Commentary", "PerfFlag3m", "PerfFlag6m",
         "ActiveIPRP", "IPRPend", "MilestoneFlag", "Pending", "UnderReview",
         "OnWatchIPRPend",  "OnWatch", "Consistency", "PerfRating", "IPRPeligible",
@@ -70,7 +70,7 @@ mps_process_tracker <- function(
       PFM_Commentary = as.character(PFM_Commentary)
       ) %>%
     dplyr::select(
-      Date, Trading.Party.ID, MPS, Action, Rationale, PFM_Commentary, Response_Received
+      Date, Trading.Party.ID, Standard, Action, Rationale, PFM_Commentary, Response_Received
       )
 
   saveRDS(monthly_tracking_post, paste0(my.dir, "/data/rdata/monthly_tracking_mps_post.Rda"))
@@ -81,12 +81,12 @@ mps_process_tracker <- function(
   perf_status_mps <- monthly_tracking_pre %>%
     dplyr::full_join(
       monthly_tracking_post,
-      by = c("Date", "Trading.Party.ID", "MPS")
+      by = c("Date", "Trading.Party.ID", "Standard")
       ) %>%
     dplyr::mutate(
       Action = tolower(Action),
-      MPS = factor(
-        MPS,
+      Standard = factor(
+        Standard,
         levels = c(
           "MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 5", "MPS 6", "MPS 7",
           "MPS 8", "MPS 9", "MPS 10", "MPS 12", "MPS 13", "MPS 14",
@@ -94,8 +94,8 @@ mps_process_tracker <- function(
           )
         )
       ) %>%
-    dplyr::arrange(Date, Trading.Party.ID, MPS) %>%
-    dplyr::group_by(Trading.Party.ID, MPS) %>%
+    dplyr::arrange(Date, Trading.Party.ID, Standard) %>%
+    dplyr::group_by(Trading.Party.ID, Standard) %>%
     dplyr::mutate(
       Action = tidyr::replace_na(Action, ""),
       CumWatch = cumsum(OnWatch),
