@@ -6,10 +6,10 @@
 
 mps_data_clean_temp %>%
   dplyr::select(
-    Trading.Party.ID, Date, Standard, Charges
+    Trading.Party.ID, Date, Standard, Charges, Group
     ) %>%
   ggplot2::ggplot(
-    ggplot2::aes(x = Date, y = Charges, fill = Standard)
+    ggplot2::aes(x = Date, y = Charges, fill = Group)
     ) + 
   ggplot2::geom_bar(stat = "identity") + 
   ggplot2::theme(
@@ -17,15 +17,17 @@ mps_data_clean_temp %>%
     text = ggplot2::element_text(size = 15)
     ) +
   ggplot2::scale_y_continuous(
-    labels = scales::comma,
+    labels = scales::dollar_format(prefix = "£"),
     breaks = scales::pretty_breaks(4)
     ) +
+  ggplot2::theme_bw() + 
+  ggplot2::scale_fill_grey(start = 0.1, end = 0.7) +
   ggplot2::labs(
     title = "Performance Charges",
     subtitle = "Breakdown by month and standard",
     caption = "Source: MOSL"
     ) +
-  ggplot2::ylab("Charges (£)") + ggplot2::xlab("")
+  ggplot2::ylab("") + ggplot2::xlab("")
 
 ```
 
@@ -38,11 +40,15 @@ mps_data_clean_temp %>%
     Date >= data.period %m-% months(11)
     ) %>%
   dplyr::select(Date, Standard, Charges) %>%
-  dplyr::mutate(Date = format(Date, "%Y-%m")) %>% 
+  dplyr::mutate(
+    Date = format(Date, "%Y-%m")
+    ) %>% 
   tidyr::spread(Standard, Charges) %>%
   dplyr::mutate(
     Total = rowSums(dplyr::select(., -Date), na.rm = TRUE)
     ) %>%
+  dplyr::mutate_if(~ any(is.na(.)), ~ ifelse(is.na(.), 0, .)) %>%
+  dplyr::mutate_if(is.numeric, scales::dollar_format(prefix = "£")) %>%
   kableExtra::kable (
     format = "latex", 
     caption = "Breakdown of Charges by Standard", 
@@ -82,23 +88,20 @@ rect_df <- data.frame(
       )
   )
 
+
+agg_perf <- mps_aggregate_perf %>%
+  dplyr::filter(Trading.Party.ID == TRADING.PARTY) %>%
+  dplyr::select(Date, Agg_Perf) %>%
+  dplyr::rename(GroupPerf = Agg_Perf) %>%
+  dplyr::mutate(Group = "Aggregate Performance")
+
 mps_data_clean_temp %>%
   dplyr::group_by(Date, Group) %>%
   dplyr::summarise(
     GroupPerf = sum(OnTimeTasks) / sum(TaskVolume)
     ) %>%
   dplyr::ungroup() %>%
-  dplyr::left_join(
-    dplyr::filter(
-      dplyr::select(
-        mps_aggregate_perf, 
-        Trading.Party.ID, Date, 
-        Agg_Perf_roll
-        ), 
-      Trading.Party.ID == TRADING.PARTY
-      ),
-    by = c("Date")
-    ) %>%
+  base::rbind(., agg_perf) %>%
   droplevels() %>%
   ggplot2::ggplot() + 
   ggplot2::geom_line(
@@ -109,30 +112,34 @@ mps_data_clean_temp %>%
       linetype = Group
       )
     ) +
-  ggplot2::geom_line(
+  ggplot2::geom_point(
     ggplot2::aes(
       x = Date, 
-      y = Agg_Perf_roll,
-      colour = "Agg. Performance"
-      ),
-    linetype = "dashed",
-    size = 1
+      y = GroupPerf,
+      colour = Group,
+      fill = Group,
+      shape = Group
+      )
     ) +
-  ggplot2::geom_rect(
-      data = rect_df, 
-      ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = cat), 
-      alpha = 0.1
-      ) +
-    ggplot2::scale_fill_manual(
-      values = c("green4", "greenyellow", "orange1", "orangered1")
-      ) +
+  #ggplot2::geom_rect(
+   #   data = rect_df, 
+    #  ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = cat), 
+     # alpha = 0.1
+      #) +
+    #ggplot2::scale_fill_manual(
+     # values = c("green4", "greenyellow", "orange1", "orangered1")
+      #) +
   ggplot2::theme(
     legend.title = ggplot2::element_blank(),
     text = ggplot2::element_text(size = 15)
     ) +
   ggplot2::scale_y_continuous(
+    labels = scales::percent_format(accuracy = 1),
     breaks = scales::pretty_breaks(4)
     ) +
+  ggplot2::theme_bw() + 
+  ggplot2::scale_colour_grey(start = 0.7, end = 0.2) +
+  ggplot2::scale_fill_grey(start = 0.7, end = 0.2) +
   ggplot2::labs(
     title = paste0("MPS On-Time Task Completion: ", SHORT.NAME),
     subtitle = "Breakdown by month and standard",
@@ -150,7 +157,7 @@ mps_data_clean_temp %>%
     Date >= max(mps_data_clean_temp$Date) %m-% months(12)
     ) %>%
   dplyr::mutate(
-    OnTimeTaskCompletion = format(OnTimeTaskCompletion, digits = 2),
+    OnTimeTaskCompletion = scales::percent(OnTimeTaskCompletion, accuracy = 1),
     Date = format(Date, "%Y-%m")
     ) %>%
   dplyr::select(
@@ -202,8 +209,10 @@ mps_aggregate_perf %>%
       ), 
     stat = "identity",
     show.legend = FALSE) +
+  ggplot2::scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   ggplot2::scale_fill_manual(values = c("grey4", "azure4")) +
   ggplot2::coord_flip() +
+  ggplot2::theme_bw() +
   ggplot2::theme(
     text = ggplot2::element_text(size = 15)
     ) +
@@ -281,100 +290,40 @@ cat(unlist(res), sep = "\n")
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
-mps_summary %>% 
-  dplyr::select(
-    Date, Standard, MPS_Mean
-    ) %>% 
-  dplyr::filter(
-    Date >= data.period %m-% months(11)
-    ) %>% 
-  dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
-  tidyr::spread(Standard, MPS_Mean) %>%
-  kableExtra::kable(
-    format = "latex", 
-    caption = "Mean peer performance", 
-    linesep = "",
-    digits = 1,
-    format.args = list(decimal.mark = ".", big.mark = ","),
-    booktabs = TRUE,
-    align = "c"
-    ) %>%
-  kableExtra::kable_styling(
-    latex_options = c(
-      "repeat_header",
-      "hold_position",
-      "striped",
-      "scale_down"
-      )
-    ) %>%
-  kableExtra::row_spec(0, bold = TRUE)
+metrics.list <- c("MPS_Mean", "MPS_Median", "TotalTaskVolume")
 
-```
+for (METRIC in metrics.list) {
 
-<br>
-
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
-
-mps_summary %>% 
-  dplyr::select(
-    Date, Standard, MPS_Median
-    ) %>% 
-  dplyr::filter(
-    Date >= data.period %m-% months(11)
-    ) %>% 
-  dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
-  tidyr::spread(Standard, MPS_Median) %>%
-  kableExtra::kable(
-    format = "latex", 
-    caption = "Median peer performance", 
-    linesep = "",
-    digits = 1,
-    format.args = list(decimal.mark = ".", big.mark = ","),
-    booktabs = TRUE,
-    align = "c"
-    ) %>%
-  kableExtra::kable_styling(
-    latex_options = c(
-      "repeat_header",
-      "hold_position",
-      "striped",
-      "scale_down"
-      )
-    ) %>%
-  kableExtra::row_spec(0, bold = TRUE)
-
-```
-
-<br>
-
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
-
-mps_summary %>% 
-  dplyr::select(
-    Date, Standard, TotalTaskVolume
-    ) %>% 
-  dplyr::filter(
-    Date >= data.period %m-% months(11)
-    ) %>% 
-  dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
-  tidyr::spread(Standard, TotalTaskVolume) %>%
-  kableExtra::kable(
-    format = "latex", 
-    caption = "Total Task Volume", 
-    linesep = "",
-    digits = 1,
-    format.args = list(decimal.mark = ".", big.mark = ","),
-    booktabs = TRUE,
-    align = "c"
-    ) %>%
-  kableExtra::kable_styling(
-    latex_options = c(
-      "repeat_header",
-      "hold_position",
-      "striped",
-      "scale_down"
-      )
-    ) %>%
-  kableExtra::row_spec(0, bold = TRUE)
+  mps_summary %>% 
+    dplyr::select(
+      Date, Standard, METRIC
+      ) %>% 
+    dplyr::filter(
+      Date >= data.period %m-% months(11)
+      ) %>% 
+    dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
+    tidyr::spread(Date, METRIC) %>%
+    kableExtra::kable(
+      format = "latex", 
+      caption = paste0("Market ", base::gsub("_", x = METRIC, replacement = " ")), 
+      linesep = "",
+      digits = 1,
+      booktabs = TRUE,
+      align = "c"
+      ) %>%
+    kableExtra::kable_styling(
+      latex_options = c(
+        "repeat_header",
+        "HOLD_position",
+        "striped",
+        "scale_down"
+        )
+      ) %>%
+    kableExtra::row_spec(0, bold = TRUE) %>%
+    print()
+  
+  cat("\n")
+    
+}
 
 ```

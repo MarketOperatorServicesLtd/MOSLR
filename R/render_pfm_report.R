@@ -28,7 +28,7 @@ render_PFM_report <- function(
   prep.data = TRUE,
   load.data = TRUE,
   excluded.list = NULL,
-  rmd.file = "MonthlyPfmReport_pdf.Rmd",
+  rmd.file = "pfm_report_main.Rmd",
   output.dir =
     paste0(
       my.dir,

@@ -149,22 +149,19 @@ perf_status_mps %>%
     Trading.Party.ID == TRADING.PARTY,
     Standard == MPS_CHUNK,
     ) %>%
+  dplyr::mutate_if(is.numeric, scales::percent_format(accuracy = 1)) %>%
   dplyr::select(
     Date, OnTimeTaskCompletion, Planned_Perf, DeltaQuant, Status
     ) %>%
   tidyr::drop_na() %>%
-  dplyr::mutate(
-    Date = format(Date, "%Y-%m"),
-    OnTimeTaskCompletion = format(OnTimeTaskCompletion, digits = 2),
-    DeltaQuant = format(DeltaQuant * 100, digits = 2)
-    ) %>%
+  dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
   kableExtra::kable(
     format = "latex", 
     caption = "IPRP Performance Tracking",
     linesep = "",
     longtable = TRUE, 
     booktabs = TRUE,
-    col.names = c("Date", "Actual Performance", "Planned Performance", "Difference (%)", "IPRP Status"),
+    col.names = c("Date", "Actual Performance", "Planned Performance", "Difference", "IPRP Status"),
     align = rep("c", 5)
     ) %>%
   kableExtra::column_spec(1:5, width = "2.5cm") %>%

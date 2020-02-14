@@ -11,23 +11,25 @@ ops_data_clean_temp %>%
   tidyr::drop_na(Charges) %>%
   base::droplevels() %>%
   ggplot2::ggplot(
-    ggplot2::aes(x = Date, y = Charges, fill = Standard)
+    ggplot2::aes(x = Date, y = Charges, fill = Group)
     ) + 
   ggplot2::geom_bar(stat = "identity") + 
   ggplot2::theme(
-    legend.title = ggplot2::element_blank(),
     text = ggplot2::element_text(size = 15)
     ) +
   ggplot2::scale_y_continuous(
-    labels = scales::comma,
+    labels = scales::dollar_format(prefix = "£"),
     breaks = scales::pretty_breaks(4)
     ) +
+  ggplot2::theme_bw() + 
+  ggplot2::scale_fill_grey(start = 0, end = 0.7) +
   ggplot2::labs(
-    title = "Performance Charges",
+    title = "Performance Charges by OPS Group",
     subtitle = "Breakdown by month and standard",
-    caption = "Source: MOSL"
+    caption = "Source: MOSL",
+    fill = "OPS Group"
     ) +
-  ggplot2::ylab("Charges (£)") + ggplot2::xlab("")
+  ggplot2::ylab("") + ggplot2::xlab("")
 
 ```
 
@@ -43,19 +45,23 @@ ops_data_clean_temp %>%
     PerformanceMeasure == "Completed",
     Charges > 0
     ) %>%
-  tidyr::drop_na(Charges) %>%
   base::droplevels() %>%
   dplyr::select(Date, Standard, Charges) %>%
-  dplyr::mutate(Date = format(Date, "%Y-%m")) %>% 
+  dplyr::mutate(
+    Date = format(Date, "%Y-%m"),
+    Charges = tidyr::replace_na(Charges, 0)
+    ) %>% 
   tidyr::drop_na(Charges) %>%
   base::droplevels() %>%
   tidyr::spread(Standard, Charges) %>%
-  dplyr::mutate(
-    Total = rowSums(dplyr::select(., -Date), na.rm = TRUE)
-    ) %>%
+  dplyr::mutate(Total = rowSums(dplyr::select(., -Date), na.rm = TRUE)) %>%
+  dplyr::mutate_if(~ any(is.na(.)), ~ ifelse(is.na(.), 0, .)) %>%
+  dplyr::mutate_if(is.numeric, scales::dollar_format(prefix = "£")) %>%
+  tidyr::gather("Standard", "Charges", -Date) %>%
+  tidyr::spread(Date, Charges) %>%
   kableExtra::kable (
     format = "latex", 
-    caption = "Breakdown of Charges by Standard", 
+    caption = "Breakdown of Charges", 
     linesep = "",
     format.args = list(big.mark = ","),
     booktabs = TRUE,
@@ -92,25 +98,19 @@ rect_df <- data.frame(
       )
   )
 
+agg_perf <- ops_aggregate_perf_temp %>%
+  dplyr::filter(Trading.Party.ID == TRADING.PARTY) %>%
+  dplyr::select(Date, PerformanceMeasure, Agg_Perf) %>%
+  dplyr::rename(GroupPerf = Agg_Perf) %>%
+  dplyr::mutate(Group = "Aggregate Performance")
+
 ops_data_clean_temp %>%
   dplyr::group_by(Date, PerformanceMeasure, Group) %>%
   dplyr::summarise(
     GroupPerf = stats::weighted.mean(Performance, TaskVolume)
     ) %>%
   dplyr::ungroup() %>%
-  dplyr::left_join(
-    dplyr::filter(
-      dplyr::select(
-        ops_aggregate_perf_temp, 
-        Trading.Party.ID, 
-        Date, 
-        Agg_Perf_roll,
-        PerformanceMeasure
-        ), 
-      Trading.Party.ID == TRADING.PARTY
-      ),
-    by = c("Date", "PerformanceMeasure")
-    ) %>%
+  base::rbind(., agg_perf) %>%
   tidyr::drop_na(GroupPerf) %>%
   droplevels() %>%
   ggplot2::ggplot() + 
@@ -122,39 +122,45 @@ ops_data_clean_temp %>%
       linetype = Group
       )
     ) +
-  ggplot2::geom_line(
+  ggplot2::geom_point(
     ggplot2::aes(
       x = Date, 
-      y = Agg_Perf_roll,
-      colour = "Agg. Performance"
-      ),
-    linetype = "dashed",
-    size = 1
+      y = GroupPerf,
+      colour = Group,
+      fill = Group,
+      shape = Group
+      )
     ) +
-  ggplot2::geom_rect(
-      data = rect_df, 
-      ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = cat), 
-      alpha = 0.1
-      ) +
-    ggplot2::scale_fill_manual(
-      values = c("green4", "greenyellow", "orange1", "orangered1")
-      ) +
+  #ggplot2::geom_rect(
+   #   data = rect_df, 
+    #  ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = cat), 
+     # alpha = 0.1
+      #) +
+    #ggplot2::scale_fill_manual(
+      #values = c("green4", "greenyellow", "orange1", "orangered1")
+      #) +
   ggplot2::theme(
     legend.title = ggplot2::element_blank(),
     text = ggplot2::element_text(size = 15)
     ) +
   ggplot2::scale_y_continuous(
+    labels = scales::percent_format(accuracy = 1),
     breaks = scales::pretty_breaks(4)
     ) +
+  ggplot2::theme_bw() + 
+  ggplot2::scale_colour_grey(start = 0.1, end = 0.9) +
+  ggplot2::scale_fill_grey(start = 0.1, end = 0.9) +
   ggplot2::labs(
-    title = paste0("OPS On-Time Task Completion: ", SHORT.NAME),
-    subtitle = "Breakdown by month and standard",
-    caption = "Source: MOSL\nNote: Aggregate performance corresponds to the 6-month average of aggregate OPS performance"
+    title = paste0("Completed and Outstanding Tasks OPS Performance: ", SHORT.NAME),
+    subtitle = "Breakdown by month and OPS standard grouping",
+    caption = "Note: Aggregate performance corresponds to the 6-month average of aggregate OPS performance\nSource: MOSL"
     ) +
   ggplot2::ylab("") + ggplot2::xlab("") +
   ggplot2::facet_wrap(~PerformanceMeasure)
 
 ```
+
+<br>
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
@@ -167,7 +173,7 @@ ops_data_clean_temp %>%
   tidyr::drop_na(TaskVolume) %>%
   base::droplevels() %>%
   dplyr::mutate(
-    Performance = format(Performance, digits = 2),
+    Performance = scales::percent(Performance, accuracy = 1),
     Date = format(Date, "%Y-%m")
     ) %>%
   dplyr::select(
@@ -175,7 +181,7 @@ ops_data_clean_temp %>%
     ) %>%
   tidyr::drop_na(Performance) %>%
   base::droplevels() %>%
-  tidyr::spread(key = Standard, value = Performance) %>%
+  tidyr::spread(key = Date, value = Performance) %>%
   kableExtra::kable(
     format = "latex", 
     caption = "OPS On Time Completed Tasks by Month",
@@ -199,15 +205,190 @@ ops_data_clean_temp %>%
 
 ```
 
+<br>
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
+
+ops_data_clean_temp %>% 
+  dplyr::filter(
+    Date >= max(ops_data_clean_temp$Date) %m-% months(11),
+    PerformanceMeasure == "Outstanding",
+    TaskVolume > 0
+    ) %>%
+  tidyr::drop_na(TaskVolume) %>%
+  base::droplevels() %>%
+  dplyr::mutate(
+    Performance = scales::percent(Performance, accuracy = 1),
+    Date = format(Date, "%Y-%m")
+    ) %>%
+  dplyr::select(
+    Date, Standard, Performance
+    ) %>%
+  tidyr::drop_na(Performance) %>%
+  base::droplevels() %>%
+  tidyr::spread(key = Date, value = Performance) %>%
+  kableExtra::kable(
+    format = "latex", 
+    caption = "OPS Outstanding Tasks Within Time by Month",
+    linesep = "",
+    format.args = list(big.mark = ","),
+    booktabs = TRUE,
+    align = "c"
+    ) %>%
+  kableExtra::kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      position = "center", 
+      full_width = FALSE,
+      "scale_down"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
+
+```
+
+`r SHORT.NAME`'s 6-month average aggregate OPS performance for completed tasks is `r scales::percent(ops_aggregate_perf_temp$Agg_Perf_roll[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"], accuracy = 1)`, which currently ranks as:
+
+* `r scales::ordinal(ops_aggregate_perf_temp$rank_all[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"])` out of `r ops_aggregate_perf_temp$n_all[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"]` for all Trading Parties
+* `r scales::ordinal(ops_aggregate_perf_temp$rank_type[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"])` out of `r paste0(ops_aggregate_perf_temp$n_type[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"], " ", ops_aggregate_perf_temp$tp_type[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"])`s
+* `r scales::ordinal(ops_aggregate_perf_temp$rank_subtype[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"])` out of `r ops_aggregate_perf_temp$n_subtype[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"]` trading parties with licence type `r ops_aggregate_perf_temp$sub_type[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"]`
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 6}
+
+ops_aggregate_perf %>%
+  dplyr::filter(
+    sub_type == as.character(ops_aggregate_perf_temp$sub_type),
+    Date == data.period,
+    PerformanceMeasure == "Completed"
+    ) %>%
+  ggplot2::ggplot() +
+  ggplot2::geom_bar(
+    ggplot2::aes(
+      x = reorder(ShortName, Agg_Perf_roll), 
+      y = Agg_Perf_roll,
+      fill = dplyr::if_else(Trading.Party.ID == TRADING.PARTY, "highlight", "normal")
+      ), 
+    stat = "identity",
+    show.legend = FALSE) +
+  ggplot2::scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  ggplot2::scale_fill_manual(values = c("grey4", "azure4")) +
+  ggplot2::coord_flip() +
+  ggplot2::theme_bw() + 
+  ggplot2::theme(
+    text = ggplot2::element_text(size = 15)
+    ) +
+  ggplot2::labs(
+    title = "Ranking of Aggregate OPS Performance (Completed)",
+    subtitle = 
+      paste0(
+        "6-month mean of aggregate OPS performance by Trading Party (", 
+        ops_aggregate_perf$sub_type, ")"
+        ),
+    caption = "Source: MOSL"
+    ) +
+  ggplot2::ylab("") + ggplot2::xlab("")
+
+```
+
+
+`r SHORT.NAME`'s 6-month average aggregate OPS performance for outstanding tasks is `r scales::percent(ops_aggregate_perf_temp$Agg_Perf_roll[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"], accuracy = 1)`, which currently ranks as:
+
+* `r scales::ordinal(ops_aggregate_perf_temp$rank_all[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"])` out of `r ops_aggregate_perf_temp$n_all[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"]` for all Trading Parties
+* `r scales::ordinal(ops_aggregate_perf_temp$rank_type[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"])` out of `r paste0(ops_aggregate_perf_temp$n_type[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"], " ", ops_aggregate_perf_temp$tp_type[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"])`s
+* `r scales::ordinal(ops_aggregate_perf_temp$rank_subtype[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"])` out of `r ops_aggregate_perf_temp$n_subtype[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"]` trading parties with licence type `r ops_aggregate_perf_temp$sub_type[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"]`
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 6}
+
+ops_aggregate_perf %>%
+  dplyr::filter(
+    sub_type == as.character(ops_aggregate_perf_temp$sub_type),
+    Date == data.period,
+    PerformanceMeasure == "Outstanding"
+    ) %>%
+  ggplot2::ggplot() +
+  ggplot2::geom_bar(
+    ggplot2::aes(
+      x = reorder(ShortName, Agg_Perf_roll), 
+      y = Agg_Perf_roll,
+      fill = dplyr::if_else(Trading.Party.ID == TRADING.PARTY, "highlight", "normal")
+      ), 
+    stat = "identity",
+    show.legend = FALSE) +
+  ggplot2::scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  ggplot2::scale_fill_manual(values = c("grey4", "azure4")) +
+  ggplot2::coord_flip() +
+  ggplot2::theme(
+    text = ggplot2::element_text(size = 15)
+    ) +
+  ggplot2::labs(
+    title = "Ranking of Aggregate OPS Performance (Outstanding)",
+    subtitle = 
+      paste0(
+        "6-month mean of aggregate OPS performance by Trading Party (", 
+        ops_aggregate_perf$sub_type, ")"
+        ),
+    caption = "Source: MOSL"
+    ) +
+  ggplot2::ylab("") + ggplot2::xlab("")
+
+```
+
 ## Performance Issues
+
+At the beginning of the period (`r format(data.period, "%Y-%m")`), `r SHORT.NAME` had `r nrow(perf_status_ops_temp)` standards being monitored by MOSL. OPS is covered by the following performance measures: `r paste(unique(perf_status_ops_temp$PerformanceMeasure), sep = " and ")`
+
+A summary of each standard with respect to each performance measure is shown in the table(s) below: 
+
+``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
+
+for (MEASURE in unique(perf_status_ops_temp$PerformanceMeasure)) {
+
+  perf_status_ops_temp %>%
+    dplyr::filter(
+      PerformanceMeasure == MEASURE
+      ) %>%
+    dplyr::select(
+      Standard, SecondaryCategory, Consistency, PerfRating, Status, Action
+      ) %>%
+    kableExtra::kable(
+      format = "latex", 
+      caption = paste0("Current OPS Status and MOSL Actions (", MEASURE, ")"),
+      linesep = "",
+      booktabs = TRUE,
+      col.names = c("OPS", "Category", "Consistency", "Performance Rating", "IPRP Status", "MOSL Action"),
+      align = c("llcccc")
+      ) %>%
+    kableExtra::column_spec(4:6, width = "2.5cm") %>%
+    kableExtra::kable_styling(
+      latex_options = c(
+        "repeat_header",
+        "HOLD_position",
+        "striped",
+        position = "center", 
+        full_width = FALSE,
+        "scale_down"
+        )
+      ) %>%
+    kableExtra::row_spec(0, bold = TRUE) %>%
+    print()
+  
+  cat("\n")
+
+}
+
+```
+
 
 ## Analysis
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis", eval = FALSE}
 
-ops_list <- unique(as.character(perf_status_ops_temp$Standard))
+ops_list <- base::levels(base::droplevels(ops_data_clean_temp$Group))
 
-res <- lapply(mps_list, function (MPS_CHUNK) {
+res <- lapply(ops_list, function (OPS_CHUNK) {
   
   knitr::knit_child(
     "pfm_report_ops_template.Rmd", envir = environment(), quiet = TRUE
@@ -218,5 +399,55 @@ res <- lapply(mps_list, function (MPS_CHUNK) {
 cat(unlist(res), sep = "\n")
 
 ```
+ 
+<br>
 
 ## Market Aggregates
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
+
+metrics.list <- c("OPS_Mean", "OPS_Median", "TotalTaskVolume")
+
+for (METRIC in metrics.list) {
+
+  for (MEASURE in unique(ops_summary$PerformanceMeasure)) {
+  
+    ops_summary %>% 
+      dplyr::filter(
+        PerformanceMeasure == MEASURE
+        ) %>%
+      tidyr::drop_na() %>%
+      dplyr::select(
+        Date, Standard, METRIC
+        ) %>% 
+      dplyr::filter(
+        Date >= data.period %m-% months(11)
+        ) %>% 
+      dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
+      tidyr::spread(Date, METRIC) %>%
+      kableExtra::kable(
+        format = "latex", 
+        caption = paste0("Market ", base::gsub("_", x = METRIC, replacement = " "), " (", MEASURE, ")"), 
+        linesep = "",
+        digits = 1,
+        booktabs = TRUE,
+        align = "c"
+        ) %>%
+      kableExtra::kable_styling(
+        latex_options = c(
+          "repeat_header",
+          "HOLD_position",
+          "striped",
+          "scale_down"
+          )
+        ) %>%
+      kableExtra::row_spec(0, bold = TRUE) %>%
+      print()
+    
+    cat("\n")
+    
+  }
+  
+}
+
+```

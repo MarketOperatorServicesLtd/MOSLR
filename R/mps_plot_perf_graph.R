@@ -172,9 +172,14 @@ if (load.data & is.null(df)) {
         )
       ) +
     ggplot2::scale_y_continuous(
+      labels = scales::comma,
       breaks = scales::pretty_breaks(4),
       sec.axis =
-        ggplot2::sec_axis(~. / max(graph_data$TaskVolume), name = sec.axis.name)
+        ggplot2::sec_axis(
+          ~. / max(graph_data$TaskVolume),
+          name = sec.axis.name,
+          labels = scales::percent_format(accuracy = 1)
+          )
       ) +
     ggplot2::scale_fill_manual(
       values = fill.manual,
@@ -207,6 +212,7 @@ if (load.data & is.null(df)) {
       ) +
     ggplot2::ylab(y.lab) +
     ggplot2::xlab(x.lab) +
+    ggplot2::theme_bw() +
     ggplot2::theme(
       legend.title = ggplot2::element_blank(),
       legend.position = "right"
