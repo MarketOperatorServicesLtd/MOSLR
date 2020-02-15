@@ -48,10 +48,37 @@ classoption: table
 
 ## Performance Criteria
 
-A Trading Party's MPS performance will be flagged when the ratio of on-time task completion to total tasks completed for that MPS falls below the peer mean and peer median level for three consecutive months. "Peer mean" and "peer median" refer, respectively, to the mean and median of all on-time task ratios for every Trading Party in the market. The following MPS are currently subject to this criteria: MPS 1, MPS 2, MPS 3, MPS 4, MPS 7, MPS 12, MPS 16, MPS 17.
+### Market Performance Standards
 
-MPS performance will also be flagged when it is lower than the threshold percentage, set by MOSL. This threshold performance can change when MOSL feel appropriate. Currently, only MPS 18 is subject to a threshold (75%).
+A Trading Party's performance will be flagged when the ratio of on-time task completion to total tasks completed for that MPS falls below the peer mean and peer median level for three consecutive months. "Peer mean" and "peer median" refer, respectively, to the mean and median of all on-time task ratios for every Trading Party in the market. 
+
+The following MPS are currently subject to this criteria: MPS 1, MPS 2, MPS 3, MPS 4, MPS 7, MPS 12, MPS 16, MPS 17.
+
+MPS performance will also be flagged when it is lower than the threshold percentage, set by MOSL. Note that this threshold can change. 
+
+Currently, only MPS 18 is subject to a threshold, of 75%.
 
 When evaluating these performance flags, MOSL takes into account other factors, including: performance relative to comparable peers; number of tasks relative to size; and other important Trading Party activities, such as data improvement activity and significant operational changes.
 
 Persistently poor performance could lead to the issue being escalated to MOSL's Performance Resolution process through an Initial Performance Rectification Plan (IPRP). Failure to improve over time at this stage could lead to the issue being further escalated to a Performance Rectification Plan (PRP) overseen by MPC and / or Panel.
+
+### Operational Performance Standards
+
+TBD
+
+## Rating and Categorisation of Performance
+
+As part of its analysis of historical performance, MOSL categorises performance over a 6-month period according to **consistency** and by **rating** absolute performance. Consistency is based on a 6-month rolling standard deviation of performance (whether in relation to a particular standard or aggregated across a group or all standards), with the following classification:
+
+* Less than 1% is "Very Consistent
+* Between 1-2% is "Consistent"
+* Between 2-5% is "Inconsistent"
+* Greater than 5% is "Very Inconsistent"
+
+The performance rating is based on a 6-month rolling mean of performance (whether in relation to a particular standard or aggregated across a group or all standards) and is classified on an absolute scale as follows:
+
+* Greater than 90% is "Very Good"
+* Between 80-90% is "Good"
+* Between 70-80% is "Poor"
+* Less than 70% is "Very Poor"
+

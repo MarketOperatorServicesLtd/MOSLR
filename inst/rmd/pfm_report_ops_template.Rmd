@@ -1,67 +1,66 @@
-### `r paste0(OPS_CHUNK, ": ", OPS_details$Context[OPS_details$OPS == OPS_CHUNK])`
+### `r paste0(OPS_CHUNK, ": ", Standards_details$Context[Standards_details$Standard == OPS_CHUNK])`
 
-> `r OPS_details$Details[OPS_details$OPS == OPS_CHUNK]`
+> `r Standards_details$Details[Standards_details$Standard == OPS_CHUNK]`
 
-`r SHORT.NAME`'s on-time task performance for `r OPS_CHUNK`  is rated as 
-
-* `r paste0(perf_status_ops_temp$Consistency[perf_status_ops_temp$OPS == OPS_CHUNK], ", ", perf_status_ops_temp$PerfRating[perf_status_ops_temp$OPS == OPS_CHUNK])`
-
-Below is a graph showing `r SHORT.NAME`'s historical on-time task completion performance for `r OPS_CHUNK`. MOSL action points and IPRP milestones are shown, if applicable. 
+Below is a graph showing `r SHORT.NAME`'s historical performance for `r OPS_CHUNK`. MOSL action points and IPRP milestones are shown, if applicable. 
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
 
-on.iprp <- perf_status_ops_temp$IPRP[perf_status_ops_temp$OPS == OPS_CHUNK]
+on.iprp <- any(perf_status_ops_temp$IPRP[perf_status_ops_temp$Standard == OPS_CHUNK])
 
 graph <- perf_status_ops %>%
   dplyr::filter(
     TaskVolume > 0
     ) %>%
-  MOSLR::ops_plot_perf_graph(
-    data = ., 
+  MOSLR::mps_plot_perf_graph(
+    df = ., 
     load.data = FALSE,
-    melt.data = TRUE,
-    Standard = OPS_CHUNK,
-    TradParty = TRADING.PARTY,
-    filter.date.from = data.period %m-% months(11),
-    filter.date.to = data.period, 
+    standard = OPS_CHUNK,
+    trading.party = TRADING.PARTY,
+    period.start = data.period %m-% months(11),
+    period.end = data.period, 
     action.points = TRUE,
     include.iprp = on.iprp,
     graph.title = OPS_CHUNK,
-    sub.title = OPS_details$Context[OPS_details$OPS == OPS_CHUNK],
-    x.lab = "Performance"
+    sub.title = Standards_details$Context[Standards_details$Standard == OPS_CHUNK],
     ) +
   ggplot2::theme(
     text = ggplot2::element_text(size = 15)
-  )
+    ) +
+  ggplot2::facet_wrap(~PerformanceMeasure)
 
 tryCatch(
   expr = {
     plot(graph)
     },
   error = function(e){
-    message("Error printing OPS performance graph")
     print(e)
   }
   )
 
 ```
 
-`r OPS_CHUNK` has had:
+For completed tasks `r OPS_CHUNK` has had:
 
-* `r perf_status_ops_temp$SumPerf3m[perf_status_ops_temp$OPS == OPS_CHUNK]` performance flags
-* `r perf_status_ops_temp$CumWatch[perf_status_ops_temp$OPS == OPS_CHUNK]` watch flags
+* `r perf_status_ops_temp$SumPerf3m[perf_status_ops_temp$Standard == OPS_CHUNK & perf_status_ops_temp$PerformanceMeasure == "Completed"]` performance flags
+* `r perf_status_ops_temp$CumWatch[perf_status_ops_temp$Standard == OPS_CHUNK & perf_status_ops_temp$PerformanceMeasure == "Completed"]` watch flags
+
+For outstanding tasks `r OPS_CHUNK` has had:
+
+* `r perf_status_ops_temp$SumPerf3m[perf_status_ops_temp$Standard == OPS_CHUNK & perf_status_ops_temp$PerformanceMeasure == "Outstanding"]` performance flags
+* `r perf_status_ops_temp$CumWatch[perf_status_ops_temp$Standard == OPS_CHUNK & perf_status_ops_temp$PerformanceMeasure == "Outstanding"]` watch flags
 
 `r if (on.iprp) { paste0(OPS_CHUNK, " is currently on an IPRP. See below for further details.") } else { paste0(OPS_CHUNK, " is not on an IPRP.") }`
 
-<br> 
-
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE} 
 
-RATIONALE_CHUNK <- nrow(perf_status_ops %>% dplyr::filter(Trading.Party.ID == TRADING.PARTY, OPS == OPS_CHUNK, Action != "")) > 0
+RATIONALE_CHUNK <- nrow(perf_status_ops %>% dplyr::filter(Trading.Party.ID == TRADING.PARTY, Standard == OPS_CHUNK, Action != "")) > 0
 
-PFM_COMM_CHUNK <- nrow(perf_status_ops %>% dplyr::filter(Trading.Party.ID == TRADING.PARTY, OPS == OPS_CHUNK, !is.na(PFM_Commentary), PFM_Commentary != "")) > 0
+PFM_COMM_CHUNK <- nrow(perf_status_ops %>% dplyr::filter(Trading.Party.ID == TRADING.PARTY, Standard == OPS_CHUNK, !is.na(PFM_Commentary), PFM_Commentary != "")) > 0
 
 ```
+
+<br> 
 
 `r if (RATIONALE_CHUNK) { paste0("The table below shows the rationale for MOSL actions regarding ",  paste0(OPS_CHUNK), ".") }`
 
@@ -70,11 +69,11 @@ PFM_COMM_CHUNK <- nrow(perf_status_ops %>% dplyr::filter(Trading.Party.ID == TRA
 perf_status_ops %>%
   dplyr::filter(
     Trading.Party.ID == TRADING.PARTY,
-    OPS == OPS_CHUNK,
+    Standard == OPS_CHUNK,
     Action != ""
     ) %>%
   dplyr::select(
-    Date, Action, Rationale
+    Date, PerformanceMeasure, Action, Rationale
     ) %>%
   dplyr::mutate(
     Date = format(Date, "%Y-%m")
@@ -86,7 +85,7 @@ perf_status_ops %>%
     longtable = TRUE, 
     booktabs = TRUE
     ) %>%
-  kableExtra::column_spec(3, width = "10cm") %>%
+  kableExtra::column_spec(4, width = "7cm") %>%
   kableExtra::kable_styling(
     font_size = 10,
     latex_options = c(
@@ -109,12 +108,12 @@ perf_status_ops %>%
 perf_status_ops %>%
   dplyr::filter(
     Trading.Party.ID == TRADING.PARTY,
-    OPS == OPS_CHUNK,
+    Standard == OPS_CHUNK,
     !is.na(PFM_Commentary), 
     PFM_Commentary != ""
     ) %>%
   dplyr::select(
-    Date, PFM_Commentary
+    Date, PerformanceMeasure, PFM_Commentary
     ) %>%
   dplyr::mutate(
     Date = format(Date, "%Y-%m")
@@ -125,9 +124,9 @@ perf_status_ops %>%
     linesep = "",
     longtable = TRUE, 
     booktabs = TRUE,
-    col.names = c("Date", "Portfolio Manager Commentary")
+    col.names = c("Date", "Performance Measure", "Portfolio Manager Commentary")
     ) %>%
-  kableExtra::column_spec(2, width = "12cm") %>%
+  kableExtra::column_spec(3, width = "10cm") %>%
   kableExtra::kable_styling(
     font_size = 10,
     latex_options = c(
@@ -149,15 +148,15 @@ perf_status_ops %>%
 perf_status_ops %>%
   dplyr::filter(
     Trading.Party.ID == TRADING.PARTY,
-    OPS == OPS_CHUNK,
+    Standard == OPS_CHUNK,
     ) %>%
   dplyr::select(
-    Date, TaskCompletion, Planned_Perf, DeltaQuant, Status
+    Date, PerformanceMeasure, Performance, Planned_Perf, DeltaQuant, Status
     ) %>%
   tidyr::drop_na() %>%
   dplyr::mutate(
     Date = format(Date, "%Y-%m"),
-    TaskCompletion = format(TaskCompletion, digits = 2),
+    Performance = format(Performance, digits = 2),
     DeltaQuant = format(DeltaQuant * 100, digits = 2)
     ) %>%
   kableExtra::kable(
@@ -166,10 +165,10 @@ perf_status_ops %>%
     linesep = "",
     longtable = TRUE, 
     booktabs = TRUE,
-    col.names = c("Date", "Actual Performance", "Planned Performance", "Difference (%)", "IPRP Status"),
+    col.names = c("Date", "Performance Measure", "Actual Performance", "Planned Performance", "Relative Difference", "IPRP Status"),
     align = rep("c", 5)
     ) %>%
-  kableExtra::column_spec(1:5, width = "2.5cm") %>%
+  kableExtra::column_spec(2:6, width = "2.5cm") %>%
   kableExtra::kable_styling(
     font_size = 10,
     latex_options = c(
@@ -184,7 +183,7 @@ perf_status_ops %>%
 
 <br> 
 
-`r if (on.iprp) { paste0("For this plan there have been:") }`
+`r if (on.iprp) { paste0("For this standard there have been:") }`
 
-`r if (on.iprp) { paste0("* ",  perf_status_ops_temp$CumResubmit[perf_status_ops_temp$OPS == OPS_CHUNK], " resubmission(s)") }`
-`r if (on.iprp) { paste0("* ",  sum(perf_status_ops_temp$UnderReview[perf_status_ops_temp$OPS == OPS_CHUNK]), " review(s)") }`
+`r if (on.iprp) { paste0("* ",  perf_status_ops_temp$CumResubmit[perf_status_ops_temp$Standard == OPS_CHUNK], " IPRP resubmission(s)") }`
+`r if (on.iprp) { paste0("* ",  sum(perf_status_ops_temp$UnderReview[perf_status_ops_temp$Standard == OPS_CHUNK]), " IPRP review(s)") }`

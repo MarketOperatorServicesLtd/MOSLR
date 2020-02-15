@@ -39,7 +39,8 @@ mps_process_tracker <- function(
         "Rationale", "PFM_Commentary", "PerfFlag3m", "PerfFlag6m",
         "ActiveIPRP", "IPRPend", "MilestoneFlag", "Pending", "UnderReview",
         "OnWatchIPRPend",  "OnWatch", "Consistency", "PerfRating", "IPRPeligible",
-        "CumWatch", "CumIPRP", "CumResubmit", "CumEscalate", "CumExtend"
+        "CumWatch", "CumIPRP", "CumResubmit", "CumEscalate", "CumExtend",
+        "PerformanceMeasure"
       )
   }
 
@@ -60,7 +61,7 @@ mps_process_tracker <- function(
       filter.category = NULL
       ) %>%
     dplyr::select(
-      -Action, - Rationale, -PFM_Commentary, -Response_Received
+      -Action, - Rationale, -PFM_Commentary, -Template_Sent, -Response_Received
       )
 
   monthly_tracking_post <- utils::read.csv(paste0(my.dir,"/data/inputs/tracking_mps.csv")) %>%

@@ -81,9 +81,9 @@ ops_data_prep <- function(
   ops_summary <- ops_data_clean %>%
     dplyr::group_by(Date, Standard, PerformanceMeasure) %>%
     dplyr::summarise(
-      OPS_Mean = mean(Performance, na.rm = TRUE),
-      OPS_Median = median(Performance, na.rm = TRUE),
-      TotalTaskVolume = sum(TaskVolume, na.rm = TRUE)
+      MarketMean = mean(Performance, na.rm = TRUE),
+      MarketMedian = median(Performance, na.rm = TRUE),
+      MarketTaskVolume = sum(TaskVolume, na.rm = TRUE)
       ) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(Standard, Date)
@@ -107,11 +107,11 @@ ops_data_prep <- function(
       by = c("Standard")
       ) %>%
     dplyr::mutate(
-      TaskShare = TaskVolume / TotalTaskVolume,
+      TaskShare = TaskVolume / MarketTaskVolume,
       BelowPeer = dplyr::if_else (
         Threshold > 0,
         Performance < Threshold,
-        Performance < OPS_Mean
+        Performance < MarketMean
         ),
       Standard = factor(
         Standard,

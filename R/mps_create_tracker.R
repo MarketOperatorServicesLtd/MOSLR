@@ -44,7 +44,7 @@ mps_create_tracker <- function(
     } else {
       var_list <-
         c(
-        "Date", "SecondaryCategory", "Trading.Party.ID", "Standard", "Action",
+        "Date", "SecondaryCategory", "Trading.Party.ID", "PerformanceMeasure", "Standard", "Action",
         "Rationale", "PFM_Commentary", "ActiveIPRP", "IPRPend",
         "MilestoneFlag", "PerfFlag3m", "PerfFlag6m", "OnWatch",
         "OnWatchIPRPend",  "Consistency", "PerfRating"
@@ -101,9 +101,9 @@ mps_create_tracker <- function(
       ) %>%
     dplyr::mutate(
       Action = tolower(Action),
-      Delta = OnTimeTaskCompletion - Planned_Perf,
+      Delta = Performance - Planned_Perf,
       DeltaQuant = Delta / Planned_Perf,
-      OnTimeTaskCompletion = as.numeric(format(OnTimeTaskCompletion, digits = 1)),
+      Performance = as.numeric(format(Performance, digits = 1)),
       Planned_Perf = as.numeric(format(Planned_Perf, digits = 1)),
       Status = dplyr::case_when(
         (DeltaQuant > 0.05) ~ "Outperform",
@@ -112,7 +112,7 @@ mps_create_tracker <- function(
         ),
       OnWatch = Action == "watch",
       OnWatchIPRPend = Action == "de-escalate" | Action == "watch_iprpend",
-      MilestoneFlag = OnTimeTaskCompletion < Planned_Perf,
+      MilestoneFlag = Performance < Planned_Perf,
       IPRPend = PlanEndDate == Date,
       Pending = Template_Sent != "" & Response_Received == "",
       UnderReview =
@@ -128,8 +128,8 @@ mps_create_tracker <- function(
     dplyr::mutate(
       PerfFlag3m = zoo::rollapply(BelowPeer, 3, mean, align = "right", fill = NA) == 1,
       PerfFlag6m = zoo::rollapply(BelowPeer, 6, mean, align = "right", fill = NA) >= 0.5,
-      rolling.sd = zoo::rollapply(OnTimeTaskCompletion, 6, sd, align = "right", fill = NA),
-      rolling.mean = zoo::rollapply(OnTimeTaskCompletion, 6, mean, align = "right", fill = NA),
+      rolling.sd = zoo::rollapply(Performance, 6, sd, align = "right", fill = NA),
+      rolling.mean = zoo::rollapply(Performance, 6, mean, align = "right", fill = NA),
       Consistency =
         dplyr::case_when(
           rolling.sd < 0.01 ~ "Very Consistent",

@@ -5,17 +5,16 @@
 \title{Plot Performance Graph (MPS)}
 \usage{
 mps_plot_perf_graph(
-  my.dir = getwd(),
-  df = NULL,
-  load.data = TRUE,
-  melt.data = TRUE,
+  df,
+  load.data = FALSE,
+  my.dir = NULL,
   include.iprp = FALSE,
-  TradParty,
-  Standard,
+  trading.party,
+  standard,
   period.start = "2018-04-01",
   period.end = Sys.Date(),
   action.points = FALSE,
-  sec.axis.name = "",
+  sec.axis.name = "Performance",
   fill.label = "Task Volume",
   fill.manual = "azure3",
   y.lab = "Tasks",
@@ -25,19 +24,17 @@ mps_plot_perf_graph(
 )
 }
 \arguments{
-\item{my.dir}{character}
-
 \item{df}{dataframe}
 
 \item{load.data}{logical}
 
-\item{melt.data}{logical}
+\item{my.dir}{character}
 
 \item{include.iprp}{logical}
 
-\item{TradParty}{character}
+\item{trading.party}{character}
 
-\item{Standard}{character}
+\item{standard}{character}
 
 \item{period.start}{date}
 

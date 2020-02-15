@@ -12,7 +12,6 @@
 #' @param output.dir character
 #' @param excluded.list character
 #' @param rmd.file  character
-#' @param output.file character
 #' @param my.dir character
 #' @param data.period date
 #'

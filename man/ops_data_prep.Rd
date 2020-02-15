@@ -7,7 +7,9 @@
 ops_data_prep(
   my.dir = getwd(),
   ops.data = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_data.csv")),
+  ops.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")),
   ops.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/ops_thresholds.csv")),
+  ops.charges = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_Charges.csv")),
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   save.output = TRUE

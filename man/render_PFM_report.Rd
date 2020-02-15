@@ -10,7 +10,7 @@ render_PFM_report(
   prep.data = TRUE,
   load.data = TRUE,
   excluded.list = NULL,
-  rmd.file = "MonthlyPfmReport_pdf.Rmd",
+  rmd.file = "pfm_report_main.Rmd",
   output.dir = paste0(my.dir, "/PfmReports/", format(Sys.Date(), "\%Y-\%m")),
   data.period = Sys.Date() \%m-\% months(1)
 )

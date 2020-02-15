@@ -5,21 +5,23 @@
 \title{Drag and drop files from one location to another based on folder name to a specified directory}
 \usage{
 dragon_drop(
-  dir.to = getwd(),
-  dir.from = utils::choose.dir(caption =
-    "Select the directory that folders  should be copied from."),
+  origin = utils::choose.dir(caption =
+    "Select the origin directory that folders or file(s) should be copied from."),
+  destination = utils::choose.dir(caption =
+    "Select the destination directory that folders or file(s) should be copied to."),
   folder.name = format(Sys.Date(), format = "\%Y-\%m"),
   folder.ext = NULL,
   sub.folder = NULL,
   file.type = NULL,
-  tp.list = "to",
-  new.folder = TRUE
+  folder.list = "destination",
+  new.folder = TRUE,
+  distribute = FALSE
 )
 }
 \arguments{
-\item{dir.to}{character}
+\item{origin}{character}
 
-\item{dir.from}{character}
+\item{destination}{character}
 
 \item{folder.name}{character}
 
@@ -29,9 +31,11 @@ dragon_drop(
 
 \item{file.type}{factor}
 
-\item{tp.list}{factor}
+\item{folder.list}{factor}
 
 \item{new.folder}{character}
+
+\item{distribute}{logical}
 }
 \value{
 

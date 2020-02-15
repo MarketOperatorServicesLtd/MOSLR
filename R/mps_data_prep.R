@@ -43,7 +43,7 @@ mps_data_prep <- function(
       ) %>%
     dplyr::mutate(
       Date = as.Date(Date, format = "%d/%m/%Y"),
-      OnTimeTaskCompletion = OnTimeTasks / TaskVolume
+      Performance = OnTimeTasks / TaskVolume
       ) %>%
     dplyr::arrange(
       Date, Trading.Party.ID, Standard
@@ -52,7 +52,7 @@ mps_data_prep <- function(
       Date,
       Trading.Party.ID,
       Standard,
-      OnTimeTaskCompletion,
+      Performance,
       TaskVolume,
       Charges,
       OnTimeTasks
@@ -82,9 +82,9 @@ mps_data_prep <- function(
   mps_summary <- mps_data_clean %>%
     dplyr::group_by(Date, Standard) %>%
     dplyr::summarise(
-      MPS_Mean = mean(OnTimeTaskCompletion, na.rm = TRUE),
-      MPS_Median = median(OnTimeTaskCompletion, na.rm = TRUE),
-      TotalTaskVolume = sum(TaskVolume)
+      MarketMean = mean(Performance, na.rm = TRUE),
+      MarketMedian = median(Performance, na.rm = TRUE),
+      MarketTaskVolume = sum(TaskVolume)
       ) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(Standard, Date)
@@ -96,11 +96,12 @@ mps_data_prep <- function(
       by = c("Date", "Standard")
       ) %>%
     dplyr::mutate(
-      TaskShare = TaskVolume / TotalTaskVolume,
+      TaskShare = TaskVolume / MarketTaskVolume,
       BelowPeer = dplyr::if_else (
         mps_threshold > 0,
-        OnTimeTaskCompletion < mps_threshold,
-        OnTimeTaskCompletion < MPS_Mean
+        Performance < mps_threshold,
+        Performance < MarketMean,
+        PerformanceMeasure = "Completed"
         )
       )
 

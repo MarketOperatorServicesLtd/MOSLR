@@ -24,7 +24,7 @@ mps_data_clean_temp %>%
   ggplot2::scale_fill_grey(start = 0.1, end = 0.7) +
   ggplot2::labs(
     title = "Performance Charges",
-    subtitle = "Breakdown by month and standard",
+    subtitle = "Breakdown by month and standard grouping",
     caption = "Source: MOSL"
     ) +
   ggplot2::ylab("") + ggplot2::xlab("")
@@ -49,7 +49,7 @@ mps_data_clean_temp %>%
     ) %>%
   dplyr::mutate_if(~ any(is.na(.)), ~ ifelse(is.na(.), 0, .)) %>%
   dplyr::mutate_if(is.numeric, scales::dollar_format(prefix = "£")) %>%
-  kableExtra::kable (
+  kableExtra::kable(
     format = "latex", 
     caption = "Breakdown of Charges by Standard", 
     linesep = "",
@@ -72,7 +72,11 @@ mps_data_clean_temp %>%
 
 ```
 
-## On-Time Task Completion
+## Performance Overview
+
+As of `r format(data.period, "%B-%Y")`, MOSL were monitoring `r SHORT.NAME`'s performance against `r nrow(perf_status_mps_temp)` standards. The performance of Trading Parties against these standards is measured according to:
+
+* `r paste(levels(perf_status_mps_temp$PerformanceMeasure), sep = "and")`
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
 
@@ -154,16 +158,16 @@ mps_data_clean_temp %>%
 
 mps_data_clean_temp %>% 
   dplyr::filter(
-    Date >= max(mps_data_clean_temp$Date) %m-% months(12)
+    Date >= max(mps_data_clean_temp$Date) %m-% months(11)
     ) %>%
   dplyr::mutate(
-    OnTimeTaskCompletion = scales::percent(OnTimeTaskCompletion, accuracy = 1),
+    Performance = scales::percent(Performance, accuracy = 1),
     Date = format(Date, "%Y-%m")
     ) %>%
   dplyr::select(
-    Date, Standard, OnTimeTaskCompletion
+    Date, Standard, Performance
     ) %>%
-  tidyr::spread(key = Standard, value = OnTimeTaskCompletion) %>%
+  tidyr::spread(key = Standard, value = Performance) %>%
   kableExtra::kable(
     format = "latex", 
     caption = "MPS Performance by Month",
@@ -187,7 +191,7 @@ mps_data_clean_temp %>%
 
 ```
 
-`r SHORT.NAME`'s 6-month average aggregate MPS performance is `r format(mps_aggregate_perf_temp$Agg_Perf_roll, digits = 2)`, which currently ranks as:
+`r SHORT.NAME`'s 6-month average aggregate MPS performance is `r scales::percent(mps_aggregate_perf_temp$Agg_Perf_roll, accuracy = 1)`, which currently ranks as:
 
 * `r scales::ordinal(mps_aggregate_perf_temp$rank_all)` out of `r mps_aggregate_perf_temp$n_all` for all Trading Parties
 * `r scales::ordinal(mps_aggregate_perf_temp$rank_type)` out of `r paste0(mps_aggregate_perf_temp$n_type, " ", mps_aggregate_perf_temp$tp_type)`s
@@ -217,11 +221,11 @@ mps_aggregate_perf %>%
     text = ggplot2::element_text(size = 15)
     ) +
   ggplot2::labs(
-    title = "Ranking of Aggregate MPS Performance",
+    title = "Ranking of Overall MPS Performance",
     subtitle = 
       paste0(
-        "6-month mean of aggregate MPS performance by Trading Party (", 
-        mps_aggregate_perf$sub_type, ")"
+        "Rolling 6-month mean of aggregate MPS performance by Trading Party (", 
+        mps_aggregate_perf_temp$sub_type, ")"
         ),
     caption = "Source: MOSL"
     ) +
@@ -229,9 +233,7 @@ mps_aggregate_perf %>%
 
 ```
 
-## Performance Issues
-
-At the beginning of the period (`r format(data.period, "%Y-%m")`), `r SHORT.NAME` had `r nrow(perf_status_mps_temp)` standards being monitored by MOSL. A summary of each standard is shown in the table below: 
+The current status of `r SHORT.NAME`'s performance against each standard and performance measure is summarised in the table(s) below: 
 
 ``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
@@ -239,19 +241,22 @@ perf_status_mps_temp %>%
   dplyr::select(
     Standard, SecondaryCategory, Consistency, PerfRating, Status, Action
     ) %>%
+  dplyr::mutate(
+    Status = tidyr::replace_na(Status, "")
+    ) %>%
   kableExtra::kable(
     format = "latex", 
-    caption = "Current MPS Categorisation and MOSL Actions",
+    caption = "Current Status of MPS",
     linesep = "",
     booktabs = TRUE,
-    col.names = c("MPS", "Category", "Consistency", "Performance Rating", "IPRP Status", "MOSL Action"),
+    col.names = c("MPS", "Category", "Performance Consistency", "Performance Rating", "IPRP Status", "MOSL Action"),
     align = c("llcccc")
     ) %>%
-  kableExtra::column_spec(4:6, width = "2.5cm") %>%
+  kableExtra::column_spec(3:4, width = "3.5cm") %>%
   kableExtra::kable_styling(
     latex_options = c(
       "repeat_header",
-      "hold_position",
+      "HOLD_position",
       "striped",
       position = "center", 
       full_width = FALSE,
@@ -264,11 +269,48 @@ perf_status_mps_temp %>%
 
 <br>
 
-## Analysis
+See Appendix for an explanation of how MOSL rates Trading Party performance and consistency against the standards.
 
-As part of its analysis of historical MPS performance, MOSL categorises performance over a 6-month period according to consistency and by comparing performance to the market mean performance over the same period. For example, mean performance over six-months at, or close to, the mean market level, in most months (i.e. 3 or more of the last 6 months) would be rated as “consistent, good”. 
 
-See Appendix I for further information of how MOSL categorises MPS performance. 
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 6}
+
+perf_status_mps_temp %>%
+  ggplot2::ggplot() +
+  ggplot2::geom_point(
+    ggplot2::aes(
+      x = rolling.sd, 
+      y = rolling.mean,
+      colour = Group,
+      fill = Group,
+      shape = Group
+      ), size = 5
+    ) +
+  ggrepel::geom_label_repel(
+    ggplot2::aes(
+      x = rolling.sd,
+      y = rolling.mean,
+      label = Standard
+      ), alpha = 0.8
+    ) +
+  ggplot2::scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  ggplot2::scale_x_reverse(labels = scales::percent_format(accuracy = 1)) +
+  ggplot2::theme_bw() +
+  ggplot2::scale_colour_grey(start = 0.2, end = 0.9) +
+  ggplot2::scale_fill_grey(start = 0.2, end = 0.9) +
+  ggplot2::theme(
+    text = ggplot2::element_text(size = 15)
+    ) +
+  ggplot2::labs(
+    title = paste0("MPS Performance and Consistency as of ", format(as.Date(data.period), '%B %Y')),
+    subtitle = "Rolling 6-month mean and standard deviation of MPS performance",
+    caption = "Source: MOSL"
+    ) +
+  ggplot2::ylab("Performance") + ggplot2::xlab("Consistency")
+
+```
+
+## Detailed Analysis
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
@@ -278,9 +320,9 @@ res <- lapply(mps_list, function (MPS_CHUNK) {
   
   knitr::knit_child(
     "pfm_report_mps_template.Rmd", envir = environment(), quiet = TRUE
+    )
+  }
   )
-  
-})
 
 cat(unlist(res), sep = "\n")
 
@@ -290,7 +332,7 @@ cat(unlist(res), sep = "\n")
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
-metrics.list <- c("MPS_Mean", "MPS_Median", "TotalTaskVolume")
+metrics.list <- c("MarketMean", "MarketMedian", "MarketTaskVolume")
 
 for (METRIC in metrics.list) {
 
@@ -303,6 +345,14 @@ for (METRIC in metrics.list) {
       ) %>% 
     dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
     tidyr::spread(Date, METRIC) %>%
+    dplyr::mutate_if(
+      is.numeric, 
+      ifelse(
+        METRIC != "MarketTaskVolume", 
+        scales::percent_format(accuracy = 1), 
+        scales::number_format(big.mark = ",", accuracy = 1)
+        )
+      ) %>%
     kableExtra::kable(
       format = "latex", 
       caption = paste0("Market ", base::gsub("_", x = METRIC, replacement = " ")), 

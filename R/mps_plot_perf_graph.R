@@ -60,30 +60,14 @@ mps_plot_perf_graph <- function(
 
     }
 
-
-  if (include.iprp) {
-
-    size.values <- c(1, 0.5, 0.5, 0.5, 1)
-    alpha.manual <- c(0, 0, 0, 0, 1)
-    shape.manual <- c(0, 0, 0, 0, 1)
-    linetype.values <- c(1, 2, 1, 3, 1)
-    colour.values <- c("darkorange", "azure4", "dodgerblue4", "grey3", "red")
-    labels <- c(
-      "On-Time Tasks", "Market Mean", "Market Median", "Task Share", "Milestones"
-      )
-
-  } else {
-
-    size.values <- c(1, 0.5, 0.5, 0.5)
-    alpha.manual <- c(0, 0, 0, 0)
-    shape.manual <- c(0, 0, 0, 0)
-    linetype.values <- c(1, 2, 1, 3)
-    colour.values <- c("darkorange", "azure4", "dodgerblue4", "grey3")
-    labels <- c(
-      "On-Time Tasks", "Market Mean", "Market Median", "Task Share"
-      )
-
-    }
+  size.values <- c(1, 0.5, 0.5, 0.5, 1)
+  alpha.manual <- c(0, 0, 0, 0, 1)
+  shape.manual <- c(0, 0, 0, 0, 1)
+  linetype.values <- c(1, 2, 1, 3, 1)
+  colour.values <- c("darkorange", "azure4", "dodgerblue4", "grey3", "red")
+  labels <- c(
+    "Performance", "Market Mean", "Market Median", "Task Share", "IPRP Milestones"
+    )
 
 if (load.data & is.null(df)) {
 
@@ -104,12 +88,13 @@ if (load.data & is.null(df)) {
       Date,
       Trading.Party.ID,
       Standard,
-      OnTimeTaskCompletion,
+      Performance,
       TaskVolume,
-      MPS_Mean,
-      MPS_Median,
+      MarketMean,
+      MarketMedian,
       TaskShare,
-      Planned_Perf
+      Planned_Perf,
+      PerformanceMeasure
       ) %>%
     dplyr::arrange(
       Standard, Date
@@ -117,19 +102,19 @@ if (load.data & is.null(df)) {
     tidyr::gather(
       key = "variable",
       value = "value",
-      OnTimeTaskCompletion, MPS_Mean, MPS_Median, TaskShare, Planned_Perf
+      Performance, MarketMean, MarketMedian, TaskShare, Planned_Perf
       ) %>%
     dplyr::mutate(
       TaskVolume =
         dplyr::if_else (
           variable %in%
-            c("MPS_Mean", "MPS_Median", "Planned_Perf", "TaskShare"),
+            c("MarketMean", "MarketMedian", "Planned_Perf", "TaskShare"),
           0, as.double(TaskVolume)
         ),
       variable = factor(
         variable,
         levels = c(
-          "OnTimeTaskCompletion", "MPS_Mean", "MPS_Median", "TaskShare", "Planned_Perf"
+          "Performance", "MarketMean", "MarketMedian", "TaskShare", "Planned_Perf"
           )
         )
       ) %>%
@@ -226,7 +211,7 @@ if (load.data & is.null(df)) {
   if (action.points) {
 
     actions <- df %>%
-      dplyr::select(Date, Trading.Party.ID, Standard, Action, OnTimeTaskCompletion) %>%
+      dplyr::select(Date, Trading.Party.ID, Standard, Action, Performance) %>%
       dplyr::filter(
         Trading.Party.ID == trading.party,
         Standard == standard,
@@ -240,7 +225,7 @@ if (load.data & is.null(df)) {
         data = actions,
         ggplot2::aes(
           x = Date,
-          y = OnTimeTaskCompletion * max(graph_data$TaskVolume),
+          y = Performance * max(graph_data$TaskVolume),
           label = Action
           ),
         size = 4,
@@ -250,7 +235,7 @@ if (load.data & is.null(df)) {
         data = actions,
         ggplot2::aes(
           x = Date,
-          y = OnTimeTaskCompletion * max(graph_data$TaskVolume)
+          y = Performance * max(graph_data$TaskVolume)
           )
         )
   }

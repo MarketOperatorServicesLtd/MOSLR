@@ -3,11 +3,11 @@
 
 > `r Standards_details$Details[Standards_details$Standard == MPS_CHUNK]`
 
-`r SHORT.NAME`'s on-time task performance for `r MPS_CHUNK` is rated as:
+`r SHORT.NAME`'s performance against `r MPS_CHUNK` is rated as:
 
 * `r paste0(perf_status_mps_temp$Consistency[perf_status_mps_temp$Standard == MPS_CHUNK], ", ", perf_status_mps_temp$PerfRating[perf_status_mps_temp$Standard == MPS_CHUNK])`
 
-Below is a graph showing `r SHORT.NAME`'s historical on-time task completion performance for `r MPS_CHUNK`. MOSL action points and IPRP milestones are shown, if applicable. 
+Below is a graph showing `r SHORT.NAME`'s historical performance against `r MPS_CHUNK`. MOSL action points and IPRP milestones are shown, if applicable. 
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
 
@@ -46,8 +46,8 @@ tryCatch(
 
 `r MPS_CHUNK` has had:
 
-* `r perf_status_mps_temp$SumPerf3m[perf_status_mps_temp$Standard == MPS_CHUNK]` performance flags
-* `r perf_status_mps_temp$CumWatch[perf_status_mps_temp$Standard == MPS_CHUNK]` watch flags
+* `r perf_status_mps_temp$SumPerf3m[perf_status_mps_temp$Standard == MPS_CHUNK]` performance flag(s)
+* `r perf_status_mps_temp$CumWatch[perf_status_mps_temp$Standard == MPS_CHUNK]` watch flag(s)
 
 `r if (on.iprp) { paste0(MPS_CHUNK, " is currently on an IPRP. See below for further details.") } else { paste0(MPS_CHUNK, " is not on an IPRP.") }`
 
@@ -151,7 +151,7 @@ perf_status_mps %>%
     ) %>%
   dplyr::mutate_if(is.numeric, scales::percent_format(accuracy = 1)) %>%
   dplyr::select(
-    Date, OnTimeTaskCompletion, Planned_Perf, DeltaQuant, Status
+    Date, Performance, Planned_Perf, DeltaQuant, Status
     ) %>%
   tidyr::drop_na() %>%
   dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
@@ -161,7 +161,7 @@ perf_status_mps %>%
     linesep = "",
     longtable = TRUE, 
     booktabs = TRUE,
-    col.names = c("Date", "Actual Performance", "Planned Performance", "Difference", "IPRP Status"),
+    col.names = c("Date", "Actual Performance", "Planned Performance", "Relative Difference", "IPRP Status"),
     align = rep("c", 5)
     ) %>%
   kableExtra::column_spec(1:5, width = "2.5cm") %>%
