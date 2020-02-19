@@ -42,6 +42,8 @@ create_tracker <- function(
 
   # Setting parameters ------------------------------------------------------
 
+  thing <- 0
+
   period <- as.Date(period)
 
   lubridate::day(period) <- 1

@@ -8,6 +8,9 @@
 #' @param rda.outputs character
 #' @param my.dir character
 #' @param save.output logical
+#' @param ops.details character
+#' @param ops.thresholds character
+#' @param ops.charges character
 #'
 #' @return
 #' @export
@@ -19,7 +22,7 @@ ops_data_prep <- function(
   my.dir = getwd(),
   ops.data = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_data.csv")),
   ops.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")),
-  ops.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/ops_thresholds.csv")),
+  ops.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_thresholds.csv")),
   ops.charges = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_Charges.csv")),
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
@@ -70,6 +73,11 @@ ops_data_prep <- function(
 
   ops_data_clean <- base::rbind(tasks_completed, tasks_outstanding)
 
+  ops_thresholds <- ops.thresholds %>%
+    dplyr::mutate(
+      Date = as.Date(Date, format = "%d/%m/%Y")
+      )
+
   ops.charges <- ops.charges %>%
     dplyr::mutate(
       Date = as.Date(Date, format = "%d/%m/%Y")
@@ -95,9 +103,14 @@ ops_data_prep <- function(
       by = c("Date", "Standard", "PerformanceMeasure")
       ) %>%
     dplyr::left_join(
-      ops.thresholds,
-      by = c("Standard", "PerformanceMeasure")
+      ops_thresholds,
+      by = c("Standard", "Date", "PerformanceMeasure")
       ) %>%
+    dplyr::group_by(Trading.Party.ID, Standard, PerformanceMeasure) %>%
+    dplyr::mutate(
+      Threshold = zoo::na.locf(Threshold, na.rm = FALSE)
+      ) %>%
+    dplyr::ungroup() %>%
     dplyr::left_join(
       ops.charges,
       by = c("Trading.Party.ID", "Date", "Standard")

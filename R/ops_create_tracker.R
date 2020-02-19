@@ -28,7 +28,6 @@ ops_create_tracker <- function(
   period.only = TRUE,
   save.output = TRUE,
   keep.vars = FALSE,
-  iprp.list = NULL,
   filter.category = c("IPRP: on-track", "Normal monitoring", "Performance flag: 6 month")
 ) {
 
@@ -51,11 +50,6 @@ ops_create_tracker <- function(
       )
   }
 
-  if (is.null(iprp.list)) {
-    iprp_list <- c("OPS B5a", "OPS C1a")
-  } else {
-    iprp_list <- iprp.list
-  }
 
   # Importing data ----------------------------------------------------------
 
@@ -103,9 +97,9 @@ ops_create_tracker <- function(
       Performance = as.numeric(format(Performance, digits = 1)),
       Planned_Perf = as.numeric(format(Planned_Perf, digits = 1)),
       Status = dplyr::case_when(
-        (DeltaQuant > 0.05) ~ "Outperform",
-        (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ "OnTrack",
-        (DeltaQuant < -0.05) ~ "OffTrack"
+        (DeltaQuant > 0.05) ~ "Above plan",
+        (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ "On-track",
+        (DeltaQuant < -0.05) ~ "Below plan"
         ),
       OnWatch = Action == "watch",
       OnWatchIPRPend = Action == "de-escalate" | Action == "watch_iprpend",
@@ -116,9 +110,8 @@ ops_create_tracker <- function(
         Action == "review" | Action == "re-submit" | Action == "extend" | Action == "escalate",
       ActiveIPRP = !is.na(Status),
       InactiveIPRP = IPRPend | Pending | (UnderReview & !ActiveIPRP),
-      IPRP = ActiveIPRP | InactiveIPRP,
-      IPRPeligible = Standard %in% iprp_list
-    ) %>%
+      IPRP = ActiveIPRP | InactiveIPRP
+      ) %>%
     droplevels() %>%
     dplyr::arrange(Trading.Party.ID, Standard, Date) %>%
     dplyr::group_by(Trading.Party.ID, Standard, PerformanceMeasure) %>%
@@ -145,7 +138,7 @@ ops_create_tracker <- function(
         ),
       SumPerf3m = tidyr::replace_na(zoo::rollapply(PerfFlag3m, 12, sum, align = "right", fill = NA), 0),
       SumPerf6m = tidyr::replace_na(zoo::rollapply(PerfFlag6m, 12, sum, align = "right", fill = NA), 0)
-    ) %>%
+      ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate_if(is.logical, ~tidyr::replace_na(., FALSE)) %>%
     dplyr::mutate(
@@ -160,7 +153,7 @@ ops_create_tracker <- function(
           OnWatchIPRPend ~ "Watch: IPRP end",
           !IPRP & !OnWatch & PerfFlag6m & !PerfFlag3m ~ "Performance flag: 6 month",
           !IPRP & !OnWatch & PerfFlag3m ~ "Performance flag: 3 month",
-          ActiveIPRP & MilestoneFlag & !IPRPend ~ "IPRP: off-track",
+          ActiveIPRP & MilestoneFlag & !IPRPend ~ "IPRP: below plan",
           ActiveIPRP & !MilestoneFlag & !IPRPend ~ "IPRP: on-track",
           IPRPend ~ "IPRP: end",
           IPRP & UnderReview ~ "IPRP: under review",
@@ -169,21 +162,21 @@ ops_create_tracker <- function(
       Action = "tbd",
       Rationale = "tbd",
       PFM_Commentary = "tbd"
-    ) %>%
+      ) %>%
     dplyr::filter(
       !(SecondaryCategory %in% filter.category)
-    ) %>%
+      ) %>%
     {if (!keep.vars) {
       dplyr::select(., var_list)
-    } else {
-      dplyr::select(., dplyr::everything())
-    }
-    } %>%
+      } else {
+        dplyr::select(., dplyr::everything())
+        }
+      } %>%
     {if (period.only) {
       dplyr::filter(., Date == period)
-    } else {
-      dplyr::mutate(., date.stamp = Sys.Date())
-    }
+      } else {
+        dplyr::mutate(., date.stamp = Sys.Date())
+      }
     }
 
   if (save.output) {

@@ -51,16 +51,6 @@ mps_create_tracker <- function(
         )
       }
 
-  if (is.null(iprp.list)) {
-    iprp_list <-
-      c(
-        "MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 7",
-        "MPS 12", "MPS 16", "MPS 17", "MPS 18"
-        )
-    } else {
-      iprp_list <- iprp.list
-      }
-
 
 # Importing data ----------------------------------------------------------
 
@@ -93,7 +83,7 @@ mps_create_tracker <- function(
   monthly_tracking <- mps_data_clean %>%
     dplyr::left_join(
       IPRP_plans,
-      by = c("Date", "Standard", "Trading.Party.ID")
+      by = c("Date", "Standard", "Trading.Party.ID", "PerformanceMeasure")
       ) %>%
     dplyr::left_join(
       tracking_sheet,
@@ -106,9 +96,9 @@ mps_create_tracker <- function(
       Performance = as.numeric(format(Performance, digits = 1)),
       Planned_Perf = as.numeric(format(Planned_Perf, digits = 1)),
       Status = dplyr::case_when(
-        (DeltaQuant > 0.05) ~ "Outperform",
-        (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ "OnTrack",
-        (DeltaQuant < -0.05) ~ "OffTrack"
+        (DeltaQuant > 0.05) ~ "Above plan",
+        (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ "On-track",
+        (DeltaQuant < -0.05) ~ "Below plan"
         ),
       OnWatch = Action == "watch",
       OnWatchIPRPend = Action == "de-escalate" | Action == "watch_iprpend",
@@ -119,8 +109,7 @@ mps_create_tracker <- function(
         Action == "review" | Action == "re-submit" | Action == "extend" | Action == "escalate",
       ActiveIPRP = !is.na(Status),
       InactiveIPRP = IPRPend | Pending | (UnderReview & !ActiveIPRP),
-      IPRP = ActiveIPRP | InactiveIPRP,
-      IPRPeligible = Standard %in% iprp_list
+      IPRP = ActiveIPRP | InactiveIPRP
       ) %>%
     droplevels() %>%
     dplyr::arrange(Trading.Party.ID, Standard, Date) %>%
@@ -163,7 +152,7 @@ mps_create_tracker <- function(
           OnWatchIPRPend ~ "Watch: IPRP end",
           !IPRP & !OnWatch & PerfFlag6m & !PerfFlag3m ~ "Performance flag: 6 month",
           !IPRP & !OnWatch & PerfFlag3m ~ "Performance flag: 3 month",
-          ActiveIPRP & MilestoneFlag & !IPRPend ~ "IPRP: off-track",
+          ActiveIPRP & MilestoneFlag & !IPRPend ~ "IPRP: below plan",
           ActiveIPRP & !MilestoneFlag & !IPRPend ~ "IPRP: on-track",
           IPRPend ~ "IPRP: end",
           IPRP & UnderReview ~ "IPRP: under review",

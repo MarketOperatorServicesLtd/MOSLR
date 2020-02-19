@@ -22,6 +22,9 @@
 #' @param df dataframe
 #' @param my.dir character
 #' @param load.data logical
+#' @param standard.key character
+#' @param performance.measure character
+#' @param demo.graph logical
 #'
 #' @return
 #' @export
@@ -29,9 +32,11 @@
 #' @examples
 
 mps_plot_perf_graph <- function(
-  df,
-  load.data = FALSE,
+  df = NULL,
   my.dir = NULL,
+  load.data = FALSE,
+  standard.key = NULL,
+  performance.measure = "Completed",
   include.iprp = FALSE,
   trading.party,
   standard,
@@ -44,15 +49,38 @@ mps_plot_perf_graph <- function(
   y.lab = "Tasks",
   x.lab = "",
   graph.title = NULL,
-  sub.title = NULL
+  sub.title = NULL,
+  demo.graph = FALSE
   ){
 
   period.start <- as.Date(period.start)
   period.end <- as.Date(period.end)
 
+  if (demo.graph) {
+
+    standard.key <- sample(c("ops", "mps"), 1)
+
+    df <- readRDS(paste0(my.dir, "/data/rdata/perf_status_", tolower(standard.key), ".Rda")) %>%
+      tidyr::drop_na(Performance) %>%
+      droplevels() %>%
+      dplyr::filter(
+        StandardKey == toupper(standard.key),
+        Standard == sample(as.character(Standard), 1),
+        Trading.Party.ID == sample(as.character(Trading.Party.ID), 1),
+        PerformanceMeasure == sample(as.character(PerformanceMeasure), 1)
+      )
+
+    standard.key <- unique(df$StandardKey)
+    standard <- unique(df$Standard)
+    trading.party <- unique(df$Trading.Party.ID)
+    performance.measure <- unique(df$PerformanceMeasure)
+    action.points <- TRUE
+    include.iprp <- TRUE
+  }
+
   if (is.null(graph.title)) {
 
-    graph_title <- paste0(trading.party, " (", standard, ")")
+    graph_title <- paste0(trading.party, " (", standard, ", ", performance.measure, ")")
 
     } else {
 
@@ -60,20 +88,15 @@ mps_plot_perf_graph <- function(
 
     }
 
-  size.values <- c(1, 0.5, 0.5, 0.5, 1)
-  alpha.manual <- c(0, 0, 0, 0, 1)
-  shape.manual <- c(0, 0, 0, 0, 1)
-  linetype.values <- c(1, 2, 1, 3, 1)
-  colour.values <- c("darkorange", "azure4", "dodgerblue4", "grey3", "red")
-  labels <- c(
-    "Performance", "Market Mean", "Market Median", "Task Share", "IPRP Milestones"
-    )
+  size.values <- c(1, 1, 1, 1, 1, 1)
+  alpha.manual <- c(0, 0, 0, 1, 1, 0)
+  shape.manual <- c(0, 0, 0, 1, 1, 0)
+  linetype.values <- c(1, 1, 3, 1, 1, 1)
+  colour.values <- c("#425563", "#05C3DE", "#005F83", "#00A499", "#FFAA4D", "#F9E547", "#8866BC")
 
-if (load.data & is.null(df)) {
-
-  df <- readRDS(paste0(my.dir, "/data/rdata/perf_status_mps.Rda"))
-
-}
+  if (load.data & is.null(df)) {
+    df <- readRDS(paste0(my.dir, "/data/rdata/perf_status_", tolower(standard.key), ".Rda"))
+    }
 
 
   graph_data <- df %>%
@@ -91,10 +114,10 @@ if (load.data & is.null(df)) {
       Performance,
       TaskVolume,
       MarketMean,
-      MarketMedian,
       TaskShare,
       Planned_Perf,
-      PerformanceMeasure
+      PerformanceMeasure,
+      Threshold
       ) %>%
     dplyr::arrange(
       Standard, Date
@@ -102,30 +125,39 @@ if (load.data & is.null(df)) {
     tidyr::gather(
       key = "variable",
       value = "value",
-      Performance, MarketMean, MarketMedian, TaskShare, Planned_Perf
+      Performance, MarketMean, TaskShare, Threshold, Planned_Perf
       ) %>%
     dplyr::mutate(
       TaskVolume =
         dplyr::if_else (
           variable %in%
-            c("MarketMean", "MarketMedian", "Planned_Perf", "TaskShare"),
+            c("MarketMean", "Planned_Perf", "TaskShare"),
           0, as.double(TaskVolume)
         ),
       variable = factor(
         variable,
         levels = c(
-          "Performance", "MarketMean", "MarketMedian", "TaskShare", "Planned_Perf"
+          "Performance", "MarketMean", "TaskShare", "Threshold", "Planned_Perf"
+          ),
+        labels = c(
+          "Performance", "Market Mean", "Task Share", "Threshold", "IPRP Milestones"
           )
         )
       ) %>%
     tidyr::drop_na(value) %>%
     droplevels() %>%
     {if (!include.iprp) {
-      dplyr::filter(., variable != "Planned_Perf")
+      dplyr::filter(., !variable %in% c("Planned_Perf", "IPRP Milestones"))
       } else {
         dplyr::select(., dplyr::everything())
       }
-      }
+      } %>%
+    {if (!is.null(performance.measure)) {
+      dplyr::filter(., PerformanceMeasure == performance.measure)
+    } else {
+      dplyr::filter(., PerformanceMeasure == PerformanceMeasure)
+    }
+    }
 
   graph <- graph_data %>%
     ggplot2::ggplot() +
@@ -172,28 +204,23 @@ if (load.data & is.null(df)) {
       ) +
     ggplot2::scale_size_manual(
       values = size.values,
-      na.value = "1",
-      labels = labels
+      na.value = "1"
       ) +
     ggplot2::scale_linetype_manual(
       values = linetype.values,
-      na.value = "1",
-      labels = labels
+      na.value = "1"
       ) +
     ggplot2::scale_colour_manual(
       values = colour.values,
-      na.value = "red",
-      labels = labels
+      na.value = "red"
       ) +
     ggplot2::scale_shape_manual(
       values = shape.manual,
-      na.value = 0,
-      labels = labels
+      na.value = 0
       ) +
     ggplot2::scale_alpha_manual(
       values = alpha.manual,
-      na.value = 0,
-      labels = labels
+      na.value = 0
       ) +
     ggplot2::ylab(y.lab) +
     ggplot2::xlab(x.lab) +
@@ -211,7 +238,7 @@ if (load.data & is.null(df)) {
   if (action.points) {
 
     actions <- df %>%
-      dplyr::select(Date, Trading.Party.ID, Standard, Action, Performance) %>%
+      dplyr::select(Date, Trading.Party.ID, Standard, Action, Performance, PerformanceMeasure) %>%
       dplyr::filter(
         Trading.Party.ID == trading.party,
         Standard == standard,

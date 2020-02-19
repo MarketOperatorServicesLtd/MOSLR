@@ -44,7 +44,7 @@ tryCatch(
 
 ```
 
-`r MPS_CHUNK` has had:
+For `r MPS_CHUNK` there have been:
 
 * `r perf_status_mps_temp$SumPerf3m[perf_status_mps_temp$Standard == MPS_CHUNK]` performance flag(s)
 * `r perf_status_mps_temp$CumWatch[perf_status_mps_temp$Standard == MPS_CHUNK]` watch flag(s)
@@ -82,7 +82,8 @@ perf_status_mps %>%
     caption = "Rationale for Recent MOSL Actions",
     linesep = "",
     longtable = TRUE, 
-    booktabs = TRUE
+    booktabs = TRUE,
+    col.names = c("Date", "Action", "Rationale")
     ) %>%
   kableExtra::column_spec(3, width = "10cm") %>%
   kableExtra::kable_styling(

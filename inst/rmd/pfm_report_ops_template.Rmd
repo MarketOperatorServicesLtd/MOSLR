@@ -40,12 +40,12 @@ tryCatch(
 
 ```
 
-For completed tasks `r OPS_CHUNK` has had:
+For completed tasks `r OPS_CHUNK` there have been:
 
 * `r perf_status_ops_temp$SumPerf3m[perf_status_ops_temp$Standard == OPS_CHUNK & perf_status_ops_temp$PerformanceMeasure == "Completed"]` performance flags
 * `r perf_status_ops_temp$CumWatch[perf_status_ops_temp$Standard == OPS_CHUNK & perf_status_ops_temp$PerformanceMeasure == "Completed"]` watch flags
 
-For outstanding tasks `r OPS_CHUNK` has had:
+For outstanding tasks `r OPS_CHUNK` there have been:
 
 * `r perf_status_ops_temp$SumPerf3m[perf_status_ops_temp$Standard == OPS_CHUNK & perf_status_ops_temp$PerformanceMeasure == "Outstanding"]` performance flags
 * `r perf_status_ops_temp$CumWatch[perf_status_ops_temp$Standard == OPS_CHUNK & perf_status_ops_temp$PerformanceMeasure == "Outstanding"]` watch flags
@@ -83,7 +83,8 @@ perf_status_ops %>%
     caption = "Rationale for Recent MOSL Actions",
     linesep = "",
     longtable = TRUE, 
-    booktabs = TRUE
+    booktabs = TRUE,
+    col.names = c("Date", "Performance Measure", "Action", "Rationale")
     ) %>%
   kableExtra::column_spec(4, width = "7cm") %>%
   kableExtra::kable_styling(
@@ -150,15 +151,12 @@ perf_status_ops %>%
     Trading.Party.ID == TRADING.PARTY,
     Standard == OPS_CHUNK,
     ) %>%
+  dplyr::mutate_if(is.numeric, scales::percent_format(accuracy = 1)) %>%
   dplyr::select(
     Date, PerformanceMeasure, Performance, Planned_Perf, DeltaQuant, Status
     ) %>%
   tidyr::drop_na() %>%
-  dplyr::mutate(
-    Date = format(Date, "%Y-%m"),
-    Performance = format(Performance, digits = 2),
-    DeltaQuant = format(DeltaQuant * 100, digits = 2)
-    ) %>%
+  dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
   kableExtra::kable(
     format = "latex", 
     caption = "IPRP Performance Tracking",

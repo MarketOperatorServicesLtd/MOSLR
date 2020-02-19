@@ -71,7 +71,8 @@ mps_process_tracker <- function(
       PFM_Commentary = as.character(PFM_Commentary)
       ) %>%
     dplyr::select(
-      Date, Trading.Party.ID, Standard, Action, Rationale, PFM_Commentary, Response_Received
+      Date, Trading.Party.ID, Standard, PerformanceMeasure, Action,
+      Rationale, PFM_Commentary, Response_Received
       )
 
   saveRDS(monthly_tracking_post, paste0(my.dir, "/data/rdata/monthly_tracking_mps_post.Rda"))
@@ -82,7 +83,7 @@ mps_process_tracker <- function(
   perf_status_mps <- monthly_tracking_pre %>%
     dplyr::full_join(
       monthly_tracking_post,
-      by = c("Date", "Trading.Party.ID", "Standard")
+      by = c("Date", "Trading.Party.ID", "Standard", "PerformanceMeasure")
       ) %>%
     dplyr::mutate(
       Action = tolower(Action),
@@ -103,7 +104,8 @@ mps_process_tracker <- function(
       CumIPRP = cumsum(Action == "iprp"),
       CumResubmit = cumsum(Action == "re-submit"),
       CumEscalate = cumsum(Action == "escalate"),
-      CumExtend = cumsum(Action == "extend")
+      CumExtend = cumsum(Action == "extend"),
+      Action = stringr::str_to_sentence(Action)
       ) %>%
     dplyr::ungroup() %>%
     {if (!keep.vars) {

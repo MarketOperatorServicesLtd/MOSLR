@@ -19,7 +19,7 @@
 mps_data_prep <- function(
   my.dir = getwd(),
   mps.data = utils::read.csv(paste0(my.dir, "/data/inputs/MPS_data.csv")),
-  mps.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/mps_thresholds.csv")),
+  mps.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_thresholds.csv")),
   tp.details = utils::read.csv(paste0(my.dir, "/data/inputs/tp_details.csv")),
   Standards.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")),
   csv.outputs = paste0(my.dir, "/data/outputs"),
@@ -27,10 +27,14 @@ mps_data_prep <- function(
   save.output = TRUE
   ) {
 
+
   # Importing raw data ------------------------------------------------------
 
   mps_data <- mps.data
-  mps_thresholds <- mps.thresholds
+  mps_thresholds <- mps.thresholds %>%
+    dplyr::mutate(
+      Date = as.Date(Date, format = "%d/%m/%Y")
+      )
 
 
   # Importing and cleaning MPS data -----------------------------------------
@@ -43,7 +47,8 @@ mps_data_prep <- function(
       ) %>%
     dplyr::mutate(
       Date = as.Date(Date, format = "%d/%m/%Y"),
-      Performance = OnTimeTasks / TaskVolume
+      Performance = OnTimeTasks / TaskVolume,
+      PerformanceMeasure = "Completed"
       ) %>%
     dplyr::arrange(
       Date, Trading.Party.ID, Standard
@@ -52,19 +57,25 @@ mps_data_prep <- function(
       Date,
       Trading.Party.ID,
       Standard,
+      PerformanceMeasure,
       Performance,
       TaskVolume,
       Charges,
       OnTimeTasks
       ) %>%
     dplyr::left_join(
-      dplyr::select(Standards.details, Standard, Group),
+      Standards.details,
       by = c("Standard")
       ) %>%
     dplyr::left_join(
       mps_thresholds,
-      by = c("Standard")
+      by = c("Standard", "Date", "PerformanceMeasure")
       ) %>%
+    dplyr::group_by(Trading.Party.ID, Standard, PerformanceMeasure) %>%
+    dplyr::mutate(
+      Threshold = zoo::na.locf(Threshold, na.rm = FALSE)
+      ) %>%
+    dplyr::ungroup() %>%
     dplyr::mutate(
       Standard = factor(
         Standard,
@@ -97,11 +108,10 @@ mps_data_prep <- function(
       ) %>%
     dplyr::mutate(
       TaskShare = TaskVolume / MarketTaskVolume,
-      BelowPeer = dplyr::if_else (
-        mps_threshold > 0,
-        Performance < mps_threshold,
-        Performance < MarketMean,
-        PerformanceMeasure = "Completed"
+      BelowPeer = dplyr::if_else(
+        Threshold > 0,
+        Performance < Threshold,
+        Performance < MarketMean
         )
       )
 

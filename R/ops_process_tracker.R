@@ -107,7 +107,8 @@ ops_process_tracker <- function(
       CumIPRP = cumsum(Action == "iprp"),
       CumResubmit = cumsum(Action == "re-submit"),
       CumEscalate = cumsum(Action == "escalate"),
-      CumExtend = cumsum(Action == "extend")
+      CumExtend = cumsum(Action == "extend"),
+      Action = stringr::str_to_sentence(Action)
       ) %>%
     dplyr::ungroup() %>%
     {if (!keep.vars) {
