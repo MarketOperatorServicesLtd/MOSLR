@@ -17,7 +17,7 @@ graph <- perf_status_mps %>%
   dplyr::filter(
     TaskVolume > 0
     ) %>%
-  MOSLR::mps_plot_perf_graph(
+  MOSLR::plot_perf_graph(
     df = ., 
     load.data = FALSE,
     standard = MPS_CHUNK,
@@ -72,10 +72,10 @@ perf_status_mps %>%
     Action != ""
     ) %>%
   dplyr::select(
-    Date, Action, Rationale
+    Period, Action, Rationale
     ) %>%
   dplyr::mutate(
-    Date = format(Date, "%Y-%m")
+    Period = format(Period, "%Y-%m")
     ) %>%
   kableExtra::kable(
     format = "latex", 
@@ -83,7 +83,7 @@ perf_status_mps %>%
     linesep = "",
     longtable = TRUE, 
     booktabs = TRUE,
-    col.names = c("Date", "Action", "Rationale")
+    col.names = c("Period", "Action", "Rationale")
     ) %>%
   kableExtra::column_spec(3, width = "10cm") %>%
   kableExtra::kable_styling(
@@ -113,10 +113,10 @@ perf_status_mps %>%
     PFM_Commentary != ""
     ) %>%
   dplyr::select(
-    Date, PFM_Commentary
+    Period, PFM_Commentary
     ) %>%
   dplyr::mutate(
-    Date = format(Date, "%Y-%m")
+    Period = format(Period, "%Y-%m")
     ) %>%
   kableExtra::kable(
     format = "latex", 
@@ -124,7 +124,7 @@ perf_status_mps %>%
     linesep = "",
     longtable = TRUE, 
     booktabs = TRUE,
-    col.names = c("Date", "Portfolio Manager Commentary")
+    col.names = c("Period", "Portfolio Manager Commentary")
     ) %>%
   kableExtra::column_spec(2, width = "12cm") %>%
   kableExtra::kable_styling(
@@ -145,36 +145,45 @@ perf_status_mps %>%
 
 ``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis", eval = on.iprp}
 
-perf_status_mps %>%
+table <- perf_status_mps %>%
   dplyr::filter(
     Trading.Party.ID == TRADING.PARTY,
     Standard == MPS_CHUNK,
     ) %>%
   dplyr::mutate_if(is.numeric, scales::percent_format(accuracy = 1)) %>%
   dplyr::select(
-    Date, Performance, Planned_Perf, DeltaQuant, Status
+    Period, Performance, Planned_Perf, DeltaQuant, Status
     ) %>%
   tidyr::drop_na() %>%
-  dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
-  kableExtra::kable(
-    format = "latex", 
-    caption = "IPRP Performance Tracking",
-    linesep = "",
-    longtable = TRUE, 
-    booktabs = TRUE,
-    col.names = c("Date", "Actual Performance", "Planned Performance", "Relative Difference", "IPRP Status"),
-    align = rep("c", 5)
-    ) %>%
-  kableExtra::column_spec(1:5, width = "2.5cm") %>%
-  kableExtra::kable_styling(
-    font_size = 10,
-    latex_options = c(
-      "repeat_header",
-      "hold_position",
-      "striped"
-      )
-    ) %>%
-  kableExtra::row_spec(0, bold = TRUE)
+  dplyr::mutate(Period = format(Period, "%Y-%m"))
+
+if (nrow(table) > 0) {
+
+  table %>%
+    kableExtra::kable(
+      format = "latex", 
+      caption = "IPRP Performance Tracking",
+      linesep = "",
+      longtable = TRUE, 
+      booktabs = TRUE,
+      col.names = c(
+        "Period", "Actual Performance", "Planned Performance", 
+        "Relative Difference", "IPRP Status"
+        ),
+      align = rep("c", 5)
+      ) %>%
+    kableExtra::column_spec(1:5, width = "2.5cm") %>%
+    kableExtra::kable_styling(
+      font_size = 10,
+      latex_options = c(
+        "repeat_header",
+        "hold_position",
+        "striped"
+        )
+      ) %>%
+    kableExtra::row_spec(0, bold = TRUE)
+
+  }
 
 ```
 

@@ -6,13 +6,13 @@
 
 mps_data_clean_temp %>%
   dplyr::filter(
-    Date <= data.period
+    Period <= data.period
     ) %>%
   dplyr::select(
-    Trading.Party.ID, Date, Standard, Charges, Group
+    Trading.Party.ID, Period, Standard, Charges, Group
     ) %>%
   ggplot2::ggplot(
-    ggplot2::aes(x = Date, y = Charges, fill = Group)
+    ggplot2::aes(x = Period, y = Charges, fill = Group)
     ) + 
   ggplot2::geom_bar(stat = "identity") + 
   ggplot2::theme(
@@ -40,15 +40,15 @@ mps_data_clean_temp %>%
 
 mps_data_clean_temp %>%
   dplyr::filter(
-    Date >= data.period %m-% months(11)
+    Period >= data.period %m-% months(11)
     ) %>%
-  dplyr::select(Date, Standard, Charges) %>%
+  dplyr::select(Period, Standard, Charges) %>%
   dplyr::mutate(
-    Date = format(Date, "%Y-%m")
+    Period = format(Period, "%Y-%m")
     ) %>% 
   tidyr::spread(Standard, Charges) %>%
   dplyr::mutate(
-    Total = rowSums(dplyr::select(., -Date), na.rm = TRUE)
+    Total = rowSums(dplyr::select(., -Period), na.rm = TRUE)
     ) %>%
   dplyr::mutate_if(~ any(is.na(.)), ~ ifelse(is.na(.), 0, .)) %>%
   dplyr::mutate_if(is.numeric, scales::dollar_format(prefix = "£")) %>%
@@ -85,12 +85,12 @@ As of `r format(data.period, "%B-%Y")`, MOSL were monitoring `r SHORT.NAME`'s pe
 
 agg_perf <- mps_aggregate_perf %>%
   dplyr::filter(Trading.Party.ID == TRADING.PARTY) %>%
-  dplyr::select(Date, Agg_Perf) %>%
+  dplyr::select(Period, Agg_Perf) %>%
   dplyr::rename(GroupPerf = Agg_Perf) %>%
   dplyr::mutate(Group = "Aggregate Performance")
 
 mps_data_clean_temp %>%
-  dplyr::group_by(Date, Group) %>%
+  dplyr::group_by(Period, Group) %>%
   dplyr::summarise(
     GroupPerf = sum(OnTimeTasks) / sum(TaskVolume)
     ) %>%
@@ -100,7 +100,7 @@ mps_data_clean_temp %>%
   ggplot2::ggplot() + 
   ggplot2::geom_line(
     ggplot2::aes(
-      x = Date, 
+      x = Period, 
       y = GroupPerf, 
       colour = Group,
       linetype = Group
@@ -108,7 +108,7 @@ mps_data_clean_temp %>%
     ) +
   ggplot2::geom_point(
     ggplot2::aes(
-      x = Date, 
+      x = Period, 
       y = GroupPerf,
       colour = Group,
       fill = Group,
@@ -144,14 +144,14 @@ mps_data_clean_temp %>%
 
 mps_data_clean_temp %>% 
   dplyr::filter(
-    Date >= max(mps_data_clean_temp$Date) %m-% months(11)
+    Period >= max(mps_data_clean_temp$Period) %m-% months(11)
     ) %>%
   dplyr::mutate(
     Performance = scales::percent(Performance, accuracy = 1),
-    Date = format(Date, "%Y-%m")
+    Period = format(Period, "%Y-%m")
     ) %>%
   dplyr::select(
-    Date, Standard, Performance
+    Period, Standard, Performance
     ) %>%
   tidyr::spread(key = Standard, value = Performance) %>%
   kableExtra::kable(
@@ -188,7 +188,7 @@ mps_data_clean_temp %>%
 mps_aggregate_perf %>%
   dplyr::filter(
     sub_type == as.character(mps_aggregate_perf_temp$sub_type),
-    Date == data.period
+    Period == data.period
     ) %>%
   ggplot2::ggplot() +
   ggplot2::geom_bar(
@@ -317,13 +317,13 @@ for (METRIC in metrics.list) {
 
   mps_summary %>% 
     dplyr::select(
-      Date, Standard, METRIC
+      Period, Standard, METRIC
       ) %>% 
     dplyr::filter(
-      Date >= data.period %m-% months(11)
+      Period >= data.period %m-% months(11)
       ) %>% 
-    dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
-    tidyr::spread(Date, METRIC) %>%
+    dplyr::mutate(Period = format(Period, "%Y-%m")) %>%
+    tidyr::spread(Period, METRIC) %>%
     dplyr::mutate_if(
       is.numeric, 
       ifelse(

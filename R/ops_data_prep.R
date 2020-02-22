@@ -40,14 +40,14 @@ ops_data_prep <- function(
       OnTimeTasksOutstanding = Tasks.Outstanding.Within.Time
       ) %>%
     dplyr::mutate(
-      Date = as.Date(Date, format = "%d/%m/%Y"),
+      Period = as.Date(Period, format = "%d/%m/%Y"),
       TaskCompletion = OnTimeTasksCompleted / TaskVolumeCompleted,
       OutstandingOntime = OnTimeTasksOutstanding / TaskVolumeOutstanding
       )
 
   tasks_completed <- ops_data_clean %>%
     dplyr::select(
-      Trading.Party.ID, Date, Standard,
+      Trading.Party.ID, Period, Standard,
       TaskCompletion, TaskVolumeCompleted
       ) %>%
     dplyr::rename(
@@ -60,7 +60,7 @@ ops_data_prep <- function(
 
   tasks_outstanding <- ops_data_clean %>%
     dplyr::select(
-      Trading.Party.ID, Date, Standard,
+      Trading.Party.ID, Period, Standard,
       OutstandingOntime, TaskVolumeOutstanding
       ) %>%
     dplyr::rename(
@@ -75,36 +75,36 @@ ops_data_prep <- function(
 
   ops_thresholds <- ops.thresholds %>%
     dplyr::mutate(
-      Date = as.Date(Date, format = "%d/%m/%Y")
+      Period = as.Date(Period, format = "%d/%m/%Y")
       )
 
   ops.charges <- ops.charges %>%
     dplyr::mutate(
-      Date = as.Date(Date, format = "%d/%m/%Y")
+      Period = as.Date(Period, format = "%d/%m/%Y")
       )
 
 
 # Creating summary --------------------------------------------------------
 
   ops_summary <- ops_data_clean %>%
-    dplyr::group_by(Date, Standard, PerformanceMeasure) %>%
+    dplyr::group_by(Period, Standard, PerformanceMeasure) %>%
     dplyr::summarise(
       MarketMean = mean(Performance, na.rm = TRUE),
       MarketMedian = median(Performance, na.rm = TRUE),
       MarketTaskVolume = sum(TaskVolume, na.rm = TRUE)
       ) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(Standard, Date)
+    dplyr::arrange(Standard, Period)
 
   ops_data_clean <-
     dplyr::left_join(
       ops_data_clean,
       ops_summary,
-      by = c("Date", "Standard", "PerformanceMeasure")
+      by = c("Period", "Standard", "PerformanceMeasure")
       ) %>%
     dplyr::left_join(
       ops_thresholds,
-      by = c("Standard", "Date", "PerformanceMeasure")
+      by = c("Standard", "Period", "PerformanceMeasure")
       ) %>%
     dplyr::group_by(Trading.Party.ID, Standard, PerformanceMeasure) %>%
     dplyr::mutate(
@@ -113,7 +113,7 @@ ops_data_prep <- function(
     dplyr::ungroup() %>%
     dplyr::left_join(
       ops.charges,
-      by = c("Trading.Party.ID", "Date", "Standard")
+      by = c("Trading.Party.ID", "Period", "Standard")
       ) %>%
     dplyr::left_join(
       ops.details,

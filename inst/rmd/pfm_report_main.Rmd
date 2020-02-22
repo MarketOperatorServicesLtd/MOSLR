@@ -82,3 +82,18 @@ The performance rating is based on a 6-month rolling mean of performance (whethe
 * Between 70-80% is "Poor"
 * Less than 70% is "Very Poor"
 
+## Categorisation and MOSL Actions
+
+The categorisation of a performance standard or Additional Performance Indicator (API) each period is determined by the following:
+
+* Whether Performance Rectification is underway (i.e. an IPRP or PRP has been initiated)
+* Performance in the previous period
+* MOSL actions in the previous period
+
+A new period begins once the performance data has been processed for the previous period. For example MPS data is processed on the 6th business day of each month and therefore the 6th business day marks the beginning of the period for MPS. Other standards will have different starting points. 
+
+```{r pressure, echo = FALSE, fig.cap = "Diagram of possible states and corresponding MOSL actions", out.width = '100%'}
+
+knitr::include_graphics("standardstates.jpg")
+
+```

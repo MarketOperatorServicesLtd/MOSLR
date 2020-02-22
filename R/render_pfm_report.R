@@ -119,14 +119,14 @@ render_PFM_report <- function(
     perf_status_mps_temp <- perf_status_mps %>%
       dplyr::filter(
         Trading.Party.ID == TRADING.PARTY,
-        Date == data.period
+        Period == data.period
         ) %>%
       droplevels()
 
     mps_aggregate_perf_temp <- mps_aggregate_perf %>%
       dplyr::filter(
         Trading.Party.ID == TRADING.PARTY,
-        Date == data.period
+        Period == data.period
         ) %>%
       droplevels()
 
@@ -142,14 +142,14 @@ render_PFM_report <- function(
     perf_status_ops_temp <- perf_status_ops %>%
       dplyr::filter(
         Trading.Party.ID == TRADING.PARTY,
-        Date == data.period
+        Period == data.period
         ) %>%
       droplevels()
 
     ops_aggregate_perf_temp <- ops_aggregate_perf %>%
       dplyr::filter(
         Trading.Party.ID == TRADING.PARTY,
-        Date == data.period
+        Period == data.period
         ) %>%
       droplevels()
 

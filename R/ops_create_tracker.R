@@ -42,7 +42,7 @@ ops_create_tracker <- function(
   } else {
     var_list <-
       c(
-        "Date", "SecondaryCategory", "Trading.Party.ID", "Standard",
+        "Period", "SecondaryCategory", "Trading.Party.ID", "Standard",
         "PerformanceMeasure",
         "Action","Rationale", "PFM_Commentary", "ActiveIPRP", "IPRPend",
         "MilestoneFlag", "PerfFlag3m", "PerfFlag6m", "OnWatch",
@@ -60,22 +60,22 @@ ops_create_tracker <- function(
       paste0(my.dir, "/data/inputs/IPRP_plans_ops.csv")
       ) %>%
     dplyr::mutate(
-      Date = as.Date(Date, format = "%d/%m/%Y")
+      Period = as.Date(Period, format = "%d/%m/%Y")
       ) %>%
     dplyr::group_by(
       Trading.Party.ID, Standard, PerformanceMeasure
       ) %>%
     dplyr::mutate(
-      PlanEndDate = max(Date)
+      PlanEndDate = max(Period)
       ) %>%
     dplyr::ungroup()
 
   tracking_sheet <- utils::read.csv(paste0(my.dir2, "/data/inputs/tracking_ops.csv")) %>%
     dplyr::mutate(
-      Date = as.Date(Date, format = "%d/%m/%Y") %m-% months(-1)
+      Period = as.Date(Period, format = "%d/%m/%Y") %m-% months(-1)
       ) %>%
     dplyr::select(
-      Date, Action, Trading.Party.ID, Standard, PerformanceMeasure, Template_Sent, Response_Received
+      Period, Action, Trading.Party.ID, Standard, PerformanceMeasure, Template_Sent, Response_Received
       )
 
 
@@ -84,11 +84,11 @@ ops_create_tracker <- function(
   monthly_tracking <- ops_data_clean %>%
     dplyr::left_join(
       IPRP_plans,
-      by = c("Date", "Standard", "Trading.Party.ID", "PerformanceMeasure")
+      by = c("Period", "Standard", "Trading.Party.ID", "PerformanceMeasure")
       ) %>%
     dplyr::left_join(
       tracking_sheet,
-      by = c("Date", "Trading.Party.ID", "Standard", "PerformanceMeasure")
+      by = c("Period", "Trading.Party.ID", "Standard", "PerformanceMeasure")
       ) %>%
     dplyr::mutate(
       Action = tolower(Action),
@@ -104,7 +104,7 @@ ops_create_tracker <- function(
       OnWatch = Action == "watch",
       OnWatchIPRPend = Action == "de-escalate" | Action == "watch_iprpend",
       MilestoneFlag = Performance < Planned_Perf,
-      IPRPend = PlanEndDate == Date,
+      IPRPend = PlanEndDate == Period,
       Pending = Template_Sent != "" & Response_Received == "",
       UnderReview =
         Action == "review" | Action == "re-submit" | Action == "extend" | Action == "escalate",
@@ -113,7 +113,7 @@ ops_create_tracker <- function(
       IPRP = ActiveIPRP | InactiveIPRP
       ) %>%
     droplevels() %>%
-    dplyr::arrange(Trading.Party.ID, Standard, Date) %>%
+    dplyr::arrange(Trading.Party.ID, Standard, Period) %>%
     dplyr::group_by(Trading.Party.ID, Standard, PerformanceMeasure) %>%
     dplyr::mutate(
       PerfFlag3m = zoo::rollapply(BelowPeer, 3, mean, align = "right", fill = NA) == 1,
@@ -173,7 +173,7 @@ ops_create_tracker <- function(
         }
       } %>%
     {if (period.only) {
-      dplyr::filter(., Date == period)
+      dplyr::filter(., Period == period)
       } else {
         dplyr::mutate(., date.stamp = Sys.Date())
       }

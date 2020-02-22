@@ -11,7 +11,7 @@ ops_data_clean_temp %>%
   tidyr::drop_na(Charges) %>%
   base::droplevels() %>%
   ggplot2::ggplot(
-    ggplot2::aes(x = Date, y = Charges, fill = Group)
+    ggplot2::aes(x = Period, y = Charges, fill = Group)
     ) + 
   ggplot2::geom_bar(stat = "identity") + 
   ggplot2::theme(
@@ -41,24 +41,24 @@ ops_data_clean_temp %>%
 
 ops_data_clean_temp %>%
   dplyr::filter(
-    Date >= data.period %m-% months(11),
+    Period >= data.period %m-% months(11),
     PerformanceMeasure == "Completed",
     Charges > 0
     ) %>%
   base::droplevels() %>%
-  dplyr::select(Date, Standard, Charges) %>%
+  dplyr::select(Period, Standard, Charges) %>%
   dplyr::mutate(
-    Date = format(Date, "%Y-%m"),
+    Period = format(Period, "%Y-%m"),
     Charges = tidyr::replace_na(Charges, 0)
     ) %>% 
   tidyr::drop_na(Charges) %>%
   base::droplevels() %>%
   tidyr::spread(Standard, Charges) %>%
-  dplyr::mutate(Total = rowSums(dplyr::select(., -Date), na.rm = TRUE)) %>%
+  dplyr::mutate(Total = rowSums(dplyr::select(., -Period), na.rm = TRUE)) %>%
   dplyr::mutate_if(~ any(is.na(.)), ~ ifelse(is.na(.), 0, .)) %>%
   dplyr::mutate_if(is.numeric, scales::dollar_format(prefix = "£")) %>%
-  tidyr::gather("Standard", "Charges", -Date) %>%
-  tidyr::spread(Date, Charges) %>%
+  tidyr::gather("Standard", "Charges", -Period) %>%
+  tidyr::spread(Period, Charges) %>%
   kableExtra::kable (
     format = "latex", 
     caption = "Breakdown of Charges", 
@@ -92,12 +92,12 @@ As of `r format(data.period, "%B-%Y")`, MOSL were monitoring `r SHORT.NAME`'s pe
 
 agg_perf <- ops_aggregate_perf_temp %>%
   dplyr::filter(Trading.Party.ID == TRADING.PARTY) %>%
-  dplyr::select(Date, PerformanceMeasure, Agg_Perf) %>%
+  dplyr::select(Period, PerformanceMeasure, Agg_Perf) %>%
   dplyr::rename(GroupPerf = Agg_Perf) %>%
   dplyr::mutate(Group = "Aggregate Performance")
 
 ops_data_clean_temp %>%
-  dplyr::group_by(Date, PerformanceMeasure, Group) %>%
+  dplyr::group_by(Period, PerformanceMeasure, Group) %>%
   dplyr::summarise(
     GroupPerf = stats::weighted.mean(Performance, TaskVolume)
     ) %>%
@@ -108,7 +108,7 @@ ops_data_clean_temp %>%
   ggplot2::ggplot() + 
   ggplot2::geom_line(
     ggplot2::aes(
-      x = Date, 
+      x = Period, 
       y = GroupPerf, 
       colour = Group,
       linetype = Group
@@ -116,7 +116,7 @@ ops_data_clean_temp %>%
     ) +
   ggplot2::geom_point(
     ggplot2::aes(
-      x = Date, 
+      x = Period, 
       y = GroupPerf,
       colour = Group,
       fill = Group,
@@ -154,7 +154,7 @@ ops_data_clean_temp %>%
 
 ops_data_clean_temp %>% 
   dplyr::filter(
-    Date >= max(ops_data_clean_temp$Date) %m-% months(11),
+    Period >= max(ops_data_clean_temp$Period) %m-% months(11),
     PerformanceMeasure == "Completed",
     TaskVolume > 0
     ) %>%
@@ -162,14 +162,14 @@ ops_data_clean_temp %>%
   base::droplevels() %>%
   dplyr::mutate(
     Performance = scales::percent(Performance, accuracy = 1),
-    Date = format(Date, "%Y-%m")
+    Period = format(Period, "%Y-%m")
     ) %>%
   dplyr::select(
-    Date, Standard, Performance
+    Period, Standard, Performance
     ) %>%
   tidyr::drop_na(Performance) %>%
   base::droplevels() %>%
-  tidyr::spread(key = Date, value = Performance) %>%
+  tidyr::spread(key = Period, value = Performance) %>%
   kableExtra::kable(
     format = "latex", 
     caption = "OPS On Time Completed Tasks by Month",
@@ -199,7 +199,7 @@ ops_data_clean_temp %>%
 
 ops_data_clean_temp %>% 
   dplyr::filter(
-    Date >= max(ops_data_clean_temp$Date) %m-% months(11),
+    Period >= max(ops_data_clean_temp$Period) %m-% months(11),
     PerformanceMeasure == "Outstanding",
     TaskVolume > 0
     ) %>%
@@ -207,14 +207,14 @@ ops_data_clean_temp %>%
   base::droplevels() %>%
   dplyr::mutate(
     Performance = scales::percent(Performance, accuracy = 1),
-    Date = format(Date, "%Y-%m")
+    Period = format(Period, "%Y-%m")
     ) %>%
   dplyr::select(
-    Date, Standard, Performance
+    Period, Standard, Performance
     ) %>%
   tidyr::drop_na(Performance) %>%
   base::droplevels() %>%
-  tidyr::spread(key = Date, value = Performance) %>%
+  tidyr::spread(key = Period, value = Performance) %>%
   kableExtra::kable(
     format = "latex", 
     caption = "OPS Outstanding Tasks Within Time by Month",
@@ -249,7 +249,7 @@ ops_data_clean_temp %>%
 ops_aggregate_perf %>%
   dplyr::filter(
     sub_type == as.character(ops_aggregate_perf_temp$sub_type),
-    Date == data.period,
+    Period == data.period,
     PerformanceMeasure == "Completed"
     ) %>%
   ggplot2::ggplot() +
@@ -292,7 +292,7 @@ ops_aggregate_perf %>%
 ops_aggregate_perf %>%
   dplyr::filter(
     sub_type == as.character(ops_aggregate_perf_temp$sub_type),
-    Date == data.period,
+    Period == data.period,
     PerformanceMeasure == "Outstanding"
     ) %>%
   ggplot2::ggplot() +
@@ -439,13 +439,13 @@ for (METRIC in metrics.list) {
         ) %>%
       tidyr::drop_na() %>%
       dplyr::select(
-        Date, Standard, METRIC
+        Period, Standard, METRIC
         ) %>% 
       dplyr::filter(
-        Date >= data.period %m-% months(11)
+        Period >= data.period %m-% months(11)
         ) %>% 
-      dplyr::mutate(Date = format(Date, "%Y-%m")) %>%
-      tidyr::spread(Date, METRIC) %>%
+      dplyr::mutate(Period = format(Period, "%Y-%m")) %>%
+      tidyr::spread(Period, METRIC) %>%
       dplyr::mutate_if(
         is.numeric, 
         ifelse(

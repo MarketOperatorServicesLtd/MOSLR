@@ -31,8 +31,6 @@ render_PFM_report(
 \item{output.dir}{character}
 
 \item{data.period}{date}
-
-\item{output.file}{character}
 }
 \value{
 

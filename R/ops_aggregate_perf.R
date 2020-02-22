@@ -16,7 +16,7 @@ ops_aggregate_perf <- function(
 ) {
 
   ops_aggregate_perf <- df %>%
-    dplyr::group_by(PerformanceMeasure, Trading.Party.ID, Date) %>%
+    dplyr::group_by(PerformanceMeasure, Trading.Party.ID, Period) %>%
     dplyr::summarise(
       Agg_Perf = stats::weighted.mean(Performance, TaskVolume, na.rm = TRUE)
       ) %>%
@@ -25,26 +25,26 @@ ops_aggregate_perf <- function(
       tp.details,
       by = c("Trading.Party.ID")
       ) %>%
-    dplyr::arrange(PerformanceMeasure, Trading.Party.ID, Date) %>%
+    dplyr::arrange(PerformanceMeasure, Trading.Party.ID, Period) %>%
     dplyr::group_by(PerformanceMeasure, Trading.Party.ID) %>%
     dplyr::mutate(
       Agg_Perf_roll = zoo::rollapply(Agg_Perf, 6, mean, align = "right", fill = NA)
       ) %>%
     dplyr::ungroup() %>%
     tidyr::drop_na(Agg_Perf_roll) %>%
-    dplyr::group_by(PerformanceMeasure, Date) %>%
+    dplyr::group_by(PerformanceMeasure, Period) %>%
     dplyr::mutate(
       n_all = dplyr::n(),
       rank_all = rank(-Agg_Perf_roll)
       ) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by(PerformanceMeasure, tp_type, Date) %>%
+    dplyr::group_by(PerformanceMeasure, tp_type, Period) %>%
     dplyr::mutate(
       n_type = dplyr::n(),
       rank_type = rank(-Agg_Perf_roll)
       ) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by(PerformanceMeasure, sub_type, Date) %>%
+    dplyr::group_by(PerformanceMeasure, sub_type, Period) %>%
     dplyr::mutate(
       n_subtype = dplyr::n(),
       rank_subtype = rank(-Agg_Perf_roll)

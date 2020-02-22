@@ -31,12 +31,12 @@
 #'
 #' @examples
 
-mps_plot_perf_graph <- function(
+plot_perf_graph <- function(
   df = NULL,
   my.dir = NULL,
   load.data = FALSE,
   standard.key = NULL,
-  performance.measure = "Completed",
+  performance.measure = NULL,
   include.iprp = FALSE,
   trading.party,
   standard,
@@ -58,24 +58,32 @@ mps_plot_perf_graph <- function(
 
   if (demo.graph) {
 
-    standard.key <- sample(c("ops", "mps"), 1)
+    x <- 0
 
-    df <- readRDS(paste0(my.dir, "/data/rdata/perf_status_", tolower(standard.key), ".Rda")) %>%
-      tidyr::drop_na(Performance) %>%
-      droplevels() %>%
-      dplyr::filter(
-        StandardKey == toupper(standard.key),
-        Standard == sample(as.character(Standard), 1),
-        Trading.Party.ID == sample(as.character(Trading.Party.ID), 1),
-        PerformanceMeasure == sample(as.character(PerformanceMeasure), 1)
-      )
+    while (x == 0) {
 
-    standard.key <- unique(df$StandardKey)
-    standard <- unique(df$Standard)
-    trading.party <- unique(df$Trading.Party.ID)
-    performance.measure <- unique(df$PerformanceMeasure)
-    action.points <- TRUE
-    include.iprp <- TRUE
+      standard.key <- sample(c("ops", "mps"), 1)
+
+      df <- readRDS(paste0(my.dir, "/data/rdata/perf_status_", tolower(standard.key), ".Rda")) %>%
+        tidyr::drop_na(Performance) %>%
+        droplevels() %>%
+        dplyr::filter(
+          StandardKey == toupper(standard.key),
+          Standard == sample(as.character(Standard), 1),
+          Trading.Party.ID == sample(as.character(Trading.Party.ID), 1),
+          PerformanceMeasure == sample(as.character(PerformanceMeasure), 1)
+        )
+
+      standard.key <- unique(df$StandardKey)
+      standard <- unique(df$Standard)
+      trading.party <- unique(df$Trading.Party.ID)
+      performance.measure <- unique(df$PerformanceMeasure)
+      action.points <- TRUE
+      include.iprp <- TRUE
+
+      x <- nrow(df)
+
+    }
   }
 
   if (is.null(graph.title)) {
@@ -103,12 +111,12 @@ mps_plot_perf_graph <- function(
     dplyr::filter(
       Trading.Party.ID == trading.party,
       Standard == standard,
-      Date >= period.start,
-      Date <= period.end,
+      Period >= period.start,
+      Period <= period.end,
       TaskVolume > 0
       ) %>%
     dplyr::select(
-      Date,
+      Period,
       Trading.Party.ID,
       Standard,
       Performance,
@@ -120,7 +128,7 @@ mps_plot_perf_graph <- function(
       Threshold
       ) %>%
     dplyr::arrange(
-      Standard, Date
+      Standard, Period
       ) %>%
     tidyr::gather(
       key = "variable",
@@ -163,7 +171,7 @@ mps_plot_perf_graph <- function(
     ggplot2::ggplot() +
     ggplot2::geom_bar(
       ggplot2::aes(
-        x = Date,
+        x = Period,
         y = TaskVolume,
         fill = fill.label
         ),
@@ -173,7 +181,7 @@ mps_plot_perf_graph <- function(
       ) +
     ggplot2::geom_line(
       ggplot2::aes(
-        x = Date,
+        x = Period,
         y = value * max(graph_data$TaskVolume),
         colour = variable,
         linetype = variable,
@@ -182,7 +190,7 @@ mps_plot_perf_graph <- function(
       ) +
     ggplot2::geom_point(
       ggplot2::aes(
-        x = Date,
+        x = Period,
         y = value * max(graph_data$TaskVolume),
         shape = variable,
         alpha = variable
@@ -238,12 +246,12 @@ mps_plot_perf_graph <- function(
   if (action.points) {
 
     actions <- df %>%
-      dplyr::select(Date, Trading.Party.ID, Standard, Action, Performance, PerformanceMeasure) %>%
+      dplyr::select(Period, Trading.Party.ID, Standard, Action, Performance, PerformanceMeasure) %>%
       dplyr::filter(
         Trading.Party.ID == trading.party,
         Standard == standard,
-        Date >= period.start,
-        Date <= period.end,
+        Period >= period.start,
+        Period <= period.end,
         Action != ""
         )
 
@@ -251,7 +259,7 @@ mps_plot_perf_graph <- function(
       ggrepel::geom_label_repel(
         data = actions,
         ggplot2::aes(
-          x = Date,
+          x = Period,
           y = Performance * max(graph_data$TaskVolume),
           label = Action
           ),
@@ -261,7 +269,7 @@ mps_plot_perf_graph <- function(
       ggplot2::geom_point(
         data = actions,
         ggplot2::aes(
-          x = Date,
+          x = Period,
           y = Performance * max(graph_data$TaskVolume)
           )
         )

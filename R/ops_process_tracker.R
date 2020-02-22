@@ -35,7 +35,7 @@ ops_process_tracker <- function(
   } else {
     var_list <-
       c(
-        "Date", "SecondaryCategory", "Trading.Party.ID", "Standard", "PerformanceMeasure",
+        "Period", "SecondaryCategory", "Trading.Party.ID", "Standard", "PerformanceMeasure",
         "Action", "Rationale", "PFM_Commentary", "PerfFlag3m", "PerfFlag6m",
         "ActiveIPRP", "IPRPend", "MilestoneFlag", "Pending", "UnderReview",
         "OnWatchIPRPend",  "OnWatch", "Consistency", "PerfRating", "IPRPeligible",
@@ -65,12 +65,12 @@ ops_process_tracker <- function(
 
   monthly_tracking_post <- utils::read.csv(paste0(my.dir,"/data/inputs/tracking_ops.csv")) %>%
     dplyr::mutate(
-      Date = as.Date(Date, format = "%d/%m/%Y"),
+      Period = as.Date(Period, format = "%d/%m/%Y"),
       Rationale = as.character(Rationale),
       PFM_Commentary = as.character(PFM_Commentary)
       ) %>%
     dplyr::select(
-      Date, Trading.Party.ID, Standard, PerformanceMeasure, Action,
+      Period, Trading.Party.ID, Standard, PerformanceMeasure, Action,
       Rationale, PFM_Commentary, Response_Received
       )
 
@@ -82,7 +82,7 @@ ops_process_tracker <- function(
   perf_status_ops <- monthly_tracking_pre %>%
     dplyr::full_join(
       monthly_tracking_post,
-      by = c("Date", "Trading.Party.ID", "Standard", "PerformanceMeasure")
+      by = c("Period", "Trading.Party.ID", "Standard", "PerformanceMeasure")
       ) %>%
     dplyr::mutate(
       Action = tolower(Action),
@@ -99,7 +99,7 @@ ops_process_tracker <- function(
           )
         )
       ) %>%
-    dplyr::arrange(Date, Trading.Party.ID, Standard) %>%
+    dplyr::arrange(Period, Trading.Party.ID, Standard) %>%
     dplyr::group_by(Trading.Party.ID, Standard, PerformanceMeasure) %>%
     dplyr::mutate(
       Action = tidyr::replace_na(Action, ""),

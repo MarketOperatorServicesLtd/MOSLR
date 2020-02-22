@@ -12,7 +12,6 @@ ops_create_tracker(
   period.only = TRUE,
   save.output = TRUE,
   keep.vars = FALSE,
-  iprp.list = NULL,
   filter.category = c("IPRP: on-track", "Normal monitoring",
     "Performance flag: 6 month")
 )
@@ -32,9 +31,9 @@ ops_create_tracker(
 
 \item{keep.vars}{logical}
 
-\item{iprp.list}{character}
-
 \item{filter.category}{character}
+
+\item{iprp.list}{character}
 }
 \value{
 

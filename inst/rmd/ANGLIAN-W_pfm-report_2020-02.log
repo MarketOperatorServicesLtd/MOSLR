@@ -1,14 +1,14 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2020.2.21)  21 FEB 2020 22:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2020.2.21)  21 FEB 2020 23:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **"C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/
-Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-
-report_2020-02.tex"
+Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm
+-report_2020-02.tex"
 
 (c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02.tex
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02.tex
 LaTeX2e <2020-02-02> patch level 2
 L3 programming layer <2020-02-14>
 (c:/Users/LukeAustin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/article.
@@ -530,7 +530,7 @@ ackend-pdfmode.def
 File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
 \l__kernel_color_stack_int=\count280
 \l__pdf_internal_box=\box56
-) (./THAMES-W_pfm-report_2020-02.aux
+) (./ANGLIAN-W_pfm-report_2020-02.aux
 
 LaTeX Warning: Label `tab:unnamed-chunk-11' multiply defined.
 
@@ -538,25 +538,25 @@ LaTeX Warning: Label `tab:unnamed-chunk-11' multiply defined.
 LaTeX Warning: Label `tab:unnamed-chunk-11' multiply defined.
 
 
-LaTeX Warning: Label `tab:unnamed-chunk-64' multiply defined.
+LaTeX Warning: Label `tab:unnamed-chunk-59' multiply defined.
 
 
-LaTeX Warning: Label `tab:unnamed-chunk-67' multiply defined.
+LaTeX Warning: Label `tab:unnamed-chunk-62' multiply defined.
 
 
-LaTeX Warning: Label `tab:unnamed-chunk-67' multiply defined.
+LaTeX Warning: Label `tab:unnamed-chunk-62' multiply defined.
 
 
-LaTeX Warning: Label `tab:unnamed-chunk-67' multiply defined.
+LaTeX Warning: Label `tab:unnamed-chunk-62' multiply defined.
 
 
-LaTeX Warning: Label `tab:unnamed-chunk-67' multiply defined.
+LaTeX Warning: Label `tab:unnamed-chunk-62' multiply defined.
 
 
-LaTeX Warning: Label `tab:unnamed-chunk-67' multiply defined.
+LaTeX Warning: Label `tab:unnamed-chunk-62' multiply defined.
 
 )
-\openout1 = `THAMES-W_pfm-report_2020-02.aux'.
+\openout1 = `ANGLIAN-W_pfm-report_2020-02.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 86.
 LaTeX Font Info:    ... okay on input line 86.
@@ -608,9 +608,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 86.
 LaTeX Info: Redefining \pageref on input line 86.
 LaTeX Info: Redefining \nameref on input line 86.
-(./THAMES-W_pfm-report_2020-02.out) (./THAMES-W_pfm-report_2020-02.out)
+(./ANGLIAN-W_pfm-report_2020-02.out) (./ANGLIAN-W_pfm-report_2020-02.out)
 \@outlinefile=\write3
-\openout3 = `THAMES-W_pfm-report_2020-02.out'.
+\openout3 = `ANGLIAN-W_pfm-report_2020-02.out'.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -692,7 +692,7 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 87.
 (c:/Users/LukeAustin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb
 .fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) (./THAMES-W_pfm-report_2020-02.toc
+) (./ANGLIAN-W_pfm-report_2020-02.toc
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <12> on input line 2.
 LaTeX Font Info:    External font `lmex10' loaded for size
@@ -701,23 +701,23 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <6> on input line 2.
 )
 \tf@toc=\write4
-\openout4 = `THAMES-W_pfm-report_2020-02.toc'.
+\openout4 = `ANGLIAN-W_pfm-report_2020-02.toc'.
 
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-3-1.pdf, id=76, 867.24pt x 361.35
-pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-3-1.pdf, id=76, 867.24pt x 361.3
+5pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type p
-df)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-3-1.pdf Graphic file (type 
+pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-3-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-3-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-3-1.pdf  
-used on input line 100.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-3-1.pdf 
+ used on input line 100.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5> on input line 125.
@@ -731,20 +731,20 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-5-1.pdf, id=88, 867.24pt x 361.35
-pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-5-1.pdf, id=88, 867.24pt x 361.3
+5pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (type p
-df)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (type 
+pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-5-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-5-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-5-1.pdf  
-used on input line 141.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-5-1.pdf 
+ used on input line 141.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 <mosl_header.png, id=89, 597.432pt x 85.2786pt>
 File: mosl_header.png Graphic file (type png)
@@ -765,23 +765,23 @@ as been already used, duplicate ignored
 l.167 \end{table}
                   <./mosl_header.png> <c:/Users/LukeAustin/OneDrive - Market Op
 erator Services Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProj
-ect/PfmReports/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-c
-hunk-3-1.pdf>]
+ect/PfmReports/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-
+chunk-3-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-7-1.pdf, id=105, 867.24pt x 433.6
-2pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-7-1.pdf, id=105, 867.24pt x 433.
+62pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (type p
-df)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (type 
+pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-7-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-7-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-7-1.pdf  
-used on input line 182.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-7-1.pdf 
+ used on input line 182.
 (pdftex.def)             Requested size: 469.75827pt x 234.87912pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
@@ -793,987 +793,934 @@ as been already used, duplicate ignored
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
 l.184 T
-       he current status of Thames's performance against each standard and <c:/
-Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/D
-ataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-report
-_2020-02_files/figure-latex/unnamed-chunk-5-1.pdf>]
+       he current status of Anglian Water's performance against each standard <
+c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Luk
+e/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-re
+port_2020-02_files/figure-latex/unnamed-chunk-5-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf, id=116, 867.24pt x 433.6
-2pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf, id=116, 867.24pt x 433.
+62pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (type p
-df)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (type 
+pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf  
-used on input line 212.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf 
+ used on input line 211.
 (pdftex.def)             Requested size: 469.75827pt x 234.87912pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 215.
+Package pdftex.def Info: mosl_header.png  used on input line 214.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [4pdfTeX warning (ext4): destination with the same identifier (name{table.3}) h
 as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.215 ...ailed Analysis}\label{detailed-analysis}}
+l.214 ...ailed Analysis}\label{detailed-analysis}}
                                                    <c:/Users/LukeAustin/OneDriv
 e - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/PerformanceM
-onitoringProject/PfmReports/2020-02/THAMES-W_pfm-report_2020-02_files/figure-la
-tex/unnamed-chunk-7-1.pdf>]
+onitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-l
+atex/unnamed-chunk-7-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-10-1.pdf, id=127, 578.16pt x 230.
-8625pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf, id=127, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-10-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-10-1.pdf 
- used on input line 217.
-(pdftex.def)             Requested size: 469.75385pt x 187.5753pt.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf
+  used on input line 238.
+(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 241.
+Package pdftex.def Info: mosl_header.png  used on input line 245.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [5 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup
-/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm
--report_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf> <c:/Users/LukeAustin/
-OneDrive - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/Perfo
-rmanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-report_2020-02_files/fi
-gure-latex/unnamed-chunk-10-1.pdf>]
+/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pf
+m-report_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf> <c:/Users/LukeAustin
+/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/Perf
+ormanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-report_2020-02_files/
+figure-latex/unnamed-chunk-12-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf, id=149, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf, id=154, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf 
- used on input line 241.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf
+  used on input line 301.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
 Package pdftex.def Info: mosl_header.png  used on input line 303.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[6 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup
-/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm
--report_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf>]
+[6]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf, id=166, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf, id=162, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf 
- used on input line 373.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf
+  used on input line 337.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 375.
+Package pdftex.def Info: mosl_header.png  used on input line 339.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[7]
+[7 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup
+/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pf
+m-report_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf, id=175, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf, id=175, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf 
- used on input line 409.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf
+  used on input line 374.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 411.
+Package pdftex.def Info: mosl_header.png  used on input line 376.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [8 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup
-/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm
--report_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf>]
+/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pf
+m-report_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf, id=187, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf, id=187, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf 
- used on input line 446.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf
+  used on input line 412.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 448.
+Package pdftex.def Info: mosl_header.png  used on input line 414.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [9 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup
-/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm
--report_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf>]
-File: mosl_header.png Graphic file (type png)
-<use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 497.
-(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[10 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
+/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pf
 m-report_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf, id=214, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf, id=199, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf 
- used on input line 510.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf
+  used on input line 448.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 545.
+Package pdftex.def Info: mosl_header.png  used on input line 450.
+(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
+[10 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf>]
+<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf, id=211, 867.24pt x 361
+.35pt>
+File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf Graphic file (type
+ pdf)
+<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf>
+Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
+s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf
+  used on input line 483.
+(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
+File: mosl_header.png Graphic file (type png)
+<use mosl_header.png>
+Package pdftex.def Info: mosl_header.png  used on input line 485.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [11 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf, id=227, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-47-1.pdf, id=223, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-47-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-47-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf 
- used on input line 546.
-(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf, id=228, 867.24pt x 361.
-35pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf Graphic file (type 
-pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf 
- used on input line 581.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-47-1.pdf
+  used on input line 519.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 583.
+Package pdftex.def Info: mosl_header.png  used on input line 521.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [12 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf>]
+File: mosl_header.png Graphic file (type png)
+<use mosl_header.png>
+Package pdftex.def Info: mosl_header.png  used on input line 597.
+(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
+[13pdfTeX warning (ext4): destination with the same identifier (name{table.5}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.597 
+       <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Ba
+ckup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-
+W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-47-1.pdf>]
+File: mosl_header.png Graphic file (type png)
+<use mosl_header.png>
+Package pdftex.def Info: mosl_header.png  used on input line 629.
+(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
+[14pdfTeX warning (ext4): destination with the same identifier (name{table.6}) 
+has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.629 \newpage
+              pdfTeX warning (ext4): destination with the same identifier (name
+{table.7}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.629 \newpage
+              ]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-47-1.pdf, id=240, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-52-1.pdf, id=253, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-47-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-52-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-47-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-52-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-47-1.pdf 
- used on input line 617.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-52-1.pdf
+  used on input line 638.
+(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
+<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-54-1.pdf, id=254, 867.24pt x 361
+.35pt>
+File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-54-1.pdf Graphic file (type
+ pdf)
+<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-54-1.pdf>
+Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
+s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-54-1.pdf
+  used on input line 682.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 619.
-(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[13 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf>]
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-52-1.pdf, id=253, 867.24pt x 361.
-35pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-52-1.pdf Graphic file (type 
-pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-52-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-52-1.pdf 
- used on input line 652.
-(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
-File: mosl_header.png Graphic file (type png)
-<use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 654.
-(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[14 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-47-1.pdf>]
-File: mosl_header.png Graphic file (type png)
-<use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 730.
+Package pdftex.def Info: mosl_header.png  used on input line 715.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [15pdfTeX warning (ext4): destination with the same identifier (name{table.8}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.730 
-       <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Ba
-ckup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W
-_pfm-report_2020-02_files/figure-latex/unnamed-chunk-52-1.pdf>]
+l.715 \end{table}
+                  <c:/Users/LukeAustin/OneDrive - Market Operator Services Limi
+ted/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-
+02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-52-1.pdf>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-57-1.pdf, id=268, 867.24pt x 433
+.62pt>
+File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-57-1.pdf Graphic file (type
+ pdf)
+<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-57-1.pdf>
+Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
+s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-57-1.pdf
+  used on input line 761.
+(pdftex.def)             Requested size: 469.75827pt x 234.87912pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 762.
+Package pdftex.def Info: mosl_header.png  used on input line 763.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [16pdfTeX warning (ext4): destination with the same identifier (name{table.9}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.762 \newpage
-              pdfTeX warning (ext4): destination with the same identifier (name
-{table.10}) has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.762 \newpage
-              ]
+l.763 A
+       nglian Water's 6-month average aggregate OPS performance for <c:/Users/L
+ukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/DataAnal
+ysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-report_2020-
+02_files/figure-latex/unnamed-chunk-54-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-57-1.pdf, id=282, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-58-1.pdf, id=279, 867.24pt x 433
+.62pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-57-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-58-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-57-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-58-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-57-1.pdf 
- used on input line 771.
-(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-59-1.pdf, id=283, 867.24pt x 361.
-35pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-59-1.pdf Graphic file (type 
-pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-59-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-59-1.pdf 
- used on input line 813.
-(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-58-1.pdf
+  used on input line 776.
+(pdftex.def)             Requested size: 469.75827pt x 234.87912pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 843.
+Package pdftex.def Info: mosl_header.png  used on input line 778.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[17pdfTeX warning (ext4): destination with the same identifier (name{table.11})
+[17pdfTeX warning (ext4): destination with the same identifier (name{table.10})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.843 \end{table}
+l.778 T
+       he current status of Anglian Water's performance against each standard <
+c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Luk
+e/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-re
+port_2020-02_files/figure-latex/unnamed-chunk-57-1.pdf>]
+File: mosl_header.png Graphic file (type png)
+<use mosl_header.png>
+Package pdftex.def Info: mosl_header.png  used on input line 851.
+(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
+[18pdfTeX warning (ext4): destination with the same identifier (name{table.11})
+ has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.851 
+       <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Ba
+ckup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-
+W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-58-1.pdf>]
+<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-60-1.pdf, id=301, 867.24pt x 433
+.62pt>
+File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-60-1.pdf Graphic file (type
+ pdf)
+<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-60-1.pdf>
+Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
+s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-60-1.pdf
+  used on input line 855.
+(pdftex.def)             Requested size: 469.75827pt x 234.87912pt.
+File: mosl_header.png Graphic file (type png)
+<use mosl_header.png>
+Package pdftex.def Info: mosl_header.png  used on input line 866.
+(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
+[19pdfTeX warning (ext4): destination with the same identifier (name{table.12})
+ has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.866 \end{quote}
                   <c:/Users/LukeAustin/OneDrive - Market Operator Services Limi
 ted/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-
-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-57-1.pdf>]
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
+02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-60-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-62-1.pdf, id=298, 867.24pt x 433.
-62pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-63-1.pdf, id=318, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-62-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-63-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-62-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-63-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-62-1.pdf 
- used on input line 890.
-(pdftex.def)             Requested size: 469.75827pt x 234.87912pt.
-File: mosl_header.png Graphic file (type png)
-<use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 892.
-(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[18pdfTeX warning (ext4): destination with the same identifier (name{table.12})
- has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.892 T
-       hames's 6-month average aggregate OPS performance for outstanding tasks 
-<c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-59-1.pdf>]
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-63-1.pdf
+  used on input line 871.
+(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-63-1.pdf, id=309, 867.24pt x 433.
-62pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-68-1.pdf, id=319, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-63-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-68-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-63-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-68-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-63-1.pdf 
- used on input line 905.
-(pdftex.def)             Requested size: 469.75827pt x 234.87912pt.
-File: mosl_header.png Graphic file (type png)
-<use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 907.
-(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[19pdfTeX warning (ext4): destination with the same identifier (name{table.13})
- has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.907 T
-       he current status of Thames's performance against each standard and <c:/
-Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/D
-ataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-report
-_2020-02_files/figure-latex/unnamed-chunk-62-1.pdf>]
-File: mosl_header.png Graphic file (type png)
-<use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 980.
-(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[20pdfTeX warning (ext4): destination with the same identifier (name{table.14})
- has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.980 
-       <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Ba
-ckup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W
-_pfm-report_2020-02_files/figure-latex/unnamed-chunk-63-1.pdf>]
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-65-1.pdf, id=331, 867.24pt x 433.
-62pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-65-1.pdf Graphic file (type 
-pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-65-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-65-1.pdf 
- used on input line 984.
-(pdftex.def)             Requested size: 469.75827pt x 234.87912pt.
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-66-1.pdf, id=332, 578.16pt x 230.
-8625pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-66-1.pdf Graphic file (type 
-pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-66-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-66-1.pdf 
- used on input line 989.
-(pdftex.def)             Requested size: 469.75385pt x 187.5753pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 989--991
-[]
- []
-
-File: mosl_header.png Graphic file (type png)
-<use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 992.
-(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[21pdfTeX warning (ext4): destination with the same identifier (name{table.15})
- has been already used, duplicate ignored
-
-\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
-                                                  \fi \fi 
-l.992 \begin{quote}
-                    <c:/Users/LukeAustin/OneDrive - Market Operator Services Li
-mited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/202
-0-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-65-1.pdf>]
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-68-1.pdf, id=348, 867.24pt x 361.
-35pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-68-1.pdf Graphic file (type 
-pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-68-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-68-1.pdf 
- used on input line 999.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-68-1.pdf
+  used on input line 906.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1029.
+Package pdftex.def Info: mosl_header.png  used on input line 908.
+(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
+[20 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-63-1.pdf>]
+<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-73-1.pdf, id=333, 867.24pt x 361
+.35pt>
+File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-73-1.pdf Graphic file (type
+ pdf)
+<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-73-1.pdf>
+Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
+s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-73-1.pdf
+  used on input line 941.
+(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
+File: mosl_header.png Graphic file (type png)
+<use mosl_header.png>
+Package pdftex.def Info: mosl_header.png  used on input line 948.
+(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
+[21 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-68-1.pdf> <c:/Users/LukeAust
+in/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/Pe
+rformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-report_2020-02_file
+s/figure-latex/unnamed-chunk-73-1.pdf>]
+<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-78-1.pdf, id=350, 867.24pt x 361
+.35pt>
+File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-78-1.pdf Graphic file (type
+ pdf)
+<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-78-1.pdf>
+Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
+s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-78-1.pdf
+  used on input line 976.
+(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
+File: mosl_header.png Graphic file (type png)
+<use mosl_header.png>
+Package pdftex.def Info: mosl_header.png  used on input line 1008.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [22 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-66-1.pdf> <c:/Users/LukeAusti
-n/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/Per
-formanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-report_2020-02_files/
-figure-latex/unnamed-chunk-68-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-78-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-73-1.pdf, id=364, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-83-1.pdf, id=363, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-73-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-83-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-73-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-83-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-73-1.pdf 
- used on input line 1034.
-(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-78-1.pdf, id=365, 867.24pt x 361.
-35pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-78-1.pdf Graphic file (type 
-pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-78-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-78-1.pdf 
- used on input line 1069.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-83-1.pdf
+  used on input line 1013.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1071.
+Package pdftex.def Info: mosl_header.png  used on input line 1067.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [23 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-73-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-83-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-83-1.pdf, id=378, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-88-1.pdf, id=379, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-83-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-88-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-83-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-88-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-83-1.pdf 
- used on input line 1104.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-88-1.pdf
+  used on input line 1103.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1111.
+Package pdftex.def Info: mosl_header.png  used on input line 1129.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [24 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-78-1.pdf> <c:/Users/LukeAusti
-n/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/Per
-formanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-report_2020-02_files/
-figure-latex/unnamed-chunk-83-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-88-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-88-1.pdf, id=399, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-93-1.pdf, id=392, 867.24pt x 361
+.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-88-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-93-1.pdf Graphic file (type
+ pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-88-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-93-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-88-1.pdf 
- used on input line 1193.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-93-1.pdf
+  used on input line 1138.
+(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
+<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-98-1.pdf, id=393, 867.24pt x 361
+.35pt>
+File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-98-1.pdf Graphic file (type
+ pdf)
+<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-98-1.pdf>
+Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
+s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-98-1.pdf
+  used on input line 1174.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1195.
+Package pdftex.def Info: mosl_header.png  used on input line 1176.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[25]
+[25 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-93-1.pdf>]
+<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-103-1.pdf, id=408, 867.24pt x 36
+1.35pt>
+File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-103-1.pdf Graphic file (typ
+e pdf)
+<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-103-1.pdf>
+Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
+s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-103-1.pd
+f  used on input line 1210.
+(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1272.
+Package pdftex.def Info: mosl_header.png  used on input line 1212.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [26 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-88-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-98-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-93-1.pdf, id=425, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-108-1.pdf, id=421, 867.24pt x 36
+1.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-93-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-108-1.pdf Graphic file (typ
+e pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-93-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-108-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-93-1.pdf 
- used on input line 1328.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-108-1.pd
+f  used on input line 1247.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1330.
+Package pdftex.def Info: mosl_header.png  used on input line 1249.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[27]
+[27 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-103-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-98-1.pdf, id=433, 867.24pt x 361.
-35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-113-1.pdf, id=433, 867.24pt x 36
+1.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-98-1.pdf Graphic file (type 
-pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-113-1.pdf Graphic file (typ
+e pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-98-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-113-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-98-1.pdf 
- used on input line 1363.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-113-1.pd
+f  used on input line 1284.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1370.
+Package pdftex.def Info: mosl_header.png  used on input line 1286.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [28 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-93-1.pdf> <c:/Users/LukeAusti
-n/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/Per
-formanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-report_2020-02_files/
-figure-latex/unnamed-chunk-98-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-108-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-103-1.pdf, id=450, 867.24pt x 361
-.35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-118-1.pdf, id=445, 867.24pt x 36
+1.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-103-1.pdf Graphic file (type
- pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-118-1.pdf Graphic file (typ
+e pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-103-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-118-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-103-1.pdf
-  used on input line 1399.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-118-1.pd
+f  used on input line 1319.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1431.
+Package pdftex.def Info: mosl_header.png  used on input line 1326.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [29 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-103-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-113-1.pdf> <c:/Users/LukeAus
+tin/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/P
+erformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-report_2020-02_fil
+es/figure-latex/unnamed-chunk-118-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-108-1.pdf, id=463, 867.24pt x 361
-.35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-123-1.pdf, id=462, 867.24pt x 36
+1.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-108-1.pdf Graphic file (type
- pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-123-1.pdf Graphic file (typ
+e pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-108-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-123-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-108-1.pdf
-  used on input line 1436.
-(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-113-1.pdf, id=464, 867.24pt x 361
-.35pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-113-1.pdf Graphic file (type
- pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-113-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-113-1.pdf
-  used on input line 1473.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-123-1.pd
+f  used on input line 1354.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1475.
+Package pdftex.def Info: mosl_header.png  used on input line 1384.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [30 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-108-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-123-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-118-1.pdf, id=477, 867.24pt x 361
-.35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-128-1.pdf, id=475, 867.24pt x 36
+1.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-118-1.pdf Graphic file (type
- pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-128-1.pdf Graphic file (typ
+e pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-118-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-128-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-118-1.pdf
-  used on input line 1508.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-128-1.pd
+f  used on input line 1389.
+(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
+<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-133-1.pdf, id=476, 867.24pt x 36
+1.35pt>
+File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-133-1.pdf Graphic file (typ
+e pdf)
+<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-133-1.pdf>
+Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
+s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-133-1.pd
+f  used on input line 1424.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1515.
+Package pdftex.def Info: mosl_header.png  used on input line 1426.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [31 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-113-1.pdf> <c:/Users/LukeAust
-in/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/Pe
-rformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-report_2020-02_files
-/figure-latex/unnamed-chunk-118-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-128-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-123-1.pdf, id=495, 867.24pt x 361
-.35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-138-1.pdf, id=490, 867.24pt x 36
+1.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-123-1.pdf Graphic file (type
- pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-138-1.pdf Graphic file (typ
+e pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-123-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-138-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-123-1.pdf
-  used on input line 1543.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-138-1.pd
+f  used on input line 1459.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1573.
+Package pdftex.def Info: mosl_header.png  used on input line 1466.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [32 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-123-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-133-1.pdf> <c:/Users/LukeAus
+tin/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/P
+erformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-report_2020-02_fil
+es/figure-latex/unnamed-chunk-138-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-128-1.pdf, id=508, 867.24pt x 361
-.35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-143-1.pdf, id=507, 867.24pt x 36
+1.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-128-1.pdf Graphic file (type
- pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-143-1.pdf Graphic file (typ
+e pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-128-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-143-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-128-1.pdf
-  used on input line 1578.
-(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-133-1.pdf, id=509, 867.24pt x 361
-.35pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-133-1.pdf Graphic file (type
- pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-133-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-133-1.pdf
-  used on input line 1611.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-143-1.pd
+f  used on input line 1495.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1613.
+Package pdftex.def Info: mosl_header.png  used on input line 1526.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [33 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-128-1.pdf>]
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-143-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-138-1.pdf, id=522, 867.24pt x 361
-.35pt>
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-148-1.pdf, id=520, 867.24pt x 36
+1.35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-138-1.pdf Graphic file (type
- pdf)
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-148-1.pdf Graphic file (typ
+e pdf)
 <use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-138-1.pdf>
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-148-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-138-1.pdf
-  used on input line 1646.
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-148-1.pd
+f  used on input line 1531.
+(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
+<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
+ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_pfm-r
+eport_2020-02_files/figure-latex/unnamed-chunk-153-1.pdf, id=521, 867.24pt x 36
+1.35pt>
+File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
+up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_
+pfm-report_2020-02_files/figure-latex/unnamed-chunk-153-1.pdf Graphic file (typ
+e pdf)
+<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-153-1.pdf>
+Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
+s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
+/2020-02/ANGLIAN-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-153-1.pd
+f  used on input line 1567.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1653.
+Package pdftex.def Info: mosl_header.png  used on input line 1569.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [34 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-133-1.pdf> <c:/Users/LukeAust
-in/OneDrive - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/Pe
-rformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-report_2020-02_files
-/figure-latex/unnamed-chunk-138-1.pdf>]
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-143-1.pdf, id=539, 867.24pt x 361
-.35pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-143-1.pdf Graphic file (type
- pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-143-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-143-1.pdf
-  used on input line 1682.
-(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-148-1.pdf>]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1713.
+Package pdftex.def Info: mosl_header.png  used on input line 1628.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [35 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-143-1.pdf>]
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-148-1.pdf, id=553, 867.24pt x 361
-.35pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-148-1.pdf Graphic file (type
- pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-148-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-148-1.pdf
-  used on input line 1718.
-(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
-<C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
-ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-153-1.pdf, id=554, 867.24pt x 361
-.35pt>
-File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
-up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_p
-fm-report_2020-02_files/figure-latex/unnamed-chunk-153-1.pdf Graphic file (type
- pdf)
-<use C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-153-1.pdf>
-Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
-s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
-/2020-02/THAMES-W_pfm-report_2020-02_files/figure-latex/unnamed-chunk-153-1.pdf
-  used on input line 1754.
-(pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
+p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/ANGLIAN-W_p
+fm-report_2020-02_files/figure-latex/unnamed-chunk-153-1.pdf>]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1756.
+Package pdftex.def Info: mosl_header.png  used on input line 1663.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[36 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-148-1.pdf>]
-File: mosl_header.png Graphic file (type png)
-<use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1815.
-(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[37 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
-p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/THAMES-W_pf
-m-report_2020-02_files/figure-latex/unnamed-chunk-153-1.pdf>]
-File: mosl_header.png Graphic file (type png)
-<use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1850.
-(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[38pdfTeX warning (ext4): destination with the same identifier (name{table.21})
+[36pdfTeX warning (ext4): destination with the same identifier (name{table.15})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1850 
+l.1663 
        ]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1920.
+Package pdftex.def Info: mosl_header.png  used on input line 1733.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[39pdfTeX warning (ext4): destination with the same identifier (name{table.22})
+[37pdfTeX warning (ext4): destination with the same identifier (name{table.16})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1920 
+l.1733 
        pdfTeX warning (ext4): destination with the same identifier (name{table.
-23}) has been already used, duplicate ignored
+17}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1920 
+l.1733 
        ]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1990.
+Package pdftex.def Info: mosl_header.png  used on input line 1803.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[40pdfTeX warning (ext4): destination with the same identifier (name{table.24})
+[38pdfTeX warning (ext4): destination with the same identifier (name{table.18})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1990 
+l.1803 
        pdfTeX warning (ext4): destination with the same identifier (name{table.
-25}) has been already used, duplicate ignored
+19}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1990 
+l.1803 
        ]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 1991.
+Package pdftex.def Info: mosl_header.png  used on input line 1804.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[41pdfTeX warning (ext4): destination with the same identifier (name{table.26})
+[39pdfTeX warning (ext4): destination with the same identifier (name{table.20})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.1991 \newpage
+l.1804 \newpage
                ]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 2061.
+Package pdftex.def Info: mosl_header.png  used on input line 1874.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[42]
-<standardstates.jpg, id=611, 522.8947pt x 289.78853pt>
+[40]
+<standardstates.jpg, id=579, 522.8947pt x 289.78853pt>
 File: standardstates.jpg Graphic file (type jpg)
 <use standardstates.jpg>
-Package pdftex.def Info: standardstates.jpg  used on input line 2099.
+Package pdftex.def Info: standardstates.jpg  used on input line 1912.
 (pdftex.def)             Requested size: 469.77109pt x 260.34738pt.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 2102.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1915.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 2102.
+Package pdftex.def Info: mosl_header.png  used on input line 1915.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[43]
+[41]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 2102.
+Package pdftex.def Info: mosl_header.png  used on input line 1915.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[44pdfTeX warning (ext4): destination with the same identifier (name{figure.1})
+[42pdfTeX warning (ext4): destination with the same identifier (name{figure.1})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.2102 \end{document}
+l.1915 \end{document}
                       <./standardstates.jpg>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 2102.
-(./THAMES-W_pfm-report_2020-02.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 2102.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 2102.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1915.
+(./ANGLIAN-W_pfm-report_2020-02.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1915.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1915.
 
-Package rerunfilecheck Info: File `THAMES-W_pfm-report_2020-02.out' has not cha
-nged.
+Package rerunfilecheck Info: File `ANGLIAN-W_pfm-report_2020-02.out' has not ch
+anged.
 (rerunfilecheck)             Checksum: 6AA342D6E28DE38410C8384CBA798F64;2351.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 2102.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1915.
  ) 
 Here is how much of TeX's memory you used:
- 11719 strings out of 483158
- 211349 string characters out of 5962963
- 480129 words of memory out of 5000000
- 26324 multiletter control sequences out of 15000+600000
+ 11690 strings out of 483158
+ 209267 string characters out of 5962963
+ 480095 words of memory out of 5000000
+ 26303 multiletter control sequences out of 15000+600000
  592589 words of font info for 72 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 34i,16n,45p,805b,457s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 34i,16n,45p,639b,393s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Users/LukeAustin/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm
 -ts1.enc}{c:/Users/LukeAustin/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvip
 s/lm/lm-ec.enc}<c:/Users/LukeAustin/AppData/Roaming/TinyTeX/texmf-dist/fonts/ty
@@ -1782,10 +1729,10 @@ t/fonts/type1/public/lm/lmbx12.pfb><c:/Users/LukeAustin/AppData/Roaming/TinyTeX
 /texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/LukeAustin/AppData/Roamin
 g/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/LukeAustin/AppDa
 ta/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb>
-Output written on THAMES-W_pfm-report_2020-02.pdf (44 pages, 576897 bytes).
+Output written on ANGLIAN-W_pfm-report_2020-02.pdf (42 pages, 551649 bytes).
 PDF statistics:
- 682 PDF objects out of 1000 (max. 8388607)
- 545 compressed objects within 6 object streams
- 157 named destinations out of 1000 (max. 500000)
- 318 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 648 PDF objects out of 1000 (max. 8388607)
+ 517 compressed objects within 6 object streams
+ 151 named destinations out of 1000 (max. 500000)
+ 308 words of extra memory for PDF output out of 10000 (max. 10000000)
 

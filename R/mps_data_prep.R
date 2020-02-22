@@ -33,7 +33,7 @@ mps_data_prep <- function(
   mps_data <- mps.data
   mps_thresholds <- mps.thresholds %>%
     dplyr::mutate(
-      Date = as.Date(Date, format = "%d/%m/%Y")
+      Period = as.Date(Period, format = "%d/%m/%Y")
       )
 
 
@@ -46,15 +46,15 @@ mps_data_prep <- function(
       OnTimeTasks = Number.of.tasks.completed.on.time
       ) %>%
     dplyr::mutate(
-      Date = as.Date(Date, format = "%d/%m/%Y"),
+      Period = zoo::as.Date(zoo::as.yearmon(Period)),
       Performance = OnTimeTasks / TaskVolume,
       PerformanceMeasure = "Completed"
       ) %>%
     dplyr::arrange(
-      Date, Trading.Party.ID, Standard
+      Period, Trading.Party.ID, Standard
       ) %>%
     dplyr::select(
-      Date,
+      Period,
       Trading.Party.ID,
       Standard,
       PerformanceMeasure,
@@ -69,7 +69,7 @@ mps_data_prep <- function(
       ) %>%
     dplyr::left_join(
       mps_thresholds,
-      by = c("Standard", "Date", "PerformanceMeasure")
+      by = c("Standard", "Period", "PerformanceMeasure")
       ) %>%
     dplyr::group_by(Trading.Party.ID, Standard, PerformanceMeasure) %>%
     dplyr::mutate(
@@ -91,20 +91,20 @@ mps_data_prep <- function(
   # Creating summary grouped by Standard with market metrics by month ------------
 
   mps_summary <- mps_data_clean %>%
-    dplyr::group_by(Date, Standard) %>%
+    dplyr::group_by(Period, Standard) %>%
     dplyr::summarise(
       MarketMean = mean(Performance, na.rm = TRUE),
       MarketMedian = median(Performance, na.rm = TRUE),
       MarketTaskVolume = sum(TaskVolume)
       ) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(Standard, Date)
+    dplyr::arrange(Standard, Period)
 
   mps_data_clean <-
     dplyr::left_join(
       mps_summary,
       mps_data_clean,
-      by = c("Date", "Standard")
+      by = c("Period", "Standard")
       ) %>%
     dplyr::mutate(
       TaskShare = TaskVolume / MarketTaskVolume,
