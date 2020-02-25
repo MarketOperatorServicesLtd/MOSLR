@@ -60,7 +60,7 @@ ops_process_tracker <- function(
       filter.category = NULL
       ) %>%
     dplyr::select(
-      -Action, - Rationale, -PFM_Commentary, -Template_Sent, -Response_Received
+      -Action, - Rationale, -PFM_Commentary, -Template_Sent, -Response_Received_Template
       )
 
   monthly_tracking_post <- utils::read.csv(paste0(my.dir,"/data/inputs/tracking_ops.csv")) %>%
@@ -71,7 +71,7 @@ ops_process_tracker <- function(
       ) %>%
     dplyr::select(
       Period, Trading.Party.ID, Standard, PerformanceMeasure, Action,
-      Rationale, PFM_Commentary, Response_Received
+      Rationale, PFM_Commentary, Response_Received_Template
       )
 
   saveRDS(monthly_tracking_post, paste0(my.dir, "/data/rdata/monthly_tracking_ops_post.Rda"))

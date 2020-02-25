@@ -75,7 +75,7 @@ ops_create_tracker <- function(
       Period = as.Date(Period, format = "%d/%m/%Y") %m-% months(-1)
       ) %>%
     dplyr::select(
-      Period, Action, Trading.Party.ID, Standard, PerformanceMeasure, Template_Sent, Response_Received
+      Period, Action, Trading.Party.ID, Standard, PerformanceMeasure, Template_Sent, Response_Received_Template
       )
 
 
@@ -105,7 +105,7 @@ ops_create_tracker <- function(
       OnWatchIPRPend = Action == "de-escalate" | Action == "watch_iprpend",
       MilestoneFlag = Performance < Planned_Perf,
       IPRPend = PlanEndDate == Period,
-      Pending = Template_Sent != "" & Response_Received == "",
+      Pending = Template_Sent != "" & Response_Received_Template == "",
       UnderReview =
         Action == "review" | Action == "re-submit" | Action == "extend" | Action == "escalate",
       ActiveIPRP = !is.na(Status),

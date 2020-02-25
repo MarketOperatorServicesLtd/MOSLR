@@ -109,7 +109,7 @@ mps_data_prep <- function(
     dplyr::mutate(
       TaskShare = TaskVolume / MarketTaskVolume,
       BelowPeer = dplyr::if_else(
-        Threshold > 0,
+        !is.na(Threshold),
         Performance < Threshold,
         Performance < MarketMean
         )

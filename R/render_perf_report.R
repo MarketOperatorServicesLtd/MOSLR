@@ -19,8 +19,8 @@
 
 render_PERF_report <- function(
   rmd.file = "MonthlyPerformanceReport.Rmd",
-  dir = getwd(),
-  dir.output = paste0(dir, "/MonthlyPerfReport"),
+  my.dir = getwd(),
+  dir.output = paste0(my.dir, "/MonthlyPerfReport"),
   file.name =
     paste0("MonthlyPerformanceReport-", as.character(format(Sys.Date(), "%Y-%m")), ".pdf"),
   ...

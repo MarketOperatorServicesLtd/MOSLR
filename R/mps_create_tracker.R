@@ -74,7 +74,7 @@ mps_create_tracker <- function(
       key = as.factor(paste(Trading.Party.ID, Standard))
       ) %>%
     dplyr::select(
-      Period, Action, key, Template_Sent, Response_Received
+      Period, Action, key, Template_Sent, Response_Received_Template
     )
 
 
@@ -104,7 +104,7 @@ mps_create_tracker <- function(
       OnWatchIPRPend = Action == "de-escalate" | Action == "watch_iprpend",
       MilestoneFlag = Performance < Planned_Perf,
       IPRPend = PlanEndDate == Period,
-      Pending = Template_Sent != "" & Response_Received == "",
+      Pending = Template_Sent != "" & Response_Received_Template == "",
       UnderReview =
         Action == "review" | Action == "re-submit" | Action == "extend" | Action == "escalate",
       ActiveIPRP = !is.na(Status),
