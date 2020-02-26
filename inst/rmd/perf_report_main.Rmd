@@ -1,0 +1,276 @@
+---
+title: 'Monthly Performance Report'
+date: "`r format(as.Date(data.period), '%B %Y')`"
+fontsize: 12pt
+output:
+  pdf_document:
+    fig_height: 3.2
+    fig_width: 8
+    number_section: yes
+    toc: yes
+    fig_caption: true
+header-includes:
+- \usepackage{titling}
+- \pretitle{\begin{center}\LARGE\includegraphics[width=24cm]{mosl_title.png}\\[\bigskipamount]}
+- \posttitle{\end{center}}
+- \usepackage{xcolor}
+- \usepackage{color}
+- \usepackage{fancyhdr}
+- \usepackage{graphicx}
+- \usepackage{eurosym}
+- \usepackage{longtable}
+- \usepackage{booktabs}
+- \usepackage{makecell}
+- \usepackage{pdflscape}
+- \usepackage{multirow}
+- \usepackage{float}
+- \pagestyle{fancy}
+- \fancyhf{}
+- \lfoot{MOSL Performance Report}
+- \rhead{\includegraphics[width=6cm]{mosl_header.png}}
+- \rfoot{Page \thepage}
+classoption: table
+---
+
+# Market Performance Standards
+
+## Performance Charges
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
+
+mps_data_clean %>%
+  dplyr::filter(
+    Period <= data.period
+    ) %>%
+  dplyr::select(
+    Period, Charges, Group
+    ) %>%
+  dplyr::group_by(Period, Group) %>%
+  dplyr::summarise(
+    Charges = sum(Charges)
+    ) %>%
+  ggplot2::ggplot(
+    ggplot2::aes(x = Period, y = Charges, fill = Group)
+    ) + 
+  ggplot2::geom_bar(stat = "identity") + 
+  ggplot2::theme(
+    legend.title = ggplot2::element_blank(),
+    text = ggplot2::element_text(size = 15)
+    ) +
+  ggplot2::scale_y_continuous(
+    labels = scales::dollar_format(prefix = "£"),
+    breaks = scales::pretty_breaks(4)
+    ) +
+  ggplot2::theme_bw() +
+  ggplot2::scale_fill_manual(values = c("#425563", "#05C3DE", "#005F83", "#00A499", "#FFAA4D", "#F9E547", "#8866BC")) +
+  ggplot2::labs(
+    title = "Performance Charges",
+    subtitle = "Breakdown by month and standard grouping",
+    caption = "Source: MOSL"
+    ) +
+  ggplot2::ylab("") + ggplot2::xlab("")
+
+```
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
+
+# Creating table of charges by MPS ---------------- 
+
+mps_data_clean %>%
+  dplyr::filter(
+      Period >= data.period %m-% months(11),
+      Charges > 0
+    ) %>%
+  base::droplevels() %>%
+  dplyr::select(Period, Standard, Charges) %>%
+  dplyr::mutate(
+    Period = format(Period, "%Y-%m"),
+    Charges = tidyr::replace_na(Charges, 0)
+    ) %>% 
+  tidyr::drop_na(Charges) %>%
+  base::droplevels() %>%
+  dplyr::group_by(Period, Standard) %>%
+  dplyr::summarise(
+    Charges = sum(Charges, na.rm = TRUE)
+    ) %>%
+  dplyr::ungroup() %>%
+  tidyr::spread(Standard, Charges) %>%
+  dplyr::mutate(
+    Total = rowSums(dplyr::select(., -Period), na.rm = TRUE)
+  ) %>%
+  dplyr::mutate_if(~ any(is.na(.)), ~ ifelse(is.na(.), 0, .)) %>%
+  dplyr::mutate_if(is.numeric, scales::dollar_format(prefix = "£")) %>%
+  tidyr::gather("Standard", "Charges", -Period) %>%
+  tidyr::spread(Period, Charges) %>%
+  kableExtra::kable(
+    format = "latex", 
+    caption = "Breakdown of Charges by Standard", 
+    linesep = "",
+    format.args = list(big.mark = ","),
+    booktabs = TRUE,
+    align = "c"
+    ) %>%
+  kableExtra::kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      position = "center", 
+      full_width = FALSE,
+      "scale_down"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
+
+```
+
+## Performance Overview
+
+As of `r format(data.period, "%B-%Y")`, MOSL were monitoring Trading Party performance against `r nrow(perf_status_mps)` standards. Performance for these standards is measured according to:
+
+* `r paste(unique(perf_status_ops_temp$PerformanceMeasure), collapse = "and")`
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
+
+agg_perf <- mps_data_clean %>%
+  dplyr::group_by(Period) %>%
+  dplyr::summarise(
+    Perf = sum(OnTimeTasks, na.rm = TRUE) / sum(TaskVolume, na.rm = TRUE)
+    ) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    Agg_Perf = zoo::rollapply(Perf, 6, mean, align = "right", fill = NA)
+    ) %>%
+  dplyr::rename(GroupPerf = Agg_Perf) %>%
+  dplyr::mutate(Group = "Aggregate Performance")
+
+mps_data_clean %>%
+  dplyr::group_by(Period, Group) %>%
+  dplyr::summarise(
+    Perf = sum(OnTimeTasks) / sum(TaskVolume),
+    ) %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(
+    GroupPerf = zoo::rollapply(Perf, 6, mean, align = "right", fill = NA)
+    ) %>%
+  dplyr::ungroup() %>%
+  base::rbind(., agg_perf) %>%
+  droplevels() %>%
+  tidyr::drop_na() %>%
+  ggplot2::ggplot() + 
+  ggplot2::geom_line(
+    ggplot2::aes(
+      x = Period, 
+      y = GroupPerf, 
+      colour = Group,
+      linetype = Group
+      )
+    ) +
+  ggplot2::geom_point(
+    ggplot2::aes(
+      x = Period, 
+      y = GroupPerf,
+      colour = Group,
+      fill = Group,
+      shape = Group
+      )
+    ) +
+  ggplot2::theme(
+    legend.title = ggplot2::element_blank(),
+    text = ggplot2::element_text(size = 15)
+    ) +
+  ggplot2::scale_y_continuous(
+    labels = scales::percent_format(accuracy = 1),
+    breaks = scales::pretty_breaks(4)
+    ) +
+  ggplot2::theme_bw() + 
+  ggplot2::scale_colour_manual(
+    values = c("#425563", "#05C3DE", "#005F83", "#00A499", "#FFAA4D", "#F9E547", "#8866BC")
+    ) +
+  ggplot2::scale_fill_manual(
+    values = c("#425563", "#05C3DE", "#005F83", "#00A499", "#FFAA4D", "#F9E547", "#8866BC")
+    ) +
+  ggplot2::labs(
+    title = paste0("MPS On-Time Task Completion"),
+    subtitle = "Breakdown by month and standard",
+    caption = "Source: MOSL\nNote: Aggregate performance corresponds to the 6-month average of aggregate MPS performance"
+    ) +
+  ggplot2::ylab("") + ggplot2::xlab("")
+
+```
+
+
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
+
+mps_data_clean %>% 
+  dplyr::filter(
+    Period >= max(mps_data_clean$Period) %m-% months(11)
+    ) %>%
+  dplyr::group_by(Period, Standard) %>%
+  dplyr::summarise(
+    Performance = sum(OnTimeTasks, na.rm = TRUE) / sum(TaskVolume, na.rm = TRUE)
+    ) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    Performance = scales::percent(Performance, accuracy = 1),
+    Period = format(Period, "%Y-%m")
+    ) %>%
+  tidyr::spread(Period, Performance) %>%
+  kableExtra::kable(
+    format = "latex", 
+    caption = "MPS Performance by Month",
+    linesep = "",
+    format.args = list(big.mark = ","),
+    booktabs = TRUE,
+    align = "c"
+    ) %>%
+  kableExtra::kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "hold_position",
+      "striped",
+      position = "center", 
+      full_width = FALSE,
+      "scale_down"
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE)
+
+```
+
+
+## Performance Monitoring and Rectification
+
+### Status Summary
+
+### IPRP count & matrix
+
+### overview of progress?
+
+### Watch-list and areas of concern
+
+## Detailed IPRP Analysis
+
+## Market Aggregates
+
+# MPOP Reporting
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

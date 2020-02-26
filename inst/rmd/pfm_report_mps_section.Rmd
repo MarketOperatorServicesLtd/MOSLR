@@ -85,8 +85,8 @@ As of `r format(data.period, "%B-%Y")`, MOSL were monitoring `r SHORT.NAME`'s pe
 
 agg_perf <- mps_aggregate_perf %>%
   dplyr::filter(Trading.Party.ID == TRADING.PARTY) %>%
-  dplyr::select(Period, Agg_Perf) %>%
-  dplyr::rename(GroupPerf = Agg_Perf) %>%
+  dplyr::select(Period, Agg_Perf_roll) %>%
+  dplyr::rename(GroupPerf = Agg_Perf_roll) %>%
   dplyr::mutate(Group = "Aggregate Performance")
 
 mps_data_clean_temp %>%
@@ -95,8 +95,14 @@ mps_data_clean_temp %>%
     GroupPerf = sum(OnTimeTasks) / sum(TaskVolume)
     ) %>%
   dplyr::ungroup() %>%
+  dplyr::group_by(Group) %>%
+  dplyr::mutate(
+    GroupPerf = zoo::rollapply(GroupPerf, 6, mean, align = "right", fill = NA)
+    ) %>%
+  dplyr::ungroup() %>%
   base::rbind(., agg_perf) %>%
   droplevels() %>%
+  tidyr::drop_na() %>%
   ggplot2::ggplot() + 
   ggplot2::geom_line(
     ggplot2::aes(

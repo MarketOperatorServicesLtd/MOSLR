@@ -16,7 +16,7 @@ ops_aggregate_perf <- function(
 ) {
 
   ops_aggregate_perf <- df %>%
-    dplyr::group_by(PerformanceMeasure, Trading.Party.ID, Period) %>%
+    dplyr::group_by(PerformanceMeasure, Period, Trading.Party.ID) %>%
     dplyr::summarise(
       Agg_Perf = stats::weighted.mean(Performance, TaskVolume, na.rm = TRUE)
       ) %>%

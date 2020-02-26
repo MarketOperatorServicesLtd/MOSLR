@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2020.2.21)  21 FEB 2020 23:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2020.2.26)  28 FEB 2020 23:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -9,8 +9,8 @@ report_2020-02.tex"
 (c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
 ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pfm-re
 port_2020-02.tex
-LaTeX2e <2020-02-02> patch level 2
-L3 programming layer <2020-02-14>
+LaTeX2e <2020-02-02> patch level 4
+L3 programming layer <2020-02-25>
 (c:/Users/LukeAustin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/article.
 cls
 Document Class: article 2019/12/20 v1.4l Standard LaTeX document class
@@ -527,7 +527,7 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 )
 (c:/Users/LukeAustin/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3backend/l3b
 ackend-pdfmode.def
-File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
+File: l3backend-pdfmode.def 2020-02-23 L3 backend support: PDF mode
 \l__kernel_color_stack_int=\count280
 \l__pdf_internal_box=\box56
 ) (./SEVERN-R_pfm-report_2020-02.aux
@@ -793,18 +793,18 @@ m-report_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
 /2020-02/SEVERN-R_pfm-report_2020-02_files/figure-latex/unnamed-chunk-9-1.pdf  
-used on input line 211.
+used on input line 210.
 (pdftex.def)             Requested size: 469.75827pt x 234.87912pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 214.
+Package pdftex.def Info: mosl_header.png  used on input line 213.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [4pdfTeX warning (ext4): destination with the same identifier (name{table.3}) h
 as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.214 ...ailed Analysis}\label{detailed-analysis}}
+l.213 ...ailed Analysis}\label{detailed-analysis}}
                                                    <c:/Users/LukeAustin/OneDriv
 e - Market Operator Services Limited/Luke_Backup/Luke/DataAnalysis/PerformanceM
 onitoringProject/PfmReports/2020-02/SEVERN-R_pfm-report_2020-02_files/figure-la
@@ -823,11 +823,11 @@ m-report_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
 /2020-02/SEVERN-R_pfm-report_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf 
- used on input line 240.
+ used on input line 239.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 242.
+Package pdftex.def Info: mosl_header.png  used on input line 241.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [5 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup
 /Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pfm
@@ -846,18 +846,18 @@ m-report_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
 /2020-02/SEVERN-R_pfm-report_2020-02_files/figure-latex/unnamed-chunk-17-1.pdf 
- used on input line 277.
+ used on input line 276.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 279.
+Package pdftex.def Info: mosl_header.png  used on input line 278.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [6 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup
 /Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pfm
 -report_2020-02_files/figure-latex/unnamed-chunk-12-1.pdf>]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 332.
+Package pdftex.def Info: mosl_header.png  used on input line 331.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [7 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup
 /Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pfm
@@ -876,11 +876,11 @@ m-report_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
 /2020-02/SEVERN-R_pfm-report_2020-02_files/figure-latex/unnamed-chunk-22-1.pdf 
- used on input line 339.
+ used on input line 338.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 391.
+Package pdftex.def Info: mosl_header.png  used on input line 390.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [8 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup
 /Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pfm
@@ -899,28 +899,23 @@ m-report_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
 /2020-02/SEVERN-R_pfm-report_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf 
- used on input line 397.
+ used on input line 396.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 440.
+Package pdftex.def Info: mosl_header.png  used on input line 439.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [9 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup
 /Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pfm
 -report_2020-02_files/figure-latex/unnamed-chunk-27-1.pdf>]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 466.
+Package pdftex.def Info: mosl_header.png  used on input line 465.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [10]
-File: mosl_header.png Graphic file (type png)
-<use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 502.
-(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[11]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
 ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf, id=192, 867.24pt x 361.
+port_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf, id=187, 867.24pt x 361.
 35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
 up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_p
@@ -932,28 +927,28 @@ m-report_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
 /2020-02/SEVERN-R_pfm-report_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf 
- used on input line 537.
+ used on input line 490.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 575.
+Package pdftex.def Info: mosl_header.png  used on input line 492.
+(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
+[11]
+File: mosl_header.png Graphic file (type png)
+<use mosl_header.png>
+Package pdftex.def Info: mosl_header.png  used on input line 534.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [12 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
 p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pf
 m-report_2020-02_files/figure-latex/unnamed-chunk-32-1.pdf>]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 599.
+Package pdftex.def Info: mosl_header.png  used on input line 603.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
 [13]
-File: mosl_header.png Graphic file (type png)
-<use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 648.
-(pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[14]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
 ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf, id=220, 867.24pt x 361.
+port_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf, id=216, 867.24pt x 361.
 35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
 up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_p
@@ -965,18 +960,18 @@ m-report_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
 /2020-02/SEVERN-R_pfm-report_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf 
- used on input line 662.
+ used on input line 617.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 700.
+Package pdftex.def Info: mosl_header.png  used on input line 655.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[15 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+[14 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
 p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pf
 m-report_2020-02_files/figure-latex/unnamed-chunk-37-1.pdf>]
 <C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backup/Lu
 ke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pfm-re
-port_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf, id=237, 867.24pt x 361.
+port_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf, id=232, 867.24pt x 361.
 35pt>
 File: C:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Back
 up/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_p
@@ -988,87 +983,87 @@ m-report_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf>
 Package pdftex.def Info: C:/Users/LukeAustin/OneDrive - Market Operator Service
 s Limited/Luke_Backup/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports
 /2020-02/SEVERN-R_pfm-report_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf 
- used on input line 725.
+ used on input line 680.
 (pdftex.def)             Requested size: 469.75827pt x 195.7326pt.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 772.
+Package pdftex.def Info: mosl_header.png  used on input line 727.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[16 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
+[15 <c:/Users/LukeAustin/OneDrive - Market Operator Services Limited/Luke_Backu
 p/Luke/DataAnalysis/PerformanceMonitoringProject/PfmReports/2020-02/SEVERN-R_pf
 m-report_2020-02_files/figure-latex/unnamed-chunk-42-1.pdf>]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 834.
+Package pdftex.def Info: mosl_header.png  used on input line 789.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[17pdfTeX warning (ext4): destination with the same identifier (name{table.13})
+[16pdfTeX warning (ext4): destination with the same identifier (name{table.12})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.834 
+l.789 
       pdfTeX warning (ext4): destination with the same identifier (name{table.1
-4}) has been already used, duplicate ignored
+3}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.834 
+l.789 
       ]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 835.
+Package pdftex.def Info: mosl_header.png  used on input line 790.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[18pdfTeX warning (ext4): destination with the same identifier (name{table.15})
+[17pdfTeX warning (ext4): destination with the same identifier (name{table.14})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.835 \newpage
+l.790 \newpage
               ]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 907.
+Package pdftex.def Info: mosl_header.png  used on input line 862.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[19]
-<standardstates.jpg, id=274, 522.8947pt x 289.78853pt>
+[18]
+<standardstates.jpg, id=268, 522.8947pt x 289.78853pt>
 File: standardstates.jpg Graphic file (type jpg)
 <use standardstates.jpg>
-Package pdftex.def Info: standardstates.jpg  used on input line 945.
+Package pdftex.def Info: standardstates.jpg  used on input line 900.
 (pdftex.def)             Requested size: 469.77109pt x 260.34738pt.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 948.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 903.
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 948.
+Package pdftex.def Info: mosl_header.png  used on input line 903.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[20]
+[19]
 File: mosl_header.png Graphic file (type png)
 <use mosl_header.png>
-Package pdftex.def Info: mosl_header.png  used on input line 948.
+Package pdftex.def Info: mosl_header.png  used on input line 903.
 (pdftex.def)             Requested size: 170.71657pt x 24.3684pt.
-[21pdfTeX warning (ext4): destination with the same identifier (name{figure.1})
+[20pdfTeX warning (ext4): destination with the same identifier (name{figure.1})
  has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.948 \end{document}
+l.903 \end{document}
                      <./standardstates.jpg>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 948.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 903.
 (./SEVERN-R_pfm-report_2020-02.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 948.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 948.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 903.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 903.
 Package rerunfilecheck Info: File `SEVERN-R_pfm-report_2020-02.out' has not cha
 nged.
 (rerunfilecheck)             Checksum: 9AF86C24EB3EFC84F98E2DBA1BE436BD;1527.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 948.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 903.
  ) 
 Here is how much of TeX's memory you used:
- 11441 strings out of 483158
- 178191 string characters out of 5962963
- 481402 words of memory out of 5000000
- 26155 multiletter control sequences out of 15000+600000
+ 11440 strings out of 482916
+ 178180 string characters out of 5957269
+ 482390 words of memory out of 5000000
+ 26398 multiletter control sequences out of 15000+600000
  592589 words of font info for 72 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  34i,16n,45p,2001b,465s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1081,10 +1076,10 @@ t/fonts/type1/public/lm/lmbx12.pfb><c:/Users/LukeAustin/AppData/Roaming/TinyTeX
 g/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/LukeAustin/AppDa
 ta/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/LukeAus
 tin/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb>
-Output written on SEVERN-R_pfm-report_2020-02.pdf (21 pages, 405472 bytes).
+Output written on SEVERN-R_pfm-report_2020-02.pdf (20 pages, 402893 bytes).
 PDF statistics:
- 328 PDF objects out of 1000 (max. 8388607)
- 270 compressed objects within 3 object streams
- 75 named destinations out of 1000 (max. 500000)
+ 323 PDF objects out of 1000 (max. 8388607)
+ 266 compressed objects within 3 object streams
+ 73 named destinations out of 1000 (max. 500000)
  143 words of extra memory for PDF output out of 10000 (max. 10000000)
 

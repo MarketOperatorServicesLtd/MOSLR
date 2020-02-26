@@ -16,11 +16,9 @@ mps_aggregate_perf <- function(
   ) {
 
   mps_aggregate_perf <- df %>%
-    dplyr::group_by(Period, Trading.Party.ID) %>%
+    dplyr::group_by(PerformanceMeasure, Period, Trading.Party.ID) %>%
     dplyr::summarise(
-      Agg_Tasks = sum(TaskVolume, na.rm = TRUE),
-      Agg_OnTime = sum(OnTimeTasks, na.rm = TRUE),
-      Agg_Perf = Agg_OnTime / Agg_Tasks
+      Agg_Perf = stats::weighted.mean(Performance, TaskVolume, na.rm = TRUE)
       ) %>%
     dplyr::ungroup() %>%
     dplyr::left_join(
