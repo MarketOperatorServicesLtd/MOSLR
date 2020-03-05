@@ -20,6 +20,7 @@ create_directory <- function(
 
 
 
+
 # List of folders to be checked and created in the directory --------------
 
 
@@ -60,6 +61,7 @@ create_directory <- function(
   if(!file.exists(path)){
     file.copy(template_path, path)
   }
+
 
 
 }
