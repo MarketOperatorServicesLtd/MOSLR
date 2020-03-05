@@ -4,6 +4,7 @@
 #' running the MOSLR performance package.
 #'
 #' @param my.dir character
+#' @param foldername character
 #' @param projectname character
 #'
 #' @return
@@ -20,18 +21,19 @@ create_directory <- function(
 
 
 
+
 # List of folders to be checked and created in the directory --------------
 
 
   folder_list <- c(
     paste0(my.dir, "/", foldername),
     paste0(my.dir, "/", foldername, "/data"),
-    paste0(my.dir, "/", foldername, "/Data/inputs"),
-    paste0(my.dir, "/", foldername, "/Data/outputs"),
-    paste0(my.dir, "/", foldername, "/Data/rdata"),
-    paste0(my.dir, "/", foldername, "/Data/tracking"),
-    paste0(my.dir, "/", foldername, "/Data/tracking/mps"),
-    paste0(my.dir, "/", foldername, "/Data/tracking/ops"),
+    paste0(my.dir, "/", foldername, "/data/inputs"),
+    paste0(my.dir, "/", foldername, "/data/outputs"),
+    paste0(my.dir, "/", foldername, "/data/rdata"),
+    paste0(my.dir, "/", foldername, "/data/tracking"),
+    paste0(my.dir, "/", foldername, "/data/tracking/mps"),
+    paste0(my.dir, "/", foldername, "/data/tracking/ops"),
     paste0(my.dir, "/", foldername, "/MonthlyPerfReport"),
     paste0(my.dir, "/", foldername, "/PfmReports")
     )
@@ -60,6 +62,7 @@ create_directory <- function(
   if(!file.exists(path)){
     file.copy(template_path, path)
   }
+
 
 
 }

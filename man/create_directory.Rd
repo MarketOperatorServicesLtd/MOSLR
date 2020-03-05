@@ -4,10 +4,16 @@
 \alias{create_directory}
 \title{Create Directory}
 \usage{
-create_directory(my.dir = choose.dir(), projectname = "Project")
+create_directory(
+  my.dir = choose.dir(),
+  foldername = "PerformanceMonitoring",
+  projectname = "Project"
+)
 }
 \arguments{
 \item{my.dir}{character}
+
+\item{foldername}{character}
 
 \item{projectname}{character}
 }
