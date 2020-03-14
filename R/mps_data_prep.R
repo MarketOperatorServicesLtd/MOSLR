@@ -16,6 +16,7 @@
 #' @export
 #'
 #' @importFrom stats median
+#' @importFrom magrittr %>%
 #'
 #' @examples
 

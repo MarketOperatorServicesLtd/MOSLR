@@ -5,7 +5,7 @@
 \title{Create Directory}
 \usage{
 create_directory(
-  my.dir = choose.dir(),
+  my.dir = utils::choose.dir(),
   foldername = "PerformanceMonitoring",
   projectname = "Project"
 )

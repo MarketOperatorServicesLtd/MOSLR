@@ -22,6 +22,8 @@
 #' @return
 #' @export
 #'
+#' @importFrom magrittr %>%
+#'
 #' @examples
 
 create_tracker <- function(

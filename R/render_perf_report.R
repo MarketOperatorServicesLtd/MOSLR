@@ -18,6 +18,7 @@
 #'
 #' @importFrom ggplot2 ggplot
 #' @importFrom kableExtra kable_styling
+#' @importFrom magrittr %>%
 #'
 #' @examples
 

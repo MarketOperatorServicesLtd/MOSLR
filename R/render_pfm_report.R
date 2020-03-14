@@ -18,6 +18,7 @@
 #' @return
 #' @export
 #' @importFrom lubridate %m-%
+#' @importFrom magrittr %>%
 #'
 #' @examples
 

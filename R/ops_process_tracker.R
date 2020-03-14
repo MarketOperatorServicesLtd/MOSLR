@@ -16,6 +16,8 @@
 #' @return
 #' @export
 #'
+#' @importFrom magrittr %>%
+#'
 #' @examples
 
 ops_process_tracker <- function(

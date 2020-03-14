@@ -20,6 +20,8 @@
 #' @return
 #' @export
 #'
+#' @importFrom magrittr %>%
+#'
 #' @examples
 
 process_tracker <- function(

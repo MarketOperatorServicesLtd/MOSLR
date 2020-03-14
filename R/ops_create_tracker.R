@@ -17,6 +17,8 @@
 #' @return
 #' @export
 #'
+#' @importFrom magrittr %>%
+#'
 #' @examples
 
 ops_create_tracker <- function(
@@ -117,7 +119,7 @@ ops_create_tracker <- function(
     dplyr::mutate(
       PerfFlag3m = zoo::rollapply(BelowPeer, 3, mean, align = "right", fill = NA) == 1,
       PerfFlag6m = zoo::rollapply(BelowPeer, 6, mean, align = "right", fill = NA) >= 0.5,
-      rolling.sd = zoo::rollapply(Performance, 6, sd, align = "right", fill = NA),
+      rolling.sd = zoo::rollapply(Performance, 6, stats::sd, align = "right", fill = NA),
       rolling.mean = zoo::rollapply(Performance, 6, mean, align = "right", fill = NA),
       Consistency =
         dplyr::case_when(
