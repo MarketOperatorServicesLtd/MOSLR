@@ -8,6 +8,9 @@
 #' @param mps.thresholds character
 #' @param csv.outputs character
 #' @param rda.outputs character
+#' @param tp.details character
+#' @param Standards.details character
+#' @param save.output logical
 #'
 #' @return
 #' @export

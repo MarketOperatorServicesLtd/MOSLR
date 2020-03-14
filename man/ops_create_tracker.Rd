@@ -32,8 +32,6 @@ ops_create_tracker(
 \item{keep.vars}{logical}
 
 \item{filter.category}{character}
-
-\item{iprp.list}{character}
 }
 \value{
 

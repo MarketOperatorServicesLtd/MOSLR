@@ -4,10 +4,14 @@
 #' This function renders the Monthly Performance Report
 #' to be shared with MPC.
 #'
-#' @param dir character
 #' @param dir.output character
 #' @param file.name character
 #' @param ... foo
+#' @param rmd.file character
+#' @param my.dir character
+#' @param prep.data logical
+#' @param load.data logical
+#' @param data.period date
 #'
 #' @return
 #' @export

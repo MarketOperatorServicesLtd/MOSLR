@@ -13,6 +13,7 @@
 #' @param save.output logical
 #' @param keep.vars logical
 #' @param iprp.list character
+#' @param filter.category character
 #'
 #' @return
 #' @export
@@ -30,7 +31,7 @@ mps_create_tracker <- function(
   save.output = TRUE,
   keep.vars = FALSE,
   iprp.list = NULL,
-  filter.category = c("IPRP: on-track", "Normal monitoring")
+  filter.category = c("IPRP: on-track", "Normal monitoring", "Performance flag: 6 month")
   ) {
 
 # Setting parameters ------------------------------------------------------

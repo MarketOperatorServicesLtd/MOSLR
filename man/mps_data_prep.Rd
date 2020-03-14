@@ -24,9 +24,15 @@ mps_data_prep(
 
 \item{mps.thresholds}{character}
 
+\item{tp.details}{character}
+
+\item{Standards.details}{character}
+
 \item{csv.outputs}{character}
 
 \item{rda.outputs}{character}
+
+\item{save.output}{logical}
 }
 \value{
 

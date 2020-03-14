@@ -11,7 +11,6 @@
 #' @param period.only logical
 #' @param save.output logical
 #' @param keep.vars logical
-#' @param iprp.list character
 #' @param filter.category character
 #' @param dir.ops.tracking character
 #'

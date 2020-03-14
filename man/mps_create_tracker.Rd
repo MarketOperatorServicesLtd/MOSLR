@@ -13,7 +13,8 @@ mps_create_tracker(
   save.output = TRUE,
   keep.vars = FALSE,
   iprp.list = NULL,
-  filter.category = c("IPRP: on-track", "Normal monitoring")
+  filter.category = c("IPRP: on-track", "Normal monitoring",
+    "Performance flag: 6 month")
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ mps_create_tracker(
 \item{keep.vars}{logical}
 
 \item{iprp.list}{character}
+
+\item{filter.category}{character}
 }
 \value{
 
