@@ -95,8 +95,8 @@ ops_create_tracker <- function(
       Action = tolower(Action),
       Delta = Performance - Planned_Perf,
       DeltaQuant = Delta / Planned_Perf,
-      Performance = as.numeric(format(Performance, digits = 1)),
-      Planned_Perf = as.numeric(format(Planned_Perf, digits = 1)),
+      Performance = as.numeric(format(Performance, digits = 3)),
+      Planned_Perf = as.numeric(format(Planned_Perf, digits = 3)),
       Status = dplyr::case_when(
         (DeltaQuant > 0.05) ~ "Above plan",
         (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ "On-track",
