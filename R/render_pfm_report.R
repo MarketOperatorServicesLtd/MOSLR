@@ -18,6 +18,7 @@
 #' @return
 #' @export
 #' @importFrom lubridate %m-%
+#' @importFrom magrittr %>%
 #'
 #' @examples
 
@@ -39,7 +40,9 @@ render_PFM_report <- function(
 
   my_dir <- my.dir
   data.period <- as.Date(data.period)
-  day(data.period) <- 1
+
+  lubridate::day(data.period) <- 1
+
 
   if (prep.data) {
 
@@ -70,11 +73,7 @@ render_PFM_report <- function(
   if (is.null(excluded.list)) {
 
     excluded_list = c(
-      "AQUAFLOW-R", "ANGLIAN-R", "AFFINITY-W", "ALBIONECO-R", "ALBION-R",
-      "ALBION-w", "BLACKPOOL-R", "CHOLDERTON-R", "DEEVALLEY-W", "HEINEKEN-R",
-      "ICOSA2-2", "INDWATER-W", "JLP-R", "KELDA-R", "MARSTONS-R", "NCC-R",
-      "NORTHUM-R", "PEEL-W", "PEELWL-R", "SEVERNCON-W", "SOUTHSTAFF-R",
-      "SOUTHSTAFF-W", "TWRC-R", "VEOLIA-R", "WATERSCAN-R", "WTRCHOICE-R"
+      "AQUAFLOW-R", "ANGLIAN-R", "CHOLDERTON-R", "NORTHUM-R", "WATERSCAN-R"
       )
 
   } else {

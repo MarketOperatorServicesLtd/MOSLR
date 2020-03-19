@@ -7,6 +7,8 @@
 #' @return
 #' @export
 #'
+#' @importFrom magrittr %>%
+#'
 #' @examples
 
 mps_aggregate_perf <- function(

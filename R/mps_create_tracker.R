@@ -13,11 +13,13 @@
 #' @param save.output logical
 #' @param keep.vars logical
 #' @param iprp.list character
+#' @param filter.category character
 #'
 #' @return
 #' @export
 #'
 #' @importFrom lubridate "%m-%"
+#' @importFrom magrittr %>%
 #'
 #' @examples
 
@@ -30,7 +32,7 @@ mps_create_tracker <- function(
   save.output = TRUE,
   keep.vars = FALSE,
   iprp.list = NULL,
-  filter.category = c("IPRP: on-track", "Normal monitoring")
+  filter.category = c("IPRP: on-track", "Normal monitoring", "Performance flag: 6 month")
   ) {
 
 # Setting parameters ------------------------------------------------------
@@ -93,8 +95,8 @@ mps_create_tracker <- function(
       Action = tolower(Action),
       Delta = Performance - Planned_Perf,
       DeltaQuant = Delta / Planned_Perf,
-      Performance = as.numeric(format(Performance, digits = 1)),
-      Planned_Perf = as.numeric(format(Planned_Perf, digits = 1)),
+      Performance = as.numeric(format(Performance, digits = 3)),
+      Planned_Perf = as.numeric(format(Planned_Perf, digits = 3)),
       Status = dplyr::case_when(
         (DeltaQuant > 0.05) ~ "Above plan",
         (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ "On-track",
@@ -117,7 +119,7 @@ mps_create_tracker <- function(
     dplyr::mutate(
       PerfFlag3m = zoo::rollapply(BelowPeer, 3, mean, align = "right", fill = NA) == 1,
       PerfFlag6m = zoo::rollapply(BelowPeer, 6, mean, align = "right", fill = NA) >= 0.5,
-      rolling.sd = zoo::rollapply(Performance, 6, sd, align = "right", fill = NA),
+      rolling.sd = zoo::rollapply(Performance, 6, stats::sd, align = "right", fill = NA),
       rolling.mean = zoo::rollapply(Performance, 6, mean, align = "right", fill = NA),
       Consistency =
         dplyr::case_when(

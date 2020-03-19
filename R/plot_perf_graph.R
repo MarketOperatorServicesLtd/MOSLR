@@ -29,6 +29,8 @@
 #' @return
 #' @export
 #'
+#' @importFrom magrittr %>%
+#'
 #' @examples
 
 plot_perf_graph <- function(

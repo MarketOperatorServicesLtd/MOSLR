@@ -13,17 +13,14 @@
 #' @examples
 
 create_directory <- function(
-  my.dir = choose.dir(),
+  my.dir = utils::choose.dir(),
   foldername = "PerformanceMonitoring",
   projectname = "Project"
 
 ) {
 
 
-
-
 # List of folders to be checked and created in the directory --------------
-
 
   folder_list <- c(
     paste0(my.dir, "/", foldername),
@@ -39,32 +36,22 @@ create_directory <- function(
     )
 
 
-
-
 # Checking and creating folder structure ----------------------------------
 
-
   for(folder in folder_list){
-    if(!dir.exists(folder)){
+    if(!dir.exists(folder)) {
       dir.create(folder)
     }
-  }
+    }
 
 
 # Creating a project in the directory, if necessary -----------------------
 
-
   path <- file.path(my.dir, paste0(foldername, "/", projectname, ".Rproj"))
 
-  template_path <- system.file("templates/template.Rproj",
-                               package = "usethis")
+  template_path <- system.file("templates/template.Rproj", package = "usethis")
 
   if(!file.exists(path)){
     file.copy(template_path, path)
   }
-
-
-
-}
-
-
+  }
