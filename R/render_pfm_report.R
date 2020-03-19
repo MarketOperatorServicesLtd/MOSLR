@@ -39,6 +39,7 @@ render_PFM_report <- function(
 
   my_dir <- my.dir
   data.period <- as.Date(data.period)
+  day(data.period) <- 1
 
   if (prep.data) {
 
@@ -61,8 +62,8 @@ render_PFM_report <- function(
     perf_status_ops <- readRDS(paste0(my.dir, "/data/rdata/perf_status_ops.Rda"))
     ops_summary <- readRDS(paste0(my.dir, "/data/rdata/ops_summary.Rda"))
 
-    mps_aggregate_perf <- mps_aggregate_perf(df = mps_data_clean, tp.details = tp_details)
-    ops_aggregate_perf <- ops_aggregate_perf(df = ops_data_clean, tp.details = tp_details)
+    mps_aggregate_perf <- MOSLR::mps_aggregate_perf(df = mps_data_clean, tp.details = tp_details)
+    ops_aggregate_perf <- MOSLR::ops_aggregate_perf(df = ops_data_clean, tp.details = tp_details)
 
   }
 
@@ -86,7 +87,7 @@ render_PFM_report <- function(
 
     render_list <- mps_data_clean %>%
       dplyr::filter(
-        !Trading.Party.ID %in% excluded.list
+        !Trading.Party.ID %in% excluded_list
         ) %>%
       dplyr::select(Trading.Party.ID) %>%
       droplevels() %>%

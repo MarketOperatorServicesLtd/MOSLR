@@ -70,7 +70,7 @@ ops_create_tracker <- function(
       ) %>%
     dplyr::ungroup()
 
-  tracking_sheet <- utils::read.csv(paste0(my.dir2, "/data/inputs/tracking_ops.csv")) %>%
+  tracking_sheet <- utils::read.csv(paste0(my.dir, "/data/inputs/tracking_ops.csv")) %>%
     dplyr::mutate(
       Period = as.Date(Period, format = "%d/%m/%Y") %m-% months(-1)
       ) %>%
