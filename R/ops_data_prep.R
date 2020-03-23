@@ -44,7 +44,8 @@ ops_data_prep <- function(
       Period = as.Date(Period, format = "%d/%m/%Y"),
       TaskCompletion = OnTimeTasksCompleted / TaskVolumeCompleted,
       OutstandingOntime = OnTimeTasksOutstanding / TaskVolumeOutstanding
-      )
+      ) %>%
+    dplyr::filter(!Standard %in% c("OPS G4a", "OPS G4b"))
 
   tasks_completed <- ops_data_clean %>%
     dplyr::select(

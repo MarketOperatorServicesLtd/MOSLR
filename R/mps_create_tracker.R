@@ -102,8 +102,8 @@ mps_create_tracker <- function(
         (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ "On-track",
         (DeltaQuant < -0.05) ~ "Below plan"
         ),
-      OnWatch = Action == "watch",
-      OnWatchIPRPend = Action == "de-escalate" | Action == "watch_iprpend",
+      OnWatch = Action == "watch: performance",
+      OnWatchIPRPend = Action == "de-escalate" | Action == "watch: iprp end",
       MilestoneFlag = Performance < Planned_Perf,
       IPRPend = PlanEndDate == Period,
       Pending = Template_Sent != "" & Response_Received_Template == "",
@@ -152,8 +152,8 @@ mps_create_tracker <- function(
         dplyr::case_when(
           OnWatch ~ "Watch: performance",
           OnWatchIPRPend ~ "Watch: IPRP end",
-          !IPRP & !OnWatch & PerfFlag6m & !PerfFlag3m ~ "Performance flag: 6 month",
-          !IPRP & !OnWatch & PerfFlag3m ~ "Performance flag: 3 month",
+          !IPRP & !OnWatch & PerfFlag6m & !PerfFlag3m  & IPRPeligible ~ "Performance flag: 6 month",
+          !IPRP & !OnWatch & PerfFlag3m  & IPRPeligible ~ "Performance flag: 3 month",
           ActiveIPRP & MilestoneFlag & !IPRPend ~ "IPRP: below plan",
           ActiveIPRP & !MilestoneFlag & !IPRPend ~ "IPRP: on-track",
           IPRPend ~ "IPRP: end",
