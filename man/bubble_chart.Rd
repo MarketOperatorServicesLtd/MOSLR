@@ -5,22 +5,17 @@
 \title{Plot Bubble Graph}
 \usage{
 bubble_chart(
-  df.longunread = NULL,
-  df.vacancy = NULL,
-  tp.details = NULL,
+  df = NULL,
   longunread.graph = F,
   vacancy.graph = F,
   by = "Retailer",
   my.dir = getwd(),
-  load.data = F
+  prep.data = F,
+  vertical.sep = 0.15
 )
 }
 \arguments{
-\item{df.longunread}{dataframe}
-
-\item{df.vacancy}{dataframe}
-
-\item{tp.details}{dataframe}
+\item{df}{dataframe}
 
 \item{longunread.graph}{boolean}
 
@@ -30,7 +25,9 @@ bubble_chart(
 
 \item{my.dir}{character}
 
-\item{load.data}{boolean}
+\item{prep.data}{boolean}
+
+\item{vertical.sep}{numerical}
 }
 \value{
 A bubble graph for MPOP reporting
