@@ -1,58 +1,49 @@
 
 
 ```{r setup, include=FALSE}
-library(tidyverse)
-library(ggrepel)
-library(kableExtra)
-library(knitr)
-library(ggthemes)
-library(lubridate)
-library(openxlsx)
-library(formattable)
 
 
+wb <- openxlsx::createWorkbook("MPOP_tables")
 
-wb<-createWorkbook("MPOP_tables")
+openxlsx::addWorksheet(wb, "Longunread_numbers")
+openxlsx::addWorksheet(wb, "Longunread_numbers_Since_MO")
+openxlsx::addWorksheet(wb, "Longunread_percent")
 
-addWorksheet(wb, "Longunread_numbers")
-addWorksheet(wb, "Longunread_numbers_Since_MO")
-addWorksheet(wb, "Longunread_percent")
-
-addWorksheet(wb, "Vacant_numbers")
-addWorksheet(wb, "Vacant_percent")
+openxlsx::addWorksheet(wb, "Vacant_numbers")
+openxlsx::addWorksheet(wb, "Vacant_percent")
 
 table_legend_long <- data.frame(Red = "Above market average", Yellow = "Below market average", Green = "Below target market level")%>%
-  mutate(
-    Red = cell_spec(
+  dplyr::mutate(
+    Red = kableExtra::cell_spec(
       Red,
       "latex", 
       background = "#F08080",
     ),
-    Yellow = cell_spec(
+    Yellow = kableExtra::cell_spec(
       Yellow,
       "latex", 
       background = "#FFE699",
     ),
-    Green = cell_spec(
+    Green = kableExtra::cell_spec(
       Green,
       "latex", 
       background = "#C6E0B4",
     ))
 
 table_legend_vac <- data.frame(Red = "More than 2.5% over Market Opening average", Yellow = "Within $\\pm$ 2.5\\% of the Market Opening average", Green = "More than 2.5% less than Market Opening average")%>%
-  mutate(
-    Red = cell_spec(
+  dplyr::mutate(
+    Red = kableExtra::cell_spec(
       Red,
       "latex", 
       background = "#F08080",
     ),
-    Yellow = cell_spec(
+    Yellow = kableExtra::cell_spec(
       Yellow, 
       "latex",
       background = "#FFE699",
       escape = FALSE
     ),
-    Green = cell_spec(
+    Green = kableExtra::cell_spec(
       Green,
       "latex",
       background = "#C6E0B4",
@@ -74,15 +65,15 @@ table_legend_vac <- data.frame(Red = "More than 2.5% over Market Opening average
 
 ```{r, echo=FALSE,  warning=FALSE, error=FALSE, fig.height=5}
 history_vac <- vacant%>%
-  group_by(
+  dplyr::group_by(
     Period
     )%>%
-  summarise(
+  dplyr::summarise(
     Vacancies = sum(Vacancies),
     total = sum(Premises),
     percent_vacant = sum(Vacancies)/sum(Premises)
     )%>%
-  filter(
+  dplyr::filter(
     Period > "2019-03-01"
     )
 
@@ -98,20 +89,20 @@ predict_vac <- data.frame(
 
 predict_vac$percent_vacant_forecast <- predict.lm(forecast_vac, predict_vac)
 
-history_vac_forecast <- bind_rows(history_vac, predict_vac)
+history_vac_forecast <- dplyr::bind_rows(history_vac, predict_vac)
 
 history_vac_forecast$percent_vacant_forecast[history_vac_forecast$Period==max(history_vac$Period)] <- history_vac_forecast$percent_vacant[history_vac_forecast$Period==max(history_vac$Period)]
 
 
 
-ggplot(
+ggplot2::ggplot(
   history_vac_forecast, 
-  aes(
+  ggplot2::aes(
     x = Period
     )
   )+
-  geom_bar(
-    aes(
+  ggplot2::geom_bar(
+    ggplot2::aes(
       x=Period,
       y = Vacancies
       ),
@@ -120,38 +111,38 @@ ggplot(
     inherit.aes = FALSE,
     fill = "#005F83"
     )+
-  geom_line(
-    aes(
+  ggplot2::geom_line(
+    ggplot2::aes(
       y = percent_vacant*(1.05*max(history_vac$total, na.rm = T)),
       color = "Observed"
       ), 
     size=1.4
     )+
-  geom_line(
-    aes(
+  ggplot2::geom_line(
+    ggplot2::aes(
       y = percent_vacant_forecast*(1.05*max(history_vac$total, na.rm = T)),
       color = "Forecast"
       ), 
     size=1.4
     )+
-  geom_point(
-    aes(
+  ggplot2::geom_point(
+    ggplot2::aes(
       y = percent_vacant_forecast*(1.05*max(history_vac$total, na.rm = T)),
       color = "Forecast"
       ), 
     size = 3
     )+
-  geom_point(
-    aes(
+  ggplot2::geom_point(
+    ggplot2::aes(
       y = percent_vacant*(1.05*max(history_vac$total, na.rm = T)),
       color = "Observed"
       ), 
     size = 3
     )+
-  scale_y_continuous(
+  ggplot2::scale_y_continuous(
     label = scales::unit_format(accuracy = 1, unit = "", sep = "", big.mark = ","),
     breaks = scales::pretty_breaks(4),
-    sec.axis = sec_axis(
+    sec.axis = ggplot2::sec_axis(
       ~. / (1.05*max(history_vac$total, na.rm = T)), 
       name = "Percentage of vacant premises", 
       labels = scales::percent_format(accuracy = 1)
@@ -161,21 +152,21 @@ ggplot(
       max(history_vac$Vacancies, na.rm = T)+30000), 
     oob = scales::rescale_none
       )+
-  scale_color_manual(values = c("#FFAA4D", "#00A499"))+
-  ylab(
+  ggplot2::scale_color_manual(values = c("#FFAA4D", "#00A499"))+
+  ggplot2::ylab(
     "Total number of vacant premises"
     )+
-  ggtitle(
+  ggplot2::ggtitle(
     "Vacant premises"
     )+
-theme_bw()+
-  theme(
-    plot.title = element_text(
+ggplot2::theme_bw()+
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(
       hjust = 0.5
       ),
-    legend.title = element_blank(),
+    legend.title = ggplot2::element_blank(),
     legend.position = "bottom",
-    axis.title.x  = element_blank())
+    axis.title.x  = ggplot2::element_blank())
     
   
 
@@ -189,8 +180,17 @@ theme_bw()+
 ### Vacancy - Trading Party Level Reporting 
 
 ```{r, echo=FALSE, warning=FALSE, error=FALSE, fig.height=4.8, fig.width=10}
+    vac_MO_avg <- vacant%>%
+      dplyr::filter(
+        Period=="2017-04-01"
+      )%>%
+      dplyr::summarise(
+        Total = sum(Vacancies)/sum(Premises)
+      )
 
-MOSLR::bubble_chart(df.vacancy = vacant, vacancy.graph = T, tp.details = tp_details, by = "Retailer", my.dir = my_dir) 
+graph_data <- MOSLR::MPOP_data_prep(df.vacancy =  vacant, tp.details = tp_details, vacancy.table = T, by = "Retailer", my.dir = my_dir)
+
+MOSLR::bubble_chart(df = graph_data, vacancy.graph = T, by = "Retailer", vertical.sep = vac_MO_avg$Total) 
 
 ```
 
@@ -206,22 +206,22 @@ MOSLR::bubble_chart(df.vacancy = vacant, vacancy.graph = T, tp.details = tp_deta
 \elandscape
 
 ```{r, echo=FALSE, warning=FALSE}
-top10_vac_ret <- current_vac%>%
-  arrange(
-    desc(
+top10_vac_ret <- graph_data%>%
+  dplyr::arrange(
+    dplyr::desc(
       percent
       )
     )%>%
-  mutate(
+  dplyr::mutate(
     percent_temp = ifelse(
       percent - last_percent > 0, 
       paste0(round(percent*100, 1), "\\% $\\uparrow$"), 
       paste0(round(percent*100, 1), "\\% $\\downarrow$")
       ),
-    percent_temp = cell_spec(
+    percent_temp = kableExtra::cell_spec(
       percent_temp,
       "latex",
-      background = case_when(
+      background = dplyr::case_when(
          percent > vac_MO_avg$Total+0.02 ~ 
            "#F08080",
          percent > vac_MO_avg$Total-0.02 & percent < vac_MO_avg$Total+0.02 ~ 
@@ -232,7 +232,7 @@ top10_vac_ret <- current_vac%>%
     TotalPremises = scales::comma(TotalPremises, digits = 0),
     Vacancies = scales::comma(Vacancies, digits = 0)
     )%>%
-   select(Retailer, TotalPremises, Vacancies, percent_temp)
+   dplyr::select(Retailer, TotalPremises, Vacancies, percent_temp)
 
 
 
@@ -246,10 +246,10 @@ knitr::kable(top10_vac_ret,
   caption = "Retailer Vacancy ranking",
   align = c("l", rep("r", ncol(top10_vac_ret)-1))
     ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "striped", "scale_down")
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     1:nrow(top10_vac_ret),
     hline_after = T)
 ```
@@ -266,10 +266,10 @@ knitr::kable(table_legend_vac,
   linesep = "",
   escape = F
     ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "scale_down")
     )%>%
-  column_spec(1:3, width = "5cm")
+  kableExtra::column_spec(1:3, width = "5cm")
 ```
 
 \arrayrulecolor{black}
@@ -281,7 +281,9 @@ knitr::kable(table_legend_vac,
 \blandscape
 
 ```{r, echo=FALSE, warning=FALSE, error=FALSE, fig.width=10, fig.height=5.2}
-MOSLR::bubble_chart(df.vacancy = vacant, vacancy.graph = T, tp.details = tp_details, by = "Wholesaler", my.dir = my_dir) 
+graph_data <- MOSLR::MPOP_data_prep(df.vacancy =  vacant, tp.details = tp_details, vacancy.table = T, by = "Wholesaler", my.dir = my_dir)
+
+MOSLR::bubble_chart(df = graph_data, vacancy.graph = T, by = "Wholesaler", vertical.sep = vac_MO_avg$Total) 
 
 ```
 
@@ -299,17 +301,17 @@ MOSLR::bubble_chart(df.vacancy = vacant, vacancy.graph = T, tp.details = tp_deta
 
 ```{r, echo=FALSE, warning=FALSE}
 
-top10_vac_whole <- current_vac%>%
-  mutate(
+top10_vac_whole <- graph_data%>%
+  dplyr::mutate(
     percent_temp = ifelse(
       percent - last_percent > 0, 
       paste0(round(percent*100, 1), "\\% $\\uparrow$"), 
       paste0(round(percent*100, 1), "\\% $\\downarrow$")
       ),
-    percent_temp = cell_spec(
+    percent_temp = kableExtra::cell_spec(
       percent_temp,
       "latex",
-      background = case_when(
+      background = dplyr::case_when(
          percent > vac_MO_avg$Total+0.02 ~ 
            "#F08080",
          percent > vac_MO_avg$Total-0.02 & percent < vac_MO_avg$Total+0.02 ~ 
@@ -320,15 +322,16 @@ top10_vac_whole <- current_vac%>%
     TotalPremises = scales::comma(TotalPremises, digits = 0),
     Vacancies = scales::comma(Vacancies, digits = 0)
     )%>%
-  arrange(
-    desc(
+  dplyr::arrange(
+    dplyr::desc(
       percent
       )
-    )%>%mutate(percent = paste0(round(percent*100,1), "\\%"))%>%
-  filter(
+    )%>%
+  dplyr::mutate(percent = paste0(round(percent*100,1), "\\%"))%>%
+  dplyr::filter(
     !is.na(Total_Premises_april)
     )%>%
-  select(Wholesaler, TotalPremises, Vacancies, percent_temp)
+  dplyr::select(Wholesaler, TotalPremises, Vacancies, percent_temp)
 
 
 
@@ -342,10 +345,10 @@ knitr::kable(top10_vac_whole,
   caption = "Wholesaler area Vacancy ranking",
   align = c("l", rep("r", ncol(top10_vac_whole)-1))
     ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "striped", "scale_down")
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     1:nrow(top10_vac_whole),
     hline_after = T)
 ```
@@ -361,10 +364,10 @@ knitr::kable(table_legend_vac,
   linesep = "",
   escape = F
     ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "scale_down")
     )%>%
-  column_spec(1:3, width = "5cm")
+  kableExtra::column_spec(1:3, width = "5cm")
 ```
 
 \arrayrulecolor{black}
@@ -377,7 +380,10 @@ knitr::kable(table_legend_vac,
 \blandscape
 
 ```{r, echo=FALSE, warning=FALSE, error=FALSE, fig.height=5.2, fig.width=10}
-MOSLR::bubble_chart(df.vacancy = vacant, vacancy.graph = T, tp.details = tp_details, by = "Pair", my.dir = my_dir) 
+
+graph_data <- MOSLR::MPOP_data_prep(df.vacancy =  vacant, tp.details = tp_details, vacancy.table = T, by = "Pair", my.dir = my_dir)
+
+MOSLR::bubble_chart(df = graph_data, vacancy.graph = T, by = "Pair", vertical.sep = vac_MO_avg$Total) 
 
 ```
 
@@ -394,22 +400,22 @@ MOSLR::bubble_chart(df.vacancy = vacant, vacancy.graph = T, tp.details = tp_deta
 \elandscape
 
 ```{r, echo=FALSE, warning=FALSE}
-top10_vac_pair <- current_vac%>%
-  arrange(
-    desc(
+top10_vac_pair <- graph_data%>%
+  dplyr::arrange(
+    dplyr::desc(
       percent
       )
     )%>%
-  mutate(
+  dplyr::mutate(
     percent_temp = ifelse(
       percent - last_percent > 0, 
       paste0(round(percent*100, 1), "\\% $\\uparrow$"), 
       paste0(round(percent*100, 1), "\\% $\\downarrow$")
       ),
-    percent_temp = cell_spec(
+    percent_temp = kableExtra::cell_spec(
       percent_temp,
       "latex",
-      background = case_when(
+      background = dplyr::case_when(
          percent > vac_MO_avg$Total+0.02 ~ 
            "#F08080",
          percent > vac_MO_avg$Total-0.02 & percent < vac_MO_avg$Total+0.02 ~ 
@@ -420,7 +426,7 @@ top10_vac_pair <- current_vac%>%
     TotalPremises = scales::comma(TotalPremises, digits = 0),
     Vacancies = scales::comma(Vacancies, digits = 0)
     )%>%
-   select(Pair, TotalPremises, Vacancies, percent_temp)
+   dplyr::select(Pair, TotalPremises, Vacancies, percent_temp)
 
 
 
@@ -434,13 +440,13 @@ knitr::kable(top10_vac_pair,
   caption = "Pairing Vacancy ranking",
   align = c("l", rep("r", ncol(top10_vac_pair)-1))
     ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "striped", "scale_down")
     ) %>%
-  row_spec(
+  kableExtra::row_spec(
     1:nrow(top10_vac_pair),
     hline_after = T)%>%
-  column_spec(
+  kableExtra::column_spec(
     1,
     width = "6.5cm"
     )
@@ -457,10 +463,10 @@ knitr::kable(table_legend_vac,
   linesep = "",
   escape = F
     ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "scale_down")
     )%>%
-  column_spec(1:3, width = "5cm")
+  kableExtra::column_spec(1:3, width = "5cm")
 ```
 
 \arrayrulecolor{black}
@@ -476,36 +482,36 @@ knitr::kable(table_legend_vac,
 ```{r, echo=FALSE, warning=FALSE}
 
 vacant_current <- vacant%>%
-      filter(
+      dplyr::filter(
         Period == max(vacant$Period)
-        )%>%
-  mutate(
+        ) %>%
+  dplyr::mutate(
     percent = scales::percent(Vacancies/Premises)
     )
 
 vac_TP_temp <- data.table::transpose(vacant_TP)
 colnames(vac_TP_temp) <- vacant_TP$TradingPartyID
 
-vacant_total <- pivot_wider(
-  arrange(
+vacant_total <- tidyr::pivot_wider(
+  dplyr::arrange(
     vacant_current, 
     WholesalerID),
   id_cols = WholesalerID, 
   names_from = RetailerID, 
   values_from = Vacancies
   )%>%
-  bind_rows(., mutate_all(select(vac_TP_temp[3,], unique(vacant_current$RetailerID)), as.numeric))%>%
-  left_join(., vacant_TP%>%select(TradingPartyID, Vacant_Premises), by = c("WholesalerID" = "TradingPartyID"))%>%
-  rename(Total = Vacant_Premises)
+  dplyr::bind_rows(dplyr::mutate_all(dplyr::select(vac_TP_temp[3,], unique(vacant_current$RetailerID)), as.numeric))%>%
+  dplyr::left_join(vacant_TP%>%dplyr::select(TradingPartyID, Vacant_Premises), by = c("WholesalerID" = "TradingPartyID"))%>%
+  dplyr::rename(Total = Vacant_Premises)
 
 vacant_total[nrow(vacant_total),1] <- "Total"
 vacant_total[nrow(vacant_total), ncol(vacant_total)] <- vacant_Total$Total_Vacant_Premises
 
 vacant_total <- vacant_total%>%
-  mutate_if(
+  dplyr::mutate_if(
     is.numeric, ~scales::comma(., accuracy = 1)
   )%>%
-  mutate_all(
+  dplyr::mutate_all(
     ~replace(., is.na(.),"")
     )  
 
@@ -513,7 +519,7 @@ vacant_total <- vacant_total%>%
   
 
   
-writeData(wb, sheet = "Vacant_numbers", x = vacant_total)
+openxlsx::writeData(wb, sheet = "Vacant_numbers", x = vacant_total)
 
 
 knitr::kable(
@@ -530,27 +536,27 @@ knitr::kable(
     ),
   col.names = c("", colnames(vacant_total)[2:ncol(vacant_total)])
   )%>%
-  kable_styling(
+  kableExtra::kable_styling(
     bootstrap_options = "bordered",
     latex_options = c("hold_position", "scale_down", "striped"), stripe_color = "blizzardblue"
     )%>%
-  column_spec(
+  kableExtra::column_spec(
     ncol(vacant_total)-1, 
     border_right = T
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     0, 
     angle = 90
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     nrow(vacant_total)-1, 
     hline_after = T
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     nrow(vacant_total), 
     bold = T
     )%>%
-  column_spec(
+  kableExtra::column_spec(
     ncol(vacant_total),
     bold = T
     )
@@ -560,20 +566,20 @@ knitr::kable(
 ```{r, echo=FALSE, warning=FALSE}
 
 
-vacant_percent <- pivot_wider(
-    arrange(
+vacant_percent <- tidyr::pivot_wider(
+    dplyr::arrange(
       vacant_current, 
       WholesalerID),
     id_cols = WholesalerID,
     names_from = RetailerID, 
     values_from = percent
     )%>%
-  bind_rows(., select(vac_TP_temp[4,], unique(vacant_current$RetailerID)))%>%
-  left_join(., vacant_TP%>%select(TradingPartyID, percent), by = c("WholesalerID" = "TradingPartyID"))%>%
-  mutate_all(
+  dplyr::bind_rows(dplyr::select(vac_TP_temp[4,], unique(vacant_current$RetailerID)))%>%
+  dplyr::left_join(vacant_TP%>%dplyr::select(TradingPartyID, percent), by = c("WholesalerID" = "TradingPartyID"))%>%
+  dplyr::mutate_all(
     ~replace(., is.na(.),"")
     )%>%
-  rename(Total = percent)
+  dplyr::rename(Total = percent)
 
 
 
@@ -581,7 +587,7 @@ vacant_percent[nrow(vacant_percent),1] <- "Total"
 vacant_percent[nrow(vacant_percent), ncol(vacant_percent)] <- paste(round(100*vacant_Total$Market_Vacancy_Rate,1),"%")
 
 
-writeData(wb, sheet = "Vacant_percent", x = vacant_percent)
+openxlsx::writeData(wb, sheet = "Vacant_percent", x = vacant_percent)
 
 knitr::kable(
   vacant_percent,
@@ -600,26 +606,26 @@ knitr::kable(
     colnames(vacant_percent)[2:ncol(vacant_percent)]
     )
   )%>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "scale_down", "striped"), stripe_color = "blizzardblue"
     )%>%
-  column_spec(
+  kableExtra::column_spec(
     ncol(vacant_percent)-1, 
     border_right = T
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     0, 
     angle = 90
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     nrow(vacant_percent)-1, 
     hline_after = T
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     nrow(vacant_percent),
     bold = T
     )%>%
-  column_spec(
+  kableExtra::column_spec(
     ncol(vacant_percent), 
     bold = T
     )
@@ -639,15 +645,15 @@ knitr::kable(
 
 ```{r forecast1, echo=FALSE,  warning=FALSE, error=FALSE, fig.height=5}
 history <- longunread%>%
-  group_by(
+  dplyr::group_by(
     Period
     )%>%
-  summarise(
+  dplyr::summarise(
     Meters_unread = sum(Meters_Unread_in_12mo),
     total = sum(Total_Meters),
     percent_unread = sum(Meters_Unread_in_12mo)/sum(Total_Meters)
     )%>%
-  filter(
+  dplyr::filter(
     Period > "2019-03-01"
     )
 
@@ -664,19 +670,19 @@ predict <- data.frame(
 
 predict$percent_unread_forecast <- predict.lm(forecast, predict)
 
-history_w_forecast <- bind_rows(history, predict)
+history_w_forecast <- dplyr::bind_rows(history, predict)
 
 history_w_forecast$percent_unread_forecast[history_w_forecast$Period==max(history$Period)] <- history_w_forecast$percent_unread[history_w_forecast$Period==max(history$Period)]
 
 
-ggplot(
+ggplot2::ggplot(
   history_w_forecast, 
-  aes(
+  ggplot2::aes(
     x = Period
     )
   )+
-  geom_bar(
-    aes(
+  ggplot2::geom_bar(
+    ggplot2::aes(
       x=Period,
       y = Meters_unread
       ),
@@ -685,60 +691,60 @@ ggplot(
     inherit.aes = FALSE,
     fill = "#005F83"
     )+
-  geom_line(
-    aes(
+  ggplot2::geom_line(
+    ggplot2::aes(
       y = percent_unread_forecast*(1.05*max(history_w_forecast$total, na.rm = T)),
       color="Forecast"
       ), 
     size=1.4
     )+
-  geom_point(
-    aes(
+  ggplot2::geom_point(
+    ggplot2::aes(
       y = percent_unread_forecast*(1.05*max(history_w_forecast$total, na.rm = T)),
       color="Forecast"
       ), 
     size=3
     )+
-  geom_line(
-    aes(
+  ggplot2::geom_line(
+    ggplot2::aes(
       y = percent_unread*(1.05*max(history_w_forecast$total, na.rm = T)),
       color="Observed"
       ), 
     size=1.4
     )+
-  geom_point(
-    aes(
+  ggplot2::geom_point(
+    ggplot2::aes(
       y = percent_unread*(1.05*max(history_w_forecast$total, na.rm = T)),
       color="Observed"
       ), 
     size=3
     )+
-  scale_y_continuous(
+  ggplot2::scale_y_continuous(
     label = scales::unit_format(accuracy = 1, unit = "", sep = "", big.mark = ","),
     breaks = scales::pretty_breaks(4),
-    sec.axis = sec_axis(
+    sec.axis = ggplot2::sec_axis(
       ~. / (1.05*max(history_w_forecast$total, na.rm = T)), 
       name = "Percentage of meters unread", 
       labels = scales::percent_format(accuracy = 1)
       ),
-    limits = c(min(history_w_forecast$Meters_unread,na.rm = T)-40000,max(history_w_forecast$Meters_unread, na.rm = T)+30000),
+    limits = c(min(history_w_forecast$Meters_unread,na.rm = T)-40000, max(history_w_forecast$Meters_unread, na.rm = T)+30000),
     oob = scales::rescale_none
     )+
-  scale_color_manual(values = c("#FFAA4D", "#00A499"))+
-  ylab(
+  ggplot2::scale_color_manual(values = c("#FFAA4D", "#00A499"))+
+  ggplot2::ylab(
     "Total number of meters unread"
     )+
-  ggtitle(
+  ggplot2::ggtitle(
     "Meters Unread for 12+ months"
     )+
-  theme_bw()+
-  theme(
-    plot.title = element_text(
+  ggplot2::theme_bw()+
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(
       hjust = 0.5
       ),
-    legend.title = element_blank(),
+    legend.title = ggplot2::element_blank(),
     legend.position = "bottom",
-    axis.title.x  = element_blank()
+    axis.title.x  = ggplot2::element_blank()
     )
   
 
@@ -754,15 +760,15 @@ ggplot(
 
 ```{r forecast2, echo=FALSE,  warning=FALSE, error=FALSE, fig.height=5}
 history_MO <- longunread%>%
-  group_by(
+  dplyr::group_by(
     Period
     )%>%
-  summarise(
+  dplyr::summarise(
     Meters_Unread_Since_MO = sum(Meters_Unread_Since_MO),
     total = sum(Total_Meters),
     percent_unread_MO = sum(Meters_Unread_Since_MO)/sum(Total_Meters)
     )%>%
-  filter(
+  dplyr::filter(
     Period > "2019-03-01"
     )
 
@@ -779,20 +785,20 @@ predict_MO <- data.frame(
 
 predict_MO$percent_unread_MO_forecast <- predict.lm(forecast_MO, predict_MO)
 
-history_MO_w_forecast <- bind_rows(history_MO, predict_MO)
+history_MO_w_forecast <- dplyr::bind_rows(history_MO, predict_MO)
 
 history_MO_w_forecast$percent_unread_MO_forecast[history_MO_w_forecast$Period==max(history$Period)] <- history_MO_w_forecast$percent_unread_MO[history_MO_w_forecast$Period==max(history$Period)]
 
 
 
-ggplot(
+ggplot2::ggplot(
   history_MO_w_forecast, 
-  aes(
+  ggplot2::aes(
     x = Period
     )
   )+
-  geom_bar(
-    aes(
+  ggplot2::geom_bar(
+    ggplot2::aes(
       x=Period,
       y = Meters_Unread_Since_MO
       ),
@@ -801,59 +807,59 @@ ggplot(
     inherit.aes = FALSE,
     fill = "#005F83"
     )+
-  geom_line(
-    aes(
+  ggplot2::geom_line(
+    ggplot2::aes(
       y = percent_unread_MO_forecast*(1.05*max(history_w_forecast$total, na.rm = T)),
       color="Forecast"
       ), 
     size=1.4
     )+
-  geom_point(
-    aes(
+  ggplot2::geom_point(
+    ggplot2::aes(
       y = percent_unread_MO_forecast*(1.05*max(history_w_forecast$total, na.rm = T)),
       color="Forecast"
       ), 
     size=3
     )+
-  geom_line(
-    aes(
+  ggplot2::geom_line(
+    ggplot2::aes(
       y = percent_unread_MO*(1.05*max(history_w_forecast$total, na.rm = T)),
       color="Observed"
       ), 
     size=1.4
     )+
-  geom_point(
-    aes(
+  ggplot2::geom_point(
+    ggplot2::aes(
       y = percent_unread_MO*(1.05*max(history_w_forecast$total, na.rm = T)),
       color="Observed"
       ), 
     size=3
     )+
-  scale_y_continuous(
+  ggplot2::scale_y_continuous(
     label = scales::unit_format(accuracy = 1, unit = "", sep = "", big.mark = ","),
     breaks = scales::pretty_breaks(4),
-    sec.axis = sec_axis(
+    sec.axis = ggplot2::sec_axis(
       ~. / (1.1*max(history_MO_w_forecast$total, na.rm = T)), 
       name = "Percentage of meters unread", 
       labels = scales::percent_format(accuracy = 1)
       ),
     oob = scales::rescale_none
     )+
-  scale_color_manual(values = c("#FFAA4D", "#00A499"))+
-  ylab(
+  ggplot2::scale_color_manual(values = c("#FFAA4D", "#00A499"))+
+  ggplot2::ylab(
     "Total number of meters unread"
     )+
-  ggtitle(
+  ggplot2::ggtitle(
     "Meters Unread since Market Opening"
     )+
-  theme_bw()+
-  theme(
-    plot.title = element_text(
+  ggplot2::theme_bw()+
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(
       hjust = 0.5
       ),
-    legend.title = element_blank(),
+    legend.title = ggplot2::element_blank(),
     legend.position = "bottom",
-    axis.title.x  = element_blank()
+    axis.title.x  = ggplot2::element_blank()
     )
   
 
@@ -872,7 +878,13 @@ ggplot(
 
 
 ```{r, echo=FALSE, warning=FALSE, error=FALSE, fig.height=4.8, fig.width=10}
-MOSLR::bubble_chart(df.longunread = longunread, longunread.graph = T, tp.details = tp_details, by = "Retailer", my.dir = my_dir) 
+    longunread_avg <- longunread%>%
+      dplyr::filter(Period == max(longunread$Period))%>%
+      dplyr::summarise(Total = sum(Meters_Unread_in_12mo)/sum(Total_Meters))
+
+graph_data <- MOSLR::MPOP_data_prep(df.longunread = longunread,tp.details = tp_details, longunread.table = T, by = "Retailer", my.dir = my_dir)
+
+MOSLR::bubble_chart(df = graph_data, longunread.graph = T, by = "Retailer", vertical.sep = longunread_avg$Total) 
 
 ```
 
@@ -892,17 +904,17 @@ MOSLR::bubble_chart(df.longunread = longunread, longunread.graph = T, tp.details
 ```{r, echo=FALSE, warning=FALSE}
 
 
-top10_long_ret <- current_long%>%
-  mutate(
+top10_long_ret <- graph_data%>%
+  dplyr::mutate(
     percent_temp = ifelse(
       percent - last_percent > 0, 
       paste0(round(percent*100, 1), "\\% $\\uparrow$"), 
       paste0(round(percent*100, 1), "\\% $\\downarrow$")
       ),
-    percent_temp = cell_spec(
+    percent_temp = kableExtra::cell_spec(
       percent_temp,
       "latex",
-      background = case_when(
+      background = dplyr::case_when(
          percent > longunread_avg$Total ~ 
            "#F08080",
          percent>0.05 & percent < longunread_avg$Total ~ 
@@ -914,12 +926,12 @@ top10_long_ret <- current_long%>%
     TotalMeters = scales::comma(TotalMeters, digits = 0),
     PureLUMs = scales::comma(PureLUMs, digits = 0)
     )%>%
-  arrange(
-    desc(
+  dplyr::arrange(
+    dplyr::desc(
       percent
       )
     )%>%
-  select(Retailer, TotalMeters, PureLUMs, percent_temp)
+  dplyr::select(Retailer, TotalMeters, PureLUMs, percent_temp)
 
 
 
@@ -938,10 +950,10 @@ knitr::kable(
       ncol(top10_long_ret)-1)
     )
   )%>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "striped", "scale_down")
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     1:nrow(top10_long_ret),
     hline_after = T)
 
@@ -960,7 +972,7 @@ knitr::kable(table_legend_long,
   linesep = "",
   escape = F
     ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "scale_down")
     )
 ```
@@ -974,7 +986,10 @@ knitr::kable(table_legend_long,
 \blandscape
 
 ```{r bubble_chart_Whole, echo=FALSE, warning=FALSE, error=FALSE, fig.height=5.2, fig.width=10}
-MOSLR::bubble_chart(df.longunread = longunread, longunread.graph = T, tp.details = tp_details, by = "Wholesaler", my.dir = my_dir) 
+
+graph_data <- MOSLR::MPOP_data_prep(df.longunread = longunread, tp.details = tp_details, longunread.table = T, by = "Wholesaler", my.dir = my_dir)
+
+MOSLR::bubble_chart(df = graph_data, longunread.graph = T, by = "Wholesaler", vertical.sep = longunread_avg$Total) 
 
 
 ```
@@ -993,17 +1008,17 @@ MOSLR::bubble_chart(df.longunread = longunread, longunread.graph = T, tp.details
 ```{r top10_whole, echo=FALSE, warning=FALSE}
 
 
-top10_long_whole <- current_long%>%
-  mutate(
+top10_long_whole <- graph_data%>%
+  dplyr::mutate(
     percent_temp = ifelse(
       percent - last_percent > 0, 
       paste0(round(percent*100, 1), "\\% $\\uparrow$"), 
       paste0(round(percent*100, 1), "\\% $\\downarrow$")
       ),
-    percent_temp = cell_spec(
+    percent_temp = kableExtra::cell_spec(
       percent_temp,
       "latex",
-      background = case_when(
+      background = dplyr::case_when(
          percent > longunread_avg$Total ~ 
            "#F08080",
          percent>0.05 & percent < longunread_avg$Total ~ 
@@ -1015,12 +1030,12 @@ top10_long_whole <- current_long%>%
     TotalMeters = scales::comma(TotalMeters, digits = 0),
     PureLUMs = scales::comma(PureLUMs, digits = 0)
     )%>%
-  arrange(
-    desc(
+  dplyr::arrange(
+    dplyr::desc(
       percent
       )
     )%>%
-  select(Wholesaler, TotalMeters, PureLUMs, percent_temp)
+  dplyr::select(Wholesaler, TotalMeters, PureLUMs, percent_temp)
 
 
 
@@ -1041,10 +1056,10 @@ knitr::kable(
       ncol(top10_long_whole)-1)
     )
   )%>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "striped", "scale_down")
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     1:nrow(top10_long_whole),
     hline_after = T)
 
@@ -1062,7 +1077,7 @@ knitr::kable(table_legend_long,
   linesep = "",
   escape = F
     ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "scale_down")
     )
 ```
@@ -1078,7 +1093,9 @@ knitr::kable(table_legend_long,
 
 ```{r,echo=FALSE, warning=FALSE, error=FALSE, fig.width=10, fig.height=5.2}
 
-MOSLR::bubble_chart(df.longunread = longunread, longunread.graph = T, tp.details = tp_details, by = "Pair", my.dir = my_dir) 
+graph_data <- MOSLR::MPOP_data_prep(df.longunread = longunread,tp.details = tp_details, longunread.table = T, by = "Pair", my.dir = my_dir)
+
+MOSLR::bubble_chart(df = graph_data, longunread.graph = T, by = "Pair", vertical.sep = longunread_avg$Total) 
  
 ```
 
@@ -1096,17 +1113,17 @@ MOSLR::bubble_chart(df.longunread = longunread, longunread.graph = T, tp.details
 ```{r, echo=FALSE, warning=FALSE}
 
 
-top10_long_pair <- current_long%>%
-  mutate(
+top10_long_pair <- graph_data%>%
+  dplyr::mutate(
     percent_temp = ifelse(
       percent - last_percent > 0, 
       paste0(round(percent*100, 1), "\\% $\\uparrow$"), 
       paste0(round(percent*100, 1), "\\% $\\downarrow$")
       ),
-    percent_temp = cell_spec(
+    percent_temp = kableExtra::cell_spec(
       percent_temp,
       "latex",
-      background = case_when(
+      background = dplyr::case_when(
          percent > longunread_avg$Total ~ 
            "#F08080",
          percent>0.05 & percent < longunread_avg$Total ~ 
@@ -1118,12 +1135,12 @@ top10_long_pair <- current_long%>%
     TotalMeters = scales::comma(TotalMeters, digits = 0),
     PureLUMs = scales::comma(PureLUMs, digits = 0)
     )%>%
-  arrange(
-    desc(
+  dplyr::arrange(
+    dplyr::desc(
       percent
       )
     )%>%
-  select(Pair, TotalMeters, PureLUMs, percent_temp)
+  dplyr::select(Pair, TotalMeters, PureLUMs, percent_temp)
 
 
 
@@ -1142,13 +1159,13 @@ knitr::kable(
       ncol(top10_long_ret)-1)
     )
   )%>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "striped", "scale_down")
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     1:nrow(top10_long_pair),
     hline_after = T)%>%
-  column_spec(
+  kableExtra::column_spec(
     1,
     width = "6.5cm"
     )
@@ -1168,7 +1185,7 @@ knitr::kable(table_legend_long,
   linesep = "",
   escape = F
     ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "scale_down")
     )
 ```
@@ -1186,10 +1203,10 @@ knitr::kable(table_legend_long,
 
 
 ```{r, echo=FALSE, warning=FALSE}
-longunreadtotal <- pivot_wider(
-  arrange(
+longunreadtotal <- tidyr::pivot_wider(
+  dplyr::arrange(
     longunread%>%
-      filter(
+      dplyr::filter(
         Period == max(longunread$Period)
         ),
     WholesalerID),
@@ -1197,26 +1214,26 @@ longunreadtotal <- pivot_wider(
   names_from = RetailerID, 
   values_from = Meters_Unread_in_12mo
   )%>%
-  bind_rows(
-    summarise_all(
+  dplyr::bind_rows(
+    dplyr::summarise_all(
       ., 
-      funs(if(is.numeric(.)) sum(., na.rm = TRUE) else "Total")
+      dplyr::funs(if(is.numeric(.)) sum(., na.rm = TRUE) else "Total")
       )
     )%>%
-  select(
+  dplyr::select(
     WholesalerID, 
     sort(names(.)
          )
     )%>%
-  mutate(
+  dplyr::mutate(
     Total = rowSums(
-      select(., -WholesalerID), 
+      dplyr::select(., -WholesalerID), 
       na.rm = T)
     )%>%
-  mutate_if(
+  dplyr::mutate_if(
     is.numeric, ~scales::comma(., accuracy = 1)
   )%>%
-  mutate_all(
+  dplyr::mutate_all(
     ~replace(
       ., 
       is.na(.),
@@ -1243,7 +1260,7 @@ knitr::kable(
     "", 
     colnames(longunreadtotal)[2:ncol(longunreadtotal)])
     ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c(
       "hold_position",
       "scale_down", 
@@ -1251,23 +1268,23 @@ knitr::kable(
       ),
     stripe_color = "blizzardblue"
     )%>%
-  column_spec(
+  kableExtra::column_spec(
     ncol(longunreadtotal)-1, 
     border_right = T
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     0, 
     angle = 90
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     nrow(longunreadtotal)-1, 
     hline_after = T
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     nrow(longunreadtotal), 
     bold = T
     )%>%
-  column_spec(
+  kableExtra::column_spec(
     ncol(longunreadtotal), 
     bold = T
     )
@@ -1275,10 +1292,10 @@ knitr::kable(
 
 
 ```{r, echo=FALSE, warning=FALSE}
-longunreadtotal_Since_MO <- pivot_wider(
-  arrange(
+longunreadtotal_Since_MO <- tidyr::pivot_wider(
+  dplyr::arrange(
     longunread%>%
-      filter(
+      dplyr::filter(
         Period == max(longunread$Period)
         ),
     WholesalerID),
@@ -1286,26 +1303,26 @@ longunreadtotal_Since_MO <- pivot_wider(
   names_from = RetailerID, 
   values_from = Meters_Unread_Since_MO
   )%>%
-  bind_rows(
-    summarise_all(
+  dplyr::bind_rows(
+    dplyr::summarise_all(
       ., 
-      funs(if(is.numeric(.)) sum(., na.rm = TRUE) else "Total")
+      dplyr::funs(if(is.numeric(.)) sum(., na.rm = TRUE) else "Total")
       )
     )%>%
-  select(
+  dplyr::select(
     WholesalerID, 
     sort(names(.)
          )
     )%>%
-  mutate(
+  dplyr::mutate(
     Total = rowSums(
-      select(., -WholesalerID), 
+      dplyr::select(., -WholesalerID), 
       na.rm = T)
     )%>%
-  mutate_if(
+  dplyr::mutate_if(
     is.numeric, ~scales::comma(., accuracy = 1)
   )%>%
-  mutate_all(
+  dplyr::mutate_all(
     ~replace(
       ., 
       is.na(.),
@@ -1332,7 +1349,7 @@ knitr::kable(
     "", 
     colnames(longunreadtotal_Since_MO)[2:ncol(longunreadtotal_Since_MO)])
     ) %>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c(
       "hold_position",
       "scale_down", 
@@ -1340,23 +1357,23 @@ knitr::kable(
       ),
     stripe_color = "blizzardblue"
     )%>%
-  column_spec(
+  kableExtra::column_spec(
     ncol(longunreadtotal_Since_MO)-1, 
     border_right = T
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     0, 
     angle = 90
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     nrow(longunreadtotal_Since_MO)-1, 
     hline_after = T
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     nrow(longunreadtotal_Since_MO), 
     bold = T
     )%>%
-  column_spec(
+  kableExtra::column_spec(
     ncol(longunreadtotal_Since_MO), 
     bold = T
     )
@@ -1365,14 +1382,14 @@ knitr::kable(
 
 ```{r, echo=FALSE, warning=FALSE}
 percent <- longunread%>%
-  filter(
+  dplyr::filter(
     Period == max(longunread$Period)
     )%>%
-  mutate(
+  dplyr::mutate(
     percent = scales::percent(
       Meters_Unread_in_12mo/Total_Meters)
     )%>%
-  pivot_wider(
+  tidyr::pivot_wider(
     ., 
     id_cols = WholesalerID,
     names_from = RetailerID, 
@@ -1382,32 +1399,30 @@ percent <- longunread%>%
 
 
 total_percent <- longunread%>%
-  filter(
+  dplyr::filter(
     Period == max(longunread$Period)
     )%>%
-  summarise(
+  dplyr::summarise(
     Total = paste(round(100*sum(Meters_Unread_in_12mo)/sum(Total_Meters),1),"%")
     )%>%
-  mutate(
+  dplyr::mutate(
     WholesalerID = "Total"
     )
 
 
 
 ret_percent <- longunread%>%
-   filter(
+   dplyr::filter(
      Period == max(longunread$Period)
      )%>%
-  group_by(
-    RetailerID
-    )%>%
-  summarise(
+  dplyr::group_by(RetailerID)%>%
+  dplyr::summarise(
     percent = paste(round(100*sum(Meters_Unread_in_12mo)/sum(Total_Meters),1),"%")
     )%>%
-  mutate(
+  dplyr::mutate(
     WholesalerID = "Total"
     )%>%
-  pivot_wider(
+  tidyr::pivot_wider(
     id_cols = WholesalerID, 
     names_from = RetailerID, 
     values_from = percent
@@ -1415,31 +1430,30 @@ ret_percent <- longunread%>%
 
 
 whole_percent <- longunread%>%
-   filter(
+   dplyr::filter(
      Period == max(longunread$Period)
      )%>%
-  group_by(
+  dplyr::group_by(
     WholesalerID
     )%>%
-  summarise(
+  dplyr::summarise(
     Total = paste(round(100*sum(Meters_Unread_in_12mo)/sum(Total_Meters),1),"%")
     )
 
-unread_percent <- bind_rows(
-  arrange(
+unread_percent <- dplyr::bind_rows(
+  dplyr::arrange(
     percent, 
     WholesalerID),
   ret_percent
   )%>%
-  left_join(
-    .,
-    bind_rows(
+  dplyr::left_join(
+    dplyr::bind_rows(
       whole_percent, 
       total_percent
       ), 
     by = "WholesalerID"
     )%>%
-  mutate_all(
+  dplyr::mutate_all(
     ~replace(., is.na(.),"")
     )
 
@@ -1461,27 +1475,27 @@ knitr::kable(
     colnames(unread_percent)[2:ncol(unread_percent)]
     )
   )%>%
-  kable_styling(
+  kableExtra::kable_styling(
     latex_options = c("hold_position", "scale_down", "striped"),
     stripe_color = "blizzardblue"
     )%>%
-  column_spec(
+  kableExtra::column_spec(
     ncol(unread_percent)-1, 
     border_right = T
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     0, 
     angle = 90
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     nrow(unread_percent)-1, 
     hline_after = T
     )%>%
-  row_spec(
+  kableExtra::row_spec(
     nrow(unread_percent), 
     bold = T
     )%>%
-  column_spec(
+  kableExtra::column_spec(
     ncol(unread_percent), 
     bold = T)
 

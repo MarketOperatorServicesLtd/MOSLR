@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_perf_graphs_all.R
 \name{plot_perf_graphs_all}
 \alias{plot_perf_graphs_all}
-\title{Create MPS graphs}
+\title{Create Performance graphs}
 \usage{
 plot_perf_graphs_all(
   my.dir = getwd(),
@@ -28,8 +28,8 @@ plot_perf_graphs_all(
 
 }
 \description{
-This function loads the MPS data
-and creates all MPS performance graphs
+This function loads the MPS and OPS data
+and creates all MPS and OPS performance graphs
 }
 \examples{
 
