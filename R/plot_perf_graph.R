@@ -98,11 +98,11 @@ plot_perf_graph <- function(
 
     }
 
-  size.values <- c(1, 1, 1, 1, 1, 1)
+  size.values <- c(1.1, 1.1, 1.1, 1.1, 1.1, 1.1)
   alpha.manual <- c(0, 0, 0, 1, 1, 0)
-  shape.manual <- c(0, 0, 0, 1, 1, 0)
+  shape.manual <- c(0, 0, 0, 19, 19, 0)
   linetype.values <- c(1, 1, 3, 1, 1, 1)
-  colour.values <- c("#425563", "#05C3DE", "#005F83", "#00A499", "#FFAA4D", "#F9E547", "#8866BC")
+  colour.values <- c("#425563", "#05C3DE", "#005F83", "#8866BC", "#FFAA4D", "#F9E547", "#8866BC")
 
   if (load.data & is.null(df)) {
     df <- readRDS(paste0(my.dir, "/data/rdata/perf_status_", tolower(standard.key), ".Rda"))
@@ -150,14 +150,14 @@ plot_perf_graph <- function(
           "Performance", "MarketMean", "TaskShare", "Threshold", "Planned_Perf"
           ),
         labels = c(
-          "Performance", "Market Mean", "Task Share", "Threshold", "IPRP Milestones"
+          "Performance", "Market Mean", "Task Share", "Threshold", "Rectification Milestones"
           )
         )
       ) %>%
     tidyr::drop_na(value) %>%
     droplevels() %>%
     {if (!include.iprp) {
-      dplyr::filter(., !variable %in% c("Planned_Perf", "IPRP Milestones"))
+      dplyr::filter(., !variable %in% c("Planned_Perf", "Rectification Milestones"))
       } else {
         dplyr::select(., dplyr::everything())
       }
@@ -194,9 +194,11 @@ plot_perf_graph <- function(
       ggplot2::aes(
         x = Period,
         y = value * max(graph_data$TaskVolume),
+        colour = variable,
         shape = variable,
         alpha = variable
-        )
+        ),
+      size = 2
       ) +
     ggplot2::scale_y_continuous(
       labels = scales::comma,

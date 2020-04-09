@@ -50,11 +50,13 @@ ops_data_prep <- function(
   tasks_completed <- ops_data_clean %>%
     dplyr::select(
       Trading.Party.ID, Period, Standard,
-      TaskCompletion, TaskVolumeCompleted
+      TaskCompletion, TaskVolumeCompleted,
+      OnTimeTasksCompleted
       ) %>%
     dplyr::rename(
       Performance = TaskCompletion,
-      TaskVolume = TaskVolumeCompleted
+      TaskVolume = TaskVolumeCompleted,
+      OnTimeTasks = OnTimeTasksCompleted
       ) %>%
     dplyr::mutate(
       PerformanceMeasure = "Completed"
@@ -63,11 +65,13 @@ ops_data_prep <- function(
   tasks_outstanding <- ops_data_clean %>%
     dplyr::select(
       Trading.Party.ID, Period, Standard,
-      OutstandingOntime, TaskVolumeOutstanding
+      OutstandingOntime, TaskVolumeOutstanding,
+      OnTimeTasksOutstanding
       ) %>%
     dplyr::rename(
       Performance = OutstandingOntime,
-      TaskVolume = TaskVolumeOutstanding
+      TaskVolume = TaskVolumeOutstanding,
+      OnTimeTasks = OnTimeTasksOutstanding
       ) %>%
     dplyr::mutate(
       PerformanceMeasure = "Outstanding"

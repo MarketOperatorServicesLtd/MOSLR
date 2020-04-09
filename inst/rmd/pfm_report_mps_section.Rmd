@@ -33,7 +33,7 @@ tryCatch(
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("") + ggplot2::xlab("")
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -78,7 +78,7 @@ tryCatch(
         )
       ) %>%
     kableExtra::row_spec(0, bold = TRUE)
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -87,7 +87,7 @@ tryCatch(
 
 As of `r format(data.period, "%B-%Y")`, MOSL were monitoring `r SHORT.NAME`'s performance against `r nrow(perf_status_mps_temp)` standards. The performance of Trading Parties against these standards is measured according to:
 
-* `r paste(unique(perf_status_mps_temp$PerformanceMeasure), collapse = "and")`
+* `r paste(unique(perf_status_mps_temp$PerformanceMeasure), collapse = " and ")`
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
 
@@ -152,7 +152,7 @@ tryCatch(
       caption = "Source: MOSL\nNote: Aggregate performance corresponds to the 6-month average of aggregate MPS performance"
       ) +
     ggplot2::ylab("") + ggplot2::xlab("")
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -194,7 +194,7 @@ tryCatch(
         )
       ) %>%
     kableExtra::row_spec(0, bold = TRUE)
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -240,7 +240,7 @@ tryCatch(
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("") + ggplot2::xlab("")
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -263,7 +263,7 @@ tryCatch(
       caption = "Current Status of MPS",
       linesep = "",
       booktabs = TRUE,
-      col.names = c("MPS", "Category", "Performance Consistency", "Performance Rating", "IPRP Status", "MOSL Action"),
+      col.names = c("MPS", "Category", "Performance Consistency", "Performance Rating", "Rectification Status", "MOSL Action"),
       align = c("llcccc")
       ) %>%
     kableExtra::column_spec(3:4, width = "3.5cm") %>%
@@ -278,7 +278,7 @@ tryCatch(
         )
       ) %>%
     kableExtra::row_spec(0, bold = TRUE)
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -318,7 +318,7 @@ tryCatch(
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("Performance") + ggplot2::xlab("Consistency")
-  }
+  }, error = function(e){}
 )
 
 ```

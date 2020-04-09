@@ -183,5 +183,5 @@ perf_status_ops %>%
 
 `r if (on.iprp) { paste0("For this standard there have been:") }`
 
-`r if (on.iprp) { paste0("* ",  perf_status_ops_temp$CumResubmit[perf_status_ops_temp$Standard == OPS_CHUNK], " IPRP resubmission(s)") }`
+`r if (on.iprp) { paste0("* ",  sum(perf_status_ops_temp$CumResubmit[perf_status_ops_temp$Standard == OPS_CHUNK]), " IPRP resubmission(s)") }`
 `r if (on.iprp) { paste0("* ",  sum(perf_status_ops_temp$UnderReview[perf_status_ops_temp$Standard == OPS_CHUNK]), " IPRP review(s)") }`

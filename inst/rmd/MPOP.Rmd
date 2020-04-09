@@ -2,6 +2,8 @@
 
 ```{r setup, include=FALSE}
 
+`%m+%` <- lubridate::`%m+%`
+
 
 wb <- openxlsx::createWorkbook("MPOP_tables")
 

@@ -123,10 +123,11 @@ ops_create_tracker <- function(
       rolling.mean = zoo::rollapply(Performance, 6, mean, align = "right", fill = NA),
       Consistency =
         dplyr::case_when(
+          TaskVolume <= 20 ~ "Low or No Tasks",
           rolling.sd < 0.01 ~ "Very Consistent",
           rolling.sd >= 0.01 & rolling.sd < 0.02 ~ "Consistent",
-          rolling.sd >= 0.02 & rolling.sd < 0.05 ~ "Inconsistent",
-          rolling.sd > 0.05 ~ "Very Inconsistent",
+          rolling.sd >= 0.02 & rolling.sd < 0.05 ~ "Variable",
+          rolling.sd > 0.05 ~ "Highly Variable",
           TRUE ~ "Insufficient data"
         ),
       PerfRating =

@@ -32,7 +32,7 @@ tryCatch(
       fill = "OPS Group"
       ) +
     ggplot2::ylab("") + ggplot2::xlab("")
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -85,7 +85,7 @@ tryCatch(
         )
       ) %>%
     kableExtra::row_spec(0, bold = TRUE)
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -94,13 +94,13 @@ tryCatch(
 
 As of `r format(data.period, "%B-%Y")`, MOSL were monitoring `r SHORT.NAME`'s performance against `r nrow(perf_status_ops_temp)` standards. The performance of Trading Parties against these standards is measured according to:
 
-* `r paste(unique(perf_status_ops_temp$PerformanceMeasure), collapse = "and")`
+* `r paste(unique(perf_status_ops$PerformanceMeasure), collapse = " and ")`
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
 
 tryCatch(
   expr = {
-  agg_perf <- ops_aggregate_perf_temp %>%
+  agg_perf <- ops_aggregate_perf %>%
     dplyr::filter(Trading.Party.ID == TRADING.PARTY) %>%
     dplyr::select(Period, PerformanceMeasure, Agg_Perf_roll) %>%
     dplyr::rename(GroupPerf = Agg_Perf_roll) %>%
@@ -161,7 +161,7 @@ tryCatch(
       ) +
     ggplot2::ylab("") + ggplot2::xlab("") +
     ggplot2::facet_wrap(~PerformanceMeasure)
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -210,7 +210,7 @@ tryCatch(
         )
       ) %>%
     kableExtra::row_spec(0, bold = TRUE)
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -259,7 +259,7 @@ tryCatch(
         )
       ) %>%
     kableExtra::row_spec(0, bold = TRUE)
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -306,7 +306,7 @@ tryCatch(
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("") + ggplot2::xlab("")
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -353,7 +353,7 @@ tryCatch(
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("") + ggplot2::xlab("")
-  }
+  }, error = function(e){}
 )
 
 ```
@@ -399,7 +399,7 @@ for (MEASURE in unique(perf_status_ops_temp$PerformanceMeasure)) {
       print()
     
     cat("\n")
-  }
+  }, error = function(e){}
   )
 
 }
@@ -440,7 +440,7 @@ tryCatch(
       ) +
     ggplot2::ylab("Performance") + ggplot2::xlab("Consistency") +
     ggplot2::facet_wrap(~ PerformanceMeasure)
-  }
+  }, error = function(e){}
 )
     
 ```

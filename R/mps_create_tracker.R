@@ -32,7 +32,7 @@ mps_create_tracker <- function(
   save.output = TRUE,
   keep.vars = FALSE,
   iprp.list = NULL,
-  filter.category = c("IPRP: on-track", "Normal monitoring", "Performance flag: 6 month")
+  filter.category = c("IPRP: On-track", "PRP: On-track", "IPRP: Above plan", "PRP: Above plan", "Normal monitoring", "Performance flag: 6 month")
   ) {
 
 # Setting parameters ------------------------------------------------------
@@ -47,9 +47,9 @@ mps_create_tracker <- function(
       var_list <-
         c(
         "Period", "SecondaryCategory", "Trading.Party.ID", "PerformanceMeasure", "Standard", "Action",
-        "Rationale", "PFM_Commentary", "ActiveIPRP", "IPRPend",
+        "Rationale", "PFM_Commentary", "ActiveIPRP", "ActivePRP", "IPRPend", "PRPend",
         "MilestoneFlag", "PerfFlag3m", "PerfFlag6m", "OnWatch",
-        "OnWatchIPRPend",  "Consistency", "PerfRating"
+        "OnWatchRectificationEnd",  "Consistency", "PerfRating"
         )
       }
 
@@ -58,7 +58,7 @@ mps_create_tracker <- function(
 
   mps_data_clean <- readRDS(paste0(my.dir, "/data/rdata/mps_data_clean.Rda"))
 
-  IPRP_plans <- utils::read.csv(paste0(my.dir, "/data/inputs/IPRP_plans_mps.csv")) %>%
+  Rectification_plans <- utils::read.csv(paste0(my.dir, "/data/inputs/Rectification_plans_mps.csv")) %>%
     dplyr::mutate(
       Period = as.Date(Period, format = "%d/%m/%Y")
       ) %>%
@@ -84,7 +84,7 @@ mps_create_tracker <- function(
 
   monthly_tracking <- mps_data_clean %>%
     dplyr::left_join(
-      IPRP_plans,
+      Rectification_plans,
       by = c("Period", "Standard", "Trading.Party.ID", "PerformanceMeasure")
       ) %>%
     dplyr::left_join(
@@ -98,20 +98,22 @@ mps_create_tracker <- function(
       Performance = as.numeric(format(Performance, digits = 3)),
       Planned_Perf = as.numeric(format(Planned_Perf, digits = 3)),
       Status = dplyr::case_when(
-        (DeltaQuant > 0.05) ~ "Above plan",
-        (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ "On-track",
-        (DeltaQuant < -0.05) ~ "Below plan"
+        (DeltaQuant > 0.05) ~ paste0(RectificationType, ": Above plan"),
+        (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ paste0(RectificationType, ": On-track"),
+        (DeltaQuant < -0.05) ~ paste0(RectificationType, ": Below plan")
         ),
       OnWatch = Action == "watch: performance",
-      OnWatchIPRPend = Action == "de-escalate" | Action == "watch: iprp end",
+      OnWatchRectificationEnd = Action == "de-escalate" | Action == "watch: iprp end",
       MilestoneFlag = Performance < Planned_Perf,
-      IPRPend = PlanEndDate == Period,
+      IPRPend = PlanEndDate == Period & RectificationType == "IPRP",
+      PRPend = PlanEndDate == Period & RectificationType == "PRP",
       Pending = Template_Sent != "" & Response_Received_Template == "",
       UnderReview =
         Action == "review" | Action == "re-submit" | Action == "extend" | Action == "escalate",
-      ActiveIPRP = !is.na(Status),
-      InactiveIPRP = IPRPend | Pending | (UnderReview & !ActiveIPRP),
-      IPRP = ActiveIPRP | InactiveIPRP
+      ActiveIPRP = RectificationType == "IPRP",
+      ActivePRP = RectificationType == "PRP",
+      InactiveRectification = IPRPend | PRPend | Pending | (UnderReview & !ActiveIPRP & !ActivePRP),
+      Rectification = ActiveIPRP | ActivePRP | InactiveRectification
       ) %>%
     droplevels() %>%
     dplyr::arrange(Trading.Party.ID, Standard, Period) %>%
@@ -123,10 +125,11 @@ mps_create_tracker <- function(
       rolling.mean = zoo::rollapply(Performance, 6, mean, align = "right", fill = NA),
       Consistency =
         dplyr::case_when(
+          TaskVolume <= 20 ~ "Low or No Tasks",
           rolling.sd < 0.01 ~ "Very Consistent",
           rolling.sd >= 0.01 & rolling.sd < 0.02 ~ "Consistent",
-          rolling.sd >= 0.02 & rolling.sd < 0.05 ~ "Inconsistent",
-          rolling.sd > 0.05 ~ "Very Inconsistent",
+          rolling.sd >= 0.02 & rolling.sd < 0.05 ~ "Variable",
+          rolling.sd > 0.05 ~ "Highly Variable",
           TRUE ~ "Insufficient data"
           ),
       PerfRating =
@@ -145,19 +148,20 @@ mps_create_tracker <- function(
     dplyr::mutate(
       PrimaryCategory =
         dplyr::case_when(
-          !IPRP ~ "Monitoring",
-          IPRP ~ "Resolution"
+          !Rectification ~ "Monitoring",
+          Rectification ~ "Resolution"
         ),
       SecondaryCategory =
         dplyr::case_when(
           OnWatch ~ "Watch: performance",
-          OnWatchIPRPend ~ "Watch: IPRP end",
-          !IPRP & !OnWatch & PerfFlag6m & !PerfFlag3m  & IPRPeligible ~ "Performance flag: 6 month",
-          !IPRP & !OnWatch & PerfFlag3m  & IPRPeligible ~ "Performance flag: 3 month",
-          ActiveIPRP & MilestoneFlag & !IPRPend ~ "IPRP: below plan",
-          ActiveIPRP & !MilestoneFlag & !IPRPend ~ "IPRP: on-track",
+          OnWatchRectificationEnd ~ "Watch: Rectification end",
+          !Rectification & !OnWatch & PerfFlag6m & !PerfFlag3m  & IPRPeligible ~ "Performance flag: 6 month",
+          !Rectification & !OnWatch & PerfFlag3m  & IPRPeligible ~ "Performance flag: 3 month",
+          ActiveIPRP & !IPRPend ~ "Rectification: IPRP",
+          ActivePRP & !PRPend ~ "Rectification: PRP",
+          PRPend ~ "PRP: end",
           IPRPend ~ "IPRP: end",
-          IPRP & UnderReview ~ "IPRP: under review",
+          Rectification & UnderReview ~ "Rectification: under review",
           TRUE ~ "Normal monitoring"
           ),
       Action = "tbd",
@@ -165,7 +169,8 @@ mps_create_tracker <- function(
       PFM_Commentary = "tbd"
       ) %>%
     dplyr::filter(
-      !(SecondaryCategory %in% filter.category)
+      !(SecondaryCategory %in% filter.category),
+      !Status %in% filter.category
       ) %>%
     {if (!keep.vars) {
       dplyr::select(., var_list)

@@ -7,11 +7,11 @@
 
 * `r paste0(perf_status_mps_temp$Consistency[perf_status_mps_temp$Standard == MPS_CHUNK], ", ", perf_status_mps_temp$PerfRating[perf_status_mps_temp$Standard == MPS_CHUNK])`
 
-Below is a graph showing `r SHORT.NAME`'s historical performance against `r MPS_CHUNK`. MOSL action points and IPRP milestones are shown, if applicable. 
+Below is a graph showing `r SHORT.NAME`'s historical performance against `r MPS_CHUNK`. MOSL action points and Rectification milestones are shown, if applicable. 
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
 
-on.iprp <- perf_status_mps_temp$IPRP[perf_status_mps_temp$Standard == MPS_CHUNK]
+on.rectification <- perf_status_mps_temp$Rectification[perf_status_mps_temp$Standard == MPS_CHUNK]
 
 graph <- perf_status_mps %>%
   dplyr::filter(
@@ -25,7 +25,7 @@ graph <- perf_status_mps %>%
     period.start = data.period %m-% months(11),
     period.end = data.period, 
     action.points = TRUE,
-    include.iprp = on.iprp,
+    include.iprp = on.rectification,
     graph.title = MPS_CHUNK,
     sub.title = Standards_details$Context[Standards_details$Standard == MPS_CHUNK],
     ) +
@@ -49,7 +49,7 @@ For `r MPS_CHUNK` there have been:
 * `r perf_status_mps_temp$SumPerf3m[perf_status_mps_temp$Standard == MPS_CHUNK]` performance flag(s)
 * `r perf_status_mps_temp$CumWatch[perf_status_mps_temp$Standard == MPS_CHUNK]` watch flag(s)
 
-`r if (on.iprp) { paste0(MPS_CHUNK, " is currently on an IPRP. See below for further details.") } else { paste0(MPS_CHUNK, " is not on an IPRP.") }`
+`r if (on.rectification) { paste0(MPS_CHUNK, " is currently on a Rectification plan. See below for further details.") } else { paste0(MPS_CHUNK, " is not on a Rectification plan.") }`
 
 <br> 
 
@@ -141,9 +141,9 @@ perf_status_mps %>%
 
 <br> 
 
-`r if (on.iprp) { paste0("A summary of ", SHORT.NAME, "'s performance against its IPRP is shown in the table below.") }`
+`r if (on.rectification) { paste0("A summary of ", SHORT.NAME, "'s performance against its Rectification plan is shown in the table below.") }`
 
-``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis", eval = on.iprp}
+``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis", eval = on.rectification}
 
 table <- perf_status_mps %>%
   dplyr::filter(
@@ -162,13 +162,13 @@ if (nrow(table) > 0) {
   table %>%
     kableExtra::kable(
       format = "latex", 
-      caption = "IPRP Performance Tracking",
+      caption = "Rectification Performance Tracking",
       linesep = "",
       longtable = TRUE, 
       booktabs = TRUE,
       col.names = c(
         "Period", "Actual Performance", "Planned Performance", 
-        "Relative Difference", "IPRP Status"
+        "Relative Difference", "Rectification Status"
         ),
       align = rep("c", 5)
       ) %>%
@@ -189,7 +189,7 @@ if (nrow(table) > 0) {
 
 <br> 
 
-`r if (on.iprp) { paste0("For this plan there have been:") }`
+`r if (on.rectification) { paste0("For this plan there have been:") }`
 
-`r if (on.iprp) { paste0("* ",  perf_status_mps_temp$CumResubmit[perf_status_mps_temp$Standard == MPS_CHUNK], " resubmission(s)") }`
-`r if (on.iprp) { paste0("* ",  sum(perf_status_mps_temp$UnderReview[perf_status_mps_temp$Standard == MPS_CHUNK]), " review(s)") }`
+`r if (on.rectification) { paste0("* ",  perf_status_mps_temp$CumResubmit[perf_status_mps_temp$Standard == MPS_CHUNK], " resubmission(s)") }`
+`r if (on.rectification) { paste0("* ",  sum(perf_status_mps_temp$UnderReview[perf_status_mps_temp$Standard == MPS_CHUNK]), " review(s)") }`

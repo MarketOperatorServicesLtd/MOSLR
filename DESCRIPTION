@@ -29,4 +29,5 @@ Imports:
     stringr,
     scales,
     zoo,
-    ggrepel
+    ggrepel,
+    openxlsx

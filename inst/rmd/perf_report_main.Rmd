@@ -281,7 +281,7 @@ for(sub.type in unique(mps_aggregate_perf$sub_type[!is.na(mps_aggregate_perf$sub
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("") + ggplot2::xlab(""))
-    }, error = function(e){print()}
+    }, error = function(e){}
   )
   
 }
@@ -293,15 +293,16 @@ for(sub.type in unique(mps_aggregate_perf$sub_type[!is.na(mps_aggregate_perf$sub
 
 ### Status Summary
 
-There are currently `r nrow(perf_status_mps%>%dplyr::filter(Period == data.period, ActiveIPRP == T))` Active IPRPs for
-`r nrow(perf_status_mps%>%dplyr::filter(Period == data.period,ActiveIPRP == T)%>%  dplyr::count(Trading.Party.ID))` Trading Parties and
-`r nrow(perf_status_mps%>%dplyr::filter(Period == data.period,ActiveIPRP == T)%>%  dplyr::count(Standard))` different MPS standards.
+There are currently `r nrow(perf_status_mps%>%dplyr::filter(Period == data.period, ActiveIPRP == T))` Active IPRPs and 
+`r nrow(perf_status_mps%>%dplyr::filter(Period == data.period, ActivePRP == T))` Active PRPs for 
+`r nrow(perf_status_mps%>%dplyr::filter(Period == data.period,ActiveIPRP == T | ActivePRP == T)%>%  dplyr::count(Trading.Party.ID))` Trading Parties and
+`r nrow(perf_status_mps%>%dplyr::filter(Period == data.period,ActiveIPRP == T | ActivePRP == T)%>%  dplyr::count(Standard))` different MPS standards.
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results='markup'}
-perf_status_mps%>%
+Rectification_sum <- perf_status_mps%>%
   dplyr::filter(
     Period == data.period,
-    ActiveIPRP == T)%>%
+    ActiveIPRP == T | ActivePRP == T)%>%
   dplyr::count(Standard, Status)%>%
   tidyr::pivot_wider(names_from = Status, values_from = n,values_fill = list(n = 0))%>%
   dplyr::mutate(
@@ -309,12 +310,19 @@ perf_status_mps%>%
       dplyr::select(., -Standard), 
       na.rm = T)
     )%>%
-  kableExtra::kable(
-    format = "latex", 
-    caption = "Number of Active IPRPs by Standard",
-    longtable = TRUE, 
-    booktabs=TRUE,
-    linesep=""
+  dplyr::select(
+    Standard, 
+    sort(names(.))
+    )
+
+tryCatch(
+  expr = {
+      kableExtra::kable(
+        Rectification_sum,
+        format = "latex", 
+        caption = "Number of Active Rectification plans by Standard",
+        booktabs=TRUE,
+        linesep=""
       ) %>%
     kableExtra::kable_styling(
       latex_options = c(
@@ -322,28 +330,34 @@ perf_status_mps%>%
         "hold_position",
         "striped",
         position = "center", 
-        full_width = FALSE)
+        full_width = FALSE,
+        "scale_down")
       ) %>%
     kableExtra::row_spec(0, bold = TRUE)%>%
-  kableExtra::column_spec(4, border_right = T)
+  kableExtra::column_spec(ncol(Rectification_sum)-1, border_right = T)
+  }, error = function(e){}
+)
+
 ```
 
 
-### IPRP count & matrix
+### Retification count & matrix
 
 
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results='asis'}
-perf_status_mps%>%
+tryCatch(
+  expr = {
+    perf_status_mps%>%
   dplyr::filter(
     Period == data.period,
-    ActiveIPRP == T)%>%
+    ActiveIPRP == T | ActivePRP == T)%>%
   tidyr::pivot_wider(id_cols = Trading.Party.ID, names_from = Standard, values_from = Status, values_fill = list(Status = ""))%>%
   dplyr::rename("Trading Party" = Trading.Party.ID)%>%
   dplyr::select("Trading Party", sort(names(.)))%>%
   kableExtra::kable(
     format = "latex", 
-    caption = "Number of Active IPRPs by Trading Party",
+    caption = "Number of Active Rectification plans by Trading Party",
     linesep = "",
     format.args = list(big.mark = ","),
     booktabs = TRUE,
@@ -361,18 +375,22 @@ perf_status_mps%>%
       )
     ) %>%
   kableExtra::row_spec(0, bold = TRUE)
+  }, error = function(e){}
+)
+
   
 ```
 
 
-### overview of progress?
 
 ### Watch-list and areas of concern
 
 There are currently `r nrow(perf_status_mps%>%dplyr::filter(Period == data.period, Action == "Watch"))` Trading Parties on watch for MPS performance.
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
-perf_status_mps%>%
+tryCatch(
+  expr = {
+    perf_status_mps%>%
   dplyr::filter(Period == data.period,
          Action == "Watch")%>%
   dplyr::select(Trading.Party.ID, Standard)%>%
@@ -394,18 +412,22 @@ perf_status_mps%>%
         full_width = FALSE)
       ) %>%
     kableExtra::row_spec(0, bold = TRUE)
+  }, error = function(e){}
+)
+
+
 ```
 
 
-## Detailed IPRP Analysis
+## Detailed Rectification Analysis
 
-Below are the Performance graphs of IPRPs that are either Off-track or under review
+Below are the Performance graphs of Rectification plans that are either Off-track or under review
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
 IPRP_details_list <- perf_status_mps%>%
   dplyr::filter(
     Period == data.period, 
-    (Status == "Below plan" | UnderReview == T)
+    (Status == "IPRP: Below plan" | Status == "PRP: Below plan" | UnderReview == T)
   )
 
 if(nrow(IPRP_details_list)>0){
@@ -716,7 +738,7 @@ for(sub.type in unique(ops_aggregate_perf$sub_type[!is.na(ops_aggregate_perf$sub
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("") + ggplot2::xlab(""))
-    }, error = function(e){print()}
+    }, error = function(e){}
   )
   
 }
@@ -802,7 +824,6 @@ perf_status_ops%>%
 ```
 
 
-### overview of progress?
 
 ### Watch-list and areas of concern
 

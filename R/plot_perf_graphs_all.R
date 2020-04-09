@@ -1,7 +1,7 @@
-#' Create MPS graphs
+#' Create Performance graphs
 #'
-#' This function loads the MPS data
-#' and creates all MPS performance graphs
+#' This function loads the MPS and OPS data
+#' and creates all MPS and OPS performance graphs
 #'
 #' @param my.dir character
 #' @param df dataframe
@@ -35,9 +35,9 @@ plot_perf_graphs_all <- function(
 
   if(load.data){
     perf_status_mps <- readRDS(paste0(my.dir, "/data/rdata/perf_status_mps.Rda"))%>%
-      filter(TaskVolume > 0)
+      dplyr::filter(TaskVolume > 0)
     perf_status_ops <- readRDS(paste0(my.dir, "/data/rdata/perf_status_ops.Rda"))%>%
-      filter(TaskVolume > 0)
+      dplyr::filter(TaskVolume > 0)
   }
 
 
@@ -61,15 +61,15 @@ plot_perf_graphs_all <- function(
     .packages = "tidyverse") %dopar% {
 
   temp_data_mps <- perf_status_mps%>%
-    filter(Trading.Party.ID == TP)
+    dplyr::filter(Trading.Party.ID == TP)
 
   for(standard in unique(temp_data_mps$Standard)){
     plot_data_mps <- temp_data_mps%>%
-      filter(
+      dplyr::filter(
         Standard == standard
       )
 
-    on.iprp <- plot_data_mps$ActiveIPRP[plot_data_mps$Period == max(plot_data_mps$Period)]
+    on.Rectification <- plot_data_mps$Rectification[plot_data_mps$Period == max(plot_data_mps$Period)]
 
 
     tryCatch(
@@ -79,10 +79,10 @@ plot_perf_graphs_all <- function(
           trading.party = TP,
           standard = standard,
           graph.title = paste(TP, standard),
-          include.iprp = on.iprp,
+          include.iprp = on.Rectification,
           action.points = T
           )+
-          ggsave(file = paste0(output.dir, "/MPS/", paste(TP, standard), ".png"))
+          ggplot2::ggsave(file = paste0(output.dir, "/MPS/", paste(TP, standard), ".png"))
            },
       error = function(e) {
         print(e)
@@ -98,23 +98,23 @@ plot_perf_graphs_all <- function(
           .packages = "tidyverse") %dopar% {
 
     temp_data_ops <- perf_status_ops%>%
-      filter(Trading.Party.ID == TP)
+      dplyr::filter(Trading.Party.ID == TP)
 
     for(standard in unique(temp_data_ops$Standard)){
       plot_data_ops_KPI <- temp_data_ops%>%
-        filter(
+        dplyr::filter(
           Standard == standard,
           PerformanceMeasure == "Completed"
         )
 
       plot_data_ops_API <- temp_data_ops%>%
-        filter(
+        dplyr::filter(
           Standard == standard,
           PerformanceMeasure == "Outstanding"
         )
 
-      on.iprp.KPI <- any(plot_data_ops_KPI$ActiveIPRP[plot_data_ops_KPI$Period == max(plot_data_ops_KPI$Period)])
-      on.iprp.API <- any(plot_data_ops_API$ActiveIPRP[plot_data_ops_API$Period == max(plot_data_ops_API$Period)])
+      on.iprp.KPI <- plot_data_ops_KPI$ActiveIPRP[plot_data_ops_KPI$Period == max(plot_data_ops_KPI$Period)]
+      on.iprp.API <- plot_data_ops_API$ActiveIPRP[plot_data_ops_API$Period == max(plot_data_ops_API$Period)]
 
 
       tryCatch(
@@ -127,7 +127,7 @@ plot_perf_graphs_all <- function(
             include.iprp = on.iprp.KPI,
             action.points = T
           )+
-            ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " KPI.png"))
+            ggplot2::ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " KPI.png"))
         },
         error = function(e) {
           print(paste(e,TP,standard,"KPI"))
@@ -144,7 +144,7 @@ plot_perf_graphs_all <- function(
             include.iprp = on.iprp.API,
             action.points = T
           )+
-            ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " API.png"))
+            ggplot2::ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " API.png"))
         },
         error = function(e) {
           print(paste(e,TP,standard,"API"))
@@ -159,15 +159,15 @@ plot_perf_graphs_all <- function(
     for(TP in unique(perf_status_mps$Trading.Party.ID)) {
 
         temp_data_mps <- perf_status_mps%>%
-          filter(Trading.Party.ID == TP)
+          dplyr::filter(Trading.Party.ID == TP)
 
         for(standard in unique(temp_data_mps$Standard)){
           plot_data_mps <- temp_data_mps%>%
-            filter(
+            dplyr::filter(
               Standard == standard
             )
 
-          on.iprp <- plot_data_mps$ActiveIPRP[plot_data_mps$Period == max(plot_data_mps$Period)]
+          on.Rectification <- plot_data_mps$Rectification[plot_data_mps$Period == max(plot_data_mps$Period)]
 
 
           tryCatch(
@@ -177,10 +177,10 @@ plot_perf_graphs_all <- function(
                 trading.party = TP,
                 standard = standard,
                 graph.title = paste(TP, standard),
-                include.iprp = on.iprp,
+                include.iprp = on.Rectification,
                 action.points = T
               )+
-                ggsave(file = paste0(output.dir,"/MPS/", paste(TP, standard), ".png"))
+                ggplot2::ggsave(file = paste0(output.dir,"/MPS/", paste(TP, standard), ".png"))
             },
             error = function(e) {
               print(paste(e, TP, standard))
@@ -193,23 +193,23 @@ plot_perf_graphs_all <- function(
     for(TP in unique(perf_status_ops$Trading.Party.ID)) {
 
       temp_data_ops <- perf_status_ops%>%
-        filter(Trading.Party.ID == TP)
+        dplyr::filter(Trading.Party.ID == TP)
 
       for(standard in unique(temp_data_ops$Standard)){
         plot_data_ops_KPI <- temp_data_ops%>%
-          filter(
+          dplyr::filter(
             Standard == standard,
             PerformanceMeasure == "Completed"
           )
 
         plot_data_ops_API <- temp_data_ops%>%
-          filter(
+          dplyr::filter(
             Standard == standard,
             PerformanceMeasure == "Outstanding"
           )
 
-        on.iprp.KPI <- any(plot_data_ops_KPI$ActiveIPRP[plot_data_ops_KPI$Period == max(plot_data_ops_KPI$Period)])
-        on.iprp.API <- any(plot_data_ops_API$ActiveIPRP[plot_data_ops_API$Period == max(plot_data_ops_API$Period)])
+        on.iprp.KPI <- plot_data_ops_KPI$ActiveIPRP[plot_data_ops_KPI$Period == max(plot_data_ops_KPI$Period)]
+        on.iprp.API <- plot_data_ops_API$ActiveIPRP[plot_data_ops_API$Period == max(plot_data_ops_API$Period)]
 
 
         tryCatch(
@@ -222,7 +222,7 @@ plot_perf_graphs_all <- function(
               include.iprp = on.iprp.KPI,
               action.points = T
             )+
-              ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " KPI.png"))
+              ggplot2::ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " KPI.png"))
           },
           error = function(e) {
             print(paste(e,TP,standard,"KPI"))
@@ -239,7 +239,7 @@ plot_perf_graphs_all <- function(
               include.iprp = on.iprp.API,
               action.points = T
               )+
-              ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " API.png"))
+              ggplot2::ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " API.png"))
           },
           error = function(e) {
             print(paste(e,TP,standard,"API"))
