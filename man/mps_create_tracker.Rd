@@ -13,8 +13,8 @@ mps_create_tracker(
   save.output = TRUE,
   keep.vars = FALSE,
   iprp.list = NULL,
-  filter.category = c("IPRP: on-track", "Normal monitoring",
-    "Performance flag: 6 month")
+  filter.category = c("IPRP: On-track", "PRP: On-track", "IPRP: Above plan",
+    "PRP: Above plan", "Normal monitoring", "Performance flag: 6 month")
 )
 }
 \arguments{
