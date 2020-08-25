@@ -4,10 +4,22 @@
 \alias{scale_colour_MOSL}
 \title{scale_colour_MOSL}
 \usage{
-scale_colour_MOSL(palette = "all", discrete = TRUE, reverse = FALSE, ...)
+scale_colour_MOSL(
+  colours = NA,
+  reverse = FALSE,
+  palette = NA,
+  discrete = TRUE,
+  ...
+)
 }
 \arguments{
-\item{palette}{see \code{\link{MOSL_palettes}} for all available colour palettes}
+\item{colours}{Specifies the MOSL colours when palette is NA. When not specified, all colours are selected. See \code{\link{MOSL_colours}} for all available colours}
+
+\item{reverse}{Boolean variable to indicate whether to reverse the order of the scale or not}
+
+\item{palette}{See \code{\link{MOSL_palettes}} for all available colour palettes}
+
+\item{discrete}{Boolean variable to indicate whether to use a discrete scale or not}
 
 \item{...}{}
 }
