@@ -90,7 +90,7 @@ render_MPOP_report <- function(
       )
 
     vacant_TP <- dplyr::bind_rows(
-      read.csv(paste0(my_dir, "/data/inputs/vacancy.csv")) %>%
+      readr::read_csv(paste0(my_dir, "/data/inputs/vacancy.csv")) %>%
         dplyr::group_by(RetailerID, Period) %>%
         dplyr::summarise(
           Premises = sum(Premises),
@@ -110,17 +110,22 @@ render_MPOP_report <- function(
         Period = as.Date(Period, tryFormats = c("%d/%m/%Y", "%Y-%m-%d"))) %>%
       dplyr::left_join(tp_details, by = c("TradingPartyID" = "Trading.Party.ID"))
 
+    readr::write_csv(vacant_TP, file = paste0(my_dir, "/data/inputs/Vacancy_TP.csv"))
+
     vacant_Total <-
       readr::read_csv(paste0(my_dir, "/data/inputs/vacancy.csv")) %>%
       dplyr::group_by(Period) %>%
       dplyr::summarise(
-        Total_Premises = sum(Premises),
-        Total_Vacant_Premises = sum(VacantPremises)
+        Total_Premises = sum(Premises, na.rm = TRUE),
+        Total_Vacant_Premises = sum(VacantPremises, na.rm = TRUE)
       ) %>%
+      dplyr::ungroup() %>%
       dplyr::mutate(
         #Period = as.Date(Period, tryFormats = c("%d/%m/%Y", "%Y-%m-%d")),
         Market_Vacancy_Rate = Total_Vacant_Premises / Total_Premises
       )
+
+    readr::write_csv(vacant_Total, file = paste0(my_dir, "/data/inputs/Vacancy_Total.csv"))
 
   }
 
