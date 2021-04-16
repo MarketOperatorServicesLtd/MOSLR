@@ -4,17 +4,11 @@
 
 `%m+%` <- lubridate::`%m+%`
 
-
-wb <- openxlsx::createWorkbook("MPOP_tables")
-
-openxlsx::addWorksheet(wb, "Longunread_numbers")
-openxlsx::addWorksheet(wb, "Longunread_numbers_Since_MO")
-openxlsx::addWorksheet(wb, "Longunread_percent")
-
-openxlsx::addWorksheet(wb, "Vacant_numbers")
-openxlsx::addWorksheet(wb, "Vacant_percent")
-
-table_legend_long <- data.frame(Red = "Above market average", Yellow = "Below market average", Green = "Below target market level")%>%
+table_legend_long <- data.frame(
+  Red = "Above market average", 
+  Yellow = "Below market average", 
+  Green = "Below target market level"
+  )%>%
   dplyr::mutate(
     Red = kableExtra::cell_spec(
       Red,
@@ -30,9 +24,14 @@ table_legend_long <- data.frame(Red = "Above market average", Yellow = "Below ma
       Green,
       "latex", 
       background = "#C6E0B4",
-    ))
+    )
+    )
 
-table_legend_vac <- data.frame(Red = "More than 2.5% over Market Opening average", Yellow = "Within $\\pm$ 2.5\\% of the Market Opening average", Green = "More than 2.5% less than Market Opening average")%>%
+table_legend_vac <- data.frame(
+  Red = "More than 2.5% over Market Opening average", 
+  Yellow = "Within $\\pm$ 2.5\\% of the Market Opening average", 
+  Green = "More than 2.5% less than Market Opening average"
+  )%>%
   dplyr::mutate(
     Red = kableExtra::cell_spec(
       Red,
@@ -49,16 +48,10 @@ table_legend_vac <- data.frame(Red = "More than 2.5% over Market Opening average
       Green,
       "latex",
       background = "#C6E0B4",
-    ))
+    )
+    )
 
-
-
-
-    
 ```
-
-
-
 
 
 ## A. High Quality Consumption & Asset Data
@@ -66,26 +59,23 @@ table_legend_vac <- data.frame(Red = "More than 2.5% over Market Opening average
 ### Vacancy - Market Level Reporting 
 
 ```{r, echo=FALSE,  warning=FALSE, error=FALSE, fig.height=5}
-history_vac <- vacant%>%
-  dplyr::group_by(
-    Period
-    )%>%
+
+history_vac <- vacant %>%
+  dplyr::group_by(Period) %>%
   dplyr::summarise(
-    Vacancies = sum(Vacancies),
+    VacantPremises = sum(VacantPremises),
     total = sum(Premises),
-    percent_vacant = sum(Vacancies)/sum(Premises)
-    )%>%
-  dplyr::filter(
-    Period > "2019-03-01"
-    )
+    percent_vacant = sum(VacantPremises) / sum(Premises)
+    ) %>%
+  dplyr::filter(Period > "2019-03-01")
 
 forecast_vac <- lm(percent_vacant~Period, data = history_vac[(nrow(history_vac)-4):nrow(history_vac),])
 
 predict_vac <- data.frame(
   Period = c(
-    max(history_vac$Period)%m+%months(1),
-    max(history_vac$Period)%m+%months(2),
-    max(history_vac$Period)%m+%months(3)
+    max(history_vac$Period) %m+% months(1),
+    max(history_vac$Period) %m+% months(2),
+    max(history_vac$Period) %m+% months(3)
     )
   )
 
@@ -95,83 +85,37 @@ history_vac_forecast <- dplyr::bind_rows(history_vac, predict_vac)
 
 history_vac_forecast$percent_vacant_forecast[history_vac_forecast$Period==max(history_vac$Period)] <- history_vac_forecast$percent_vacant[history_vac_forecast$Period==max(history_vac$Period)]
 
-
-
-ggplot2::ggplot(
-  history_vac_forecast, 
-  ggplot2::aes(
-    x = Period
-    )
-  )+
-  ggplot2::geom_bar(
-    ggplot2::aes(
-      x=Period,
-      y = Vacancies
-      ),
-    stat = "identity",
-    position = "dodge", 
-    inherit.aes = FALSE,
-    fill = "#005F83"
-    )+
-  ggplot2::geom_line(
-    ggplot2::aes(
-      y = percent_vacant*(1.05*max(history_vac$total, na.rm = T)),
-      color = "Observed"
-      ), 
-    size=1.4
-    )+
-  ggplot2::geom_line(
-    ggplot2::aes(
-      y = percent_vacant_forecast*(1.05*max(history_vac$total, na.rm = T)),
-      color = "Forecast"
-      ), 
-    size=1.4
-    )+
-  ggplot2::geom_point(
-    ggplot2::aes(
-      y = percent_vacant_forecast*(1.05*max(history_vac$total, na.rm = T)),
-      color = "Forecast"
-      ), 
-    size = 3
-    )+
-  ggplot2::geom_point(
-    ggplot2::aes(
-      y = percent_vacant*(1.05*max(history_vac$total, na.rm = T)),
-      color = "Observed"
-      ), 
-    size = 3
-    )+
+ggplot2::ggplot(history_vac_forecast, ggplot2::aes(x = Period)) +
+  ggplot2::geom_bar(ggplot2::aes(x = Period, y = VacantPremises), 
+                    stat = "identity", position = "dodge", inherit.aes = FALSE, fill = "#005F83") +
+  ggplot2::geom_line(ggplot2::aes(y = percent_vacant * (1.05 * max(history_vac$total, na.rm = TRUE)), 
+                                  colour = "Observed"), size = 1.4) +
+  ggplot2::geom_line(ggplot2::aes(y = percent_vacant_forecast * (1.05 * max(history_vac$total, na.rm = TRUE)), 
+                                  colour = "Forecast"), size=1.4) +
+  ggplot2::geom_point(ggplot2::aes(y = percent_vacant_forecast * (1.05 * max(history_vac$total, na.rm = TRUE)), 
+                                   colour = "Forecast"), size = 3) +
+  ggplot2::geom_point(ggplot2::aes(y = percent_vacant*(1.05*max(history_vac$total, na.rm = TRUE)), 
+                                   colour = "Observed"), size = 3) +
   ggplot2::scale_y_continuous(
-    label = scales::unit_format(accuracy = 1, unit = "", sep = "", big.mark = ","),
-    breaks = scales::pretty_breaks(4),
-    sec.axis = ggplot2::sec_axis(
-      ~. / (1.05*max(history_vac$total, na.rm = T)), 
-      name = "Percentage of vacant premises", 
-      labels = scales::percent_format(accuracy = 1)
-      ),
+    label = scales::unit_format(accuracy = 1, unit = "", sep = "", big.mark = ","), 
+    breaks = scales::pretty_breaks(4), 
+    sec.axis = ggplot2::sec_axis(~. / (1.05*max(history_vac$total, na.rm = TRUE)), 
+                                 name = "Percentage of vacant premises", labels = scales::percent_format(accuracy = 1)), 
     limits = c(
-      min(history_vac$Vacancies,na.rm = T)-40000,
-      max(history_vac$Vacancies, na.rm = T)+30000), 
-    oob = scales::rescale_none
-      )+
-  ggplot2::scale_color_manual(values = c("#FFAA4D", "#00A499"))+
-  ggplot2::ylab(
-    "Total number of vacant premises"
-    )+
-  ggplot2::ggtitle(
-    "Vacant premises"
-    )+
-ggplot2::theme_bw()+
+      min(history_vac$VacantPremises, na.rm = TRUE) - 40000,
+      max(history_vac$VacantPremises, na.rm = TRUE) + 30000), 
+    oob = scales::rescale_none) +
+  ggplot2::scale_color_manual(values = c("#FFAA4D", "#00A499")) +
+  ggplot2::ylab("Total number of vacant premises") +
+  ggplot2::ggtitle("Vacant premises") +
+  ggplot2::theme_bw() +
   ggplot2::theme(
-    plot.title = ggplot2::element_text(
-      hjust = 0.5
-      ),
-    legend.title = ggplot2::element_blank(),
-    legend.position = "bottom",
-    axis.title.x  = ggplot2::element_blank())
+    plot.title = ggplot2::element_text(hjust = 0.5), 
+    legend.title = ggplot2::element_blank(), 
+    legend.position = "bottom", 
+    axis.title.x  = ggplot2::element_blank()
+    )
     
-  
-
 ```
 
 > This chart shows the change in volume (bars) and % (line) of vacant premises, with a forecast for the next 3 months
@@ -187,7 +131,7 @@ ggplot2::theme_bw()+
         Period=="2017-04-01"
       )%>%
       dplyr::summarise(
-        Total = sum(Vacancies)/sum(Premises)
+        Total = sum(VacantPremises)/sum(Premises)
       )
 
 graph_data <- MOSLR::MPOP_data_prep(df.vacancy =  vacant, tp.details = tp_details, vacancy.table = T, by = "Retailer", my.dir = my_dir)
@@ -232,9 +176,9 @@ top10_vac_ret <- graph_data%>%
            "#C6E0B4",
          TRUE ~ "#FFFFFF"), escape = FALSE),
     TotalPremises = scales::comma(TotalPremises, digits = 0),
-    Vacancies = scales::comma(Vacancies, digits = 0)
+    VacantPremises = scales::comma(VacantPremises, digits = 0)
     )%>%
-   dplyr::select(Retailer, TotalPremises, Vacancies, percent_temp)
+   dplyr::select(Retailer, TotalPremises, VacantPremises, percent_temp)
 
 
 
@@ -322,7 +266,7 @@ top10_vac_whole <- graph_data%>%
            "#C6E0B4",
          TRUE ~ "#FFFFFF"), escape = FALSE),
     TotalPremises = scales::comma(TotalPremises, digits = 0),
-    Vacancies = scales::comma(Vacancies, digits = 0)
+    VacantPremises = scales::comma(VacantPremises, digits = 0)
     )%>%
   dplyr::arrange(
     dplyr::desc(
@@ -333,7 +277,7 @@ top10_vac_whole <- graph_data%>%
   dplyr::filter(
     !is.na(Total_Premises_april)
     )%>%
-  dplyr::select(Wholesaler, TotalPremises, Vacancies, percent_temp)
+  dplyr::select(Wholesaler, TotalPremises, VacantPremises, percent_temp)
 
 
 
@@ -426,9 +370,9 @@ top10_vac_pair <- graph_data%>%
            "#C6E0B4",
          TRUE ~ "#FFFFFF"), escape = FALSE),
     TotalPremises = scales::comma(TotalPremises, digits = 0),
-    Vacancies = scales::comma(Vacancies, digits = 0)
+    VacantPremises = scales::comma(VacantPremises, digits = 0)
     )%>%
-   dplyr::select(Pair, TotalPremises, Vacancies, percent_temp)
+   dplyr::select(Pair, TotalPremises, VacantPremises, percent_temp)
 
 
 
@@ -488,7 +432,7 @@ vacant_current <- vacant%>%
         Period == max(vacant$Period)
         ) %>%
   dplyr::mutate(
-    percent = scales::percent(Vacancies/Premises)
+    percent = scales::percent(VacantPremises/Premises)
     )
 
 vac_TP_temp <- data.table::transpose(vacant_TP)
@@ -500,7 +444,7 @@ vacant_total <- tidyr::pivot_wider(
     WholesalerID),
   id_cols = WholesalerID, 
   names_from = RetailerID, 
-  values_from = Vacancies
+  values_from = VacantPremises
   )%>%
   dplyr::bind_rows(dplyr::mutate_all(dplyr::select(vac_TP_temp[3,], unique(vacant_current$RetailerID)), as.numeric))%>%
   dplyr::left_join(vacant_TP%>%dplyr::select(TradingPartyID, Vacant_Premises), by = c("WholesalerID" = "TradingPartyID"))%>%
@@ -516,12 +460,6 @@ vacant_total <- vacant_total%>%
   dplyr::mutate_all(
     ~replace(., is.na(.),"")
     )  
-
-
-  
-
-  
-openxlsx::writeData(wb, sheet = "Vacant_numbers", x = vacant_total)
 
 
 knitr::kable(
@@ -584,12 +522,9 @@ vacant_percent <- tidyr::pivot_wider(
   dplyr::rename(Total = percent)
 
 
-
 vacant_percent[nrow(vacant_percent),1] <- "Total"
 vacant_percent[nrow(vacant_percent), ncol(vacant_percent)] <- paste(round(100*vacant_Total$Market_Vacancy_Rate,1),"%")
 
-
-openxlsx::writeData(wb, sheet = "Vacant_percent", x = vacant_percent)
 
 knitr::kable(
   vacant_percent,
@@ -652,8 +587,8 @@ history <- longunread%>%
     )%>%
   dplyr::summarise(
     Meters_unread = sum(Meters_Unread_in_12mo),
-    total = sum(Total_Meters),
-    percent_unread = sum(Meters_Unread_in_12mo)/sum(Total_Meters)
+    total = sum(TotalMeters),
+    percent_unread = sum(Meters_Unread_in_12mo)/sum(TotalMeters)
     )%>%
   dplyr::filter(
     Period > "2019-03-01"
@@ -677,73 +612,36 @@ history_w_forecast <- dplyr::bind_rows(history, predict)
 history_w_forecast$percent_unread_forecast[history_w_forecast$Period==max(history$Period)] <- history_w_forecast$percent_unread[history_w_forecast$Period==max(history$Period)]
 
 
-ggplot2::ggplot(
-  history_w_forecast, 
-  ggplot2::aes(
-    x = Period
-    )
-  )+
-  ggplot2::geom_bar(
-    ggplot2::aes(
-      x=Period,
-      y = Meters_unread
-      ),
-    stat = "identity",
-    position = "dodge", 
-    inherit.aes = FALSE,
-    fill = "#005F83"
-    )+
-  ggplot2::geom_line(
-    ggplot2::aes(
-      y = percent_unread_forecast*(1.05*max(history_w_forecast$total, na.rm = T)),
-      color="Forecast"
-      ), 
-    size=1.4
-    )+
-  ggplot2::geom_point(
-    ggplot2::aes(
-      y = percent_unread_forecast*(1.05*max(history_w_forecast$total, na.rm = T)),
-      color="Forecast"
-      ), 
-    size=3
-    )+
-  ggplot2::geom_line(
-    ggplot2::aes(
-      y = percent_unread*(1.05*max(history_w_forecast$total, na.rm = T)),
-      color="Observed"
-      ), 
-    size=1.4
-    )+
-  ggplot2::geom_point(
-    ggplot2::aes(
-      y = percent_unread*(1.05*max(history_w_forecast$total, na.rm = T)),
-      color="Observed"
-      ), 
-    size=3
-    )+
+ggplot2::ggplot(history_w_forecast, ggplot2::aes(x = Period)) +
+  ggplot2::geom_bar(ggplot2::aes(x = Period, y = Meters_unread), stat = "identity", 
+                    position = "dodge", inherit.aes = FALSE,fill = "#005F83") +
+  ggplot2::geom_line(ggplot2::aes(y = percent_unread_forecast*(1.05*max(history_w_forecast$total, na.rm = TRUE)), 
+                                  colour = "Forecast"), size = 1.4) +
+  ggplot2::geom_point(ggplot2::aes(y = percent_unread_forecast*(1.05*max(history_w_forecast$total, na.rm = TRUE)),
+                                   colour = "Forecast"), size=3) +
+  ggplot2::geom_line(ggplot2::aes(y = percent_unread*(1.05*max(history_w_forecast$total, na.rm = TRUE)),
+                                  colour = "Observed"), size = 1.4) +
+  ggplot2::geom_point(ggplot2::aes(y = percent_unread * (1.05 * max(history_w_forecast$total, na.rm = TRUE)),
+                                   colour = "Observed"), size = 3) +
   ggplot2::scale_y_continuous(
     label = scales::unit_format(accuracy = 1, unit = "", sep = "", big.mark = ","),
     breaks = scales::pretty_breaks(4),
     sec.axis = ggplot2::sec_axis(
-      ~. / (1.05*max(history_w_forecast$total, na.rm = T)), 
+      ~. / (1.05*max(history_w_forecast$total, na.rm = TRUE)), 
       name = "Percentage of meters unread", 
       labels = scales::percent_format(accuracy = 1)
       ),
-    limits = c(min(history_w_forecast$Meters_unread,na.rm = T)-40000, max(history_w_forecast$Meters_unread, na.rm = T)+30000),
+    limits = c(
+      min(history_w_forecast$Meters_unread,na.rm = TRUE) - 40000, 
+      max(history_w_forecast$Meters_unread, na.rm = TRUE) + 30000),
     oob = scales::rescale_none
-    )+
-  ggplot2::scale_color_manual(values = c("#FFAA4D", "#00A499"))+
-  ggplot2::ylab(
-    "Total number of meters unread"
-    )+
-  ggplot2::ggtitle(
-    "Meters Unread for 12+ months"
-    )+
+    ) +
+  ggplot2::scale_color_manual(values = c("#FFAA4D", "#00A499")) +
+  ggplot2::ylab("Total number of meters unread") +
+  ggplot2::ggtitle("Meters Unread for 12+ months") +
   ggplot2::theme_bw()+
   ggplot2::theme(
-    plot.title = ggplot2::element_text(
-      hjust = 0.5
-      ),
+    plot.title = ggplot2::element_text(hjust = 0.5),
     legend.title = ggplot2::element_blank(),
     legend.position = "bottom",
     axis.title.x  = ggplot2::element_blank()
@@ -761,26 +659,23 @@ ggplot2::ggplot(
 \newpage
 
 ```{r forecast2, echo=FALSE,  warning=FALSE, error=FALSE, fig.height=5}
-history_MO <- longunread%>%
-  dplyr::group_by(
-    Period
-    )%>%
+
+history_MO <- longunread %>%
+  dplyr::group_by(Period) %>%
   dplyr::summarise(
     Meters_Unread_Since_MO = sum(Meters_Unread_Since_MO),
-    total = sum(Total_Meters),
-    percent_unread_MO = sum(Meters_Unread_Since_MO)/sum(Total_Meters)
-    )%>%
-  dplyr::filter(
-    Period > "2019-03-01"
-    )
+    total = sum(TotalMeters),
+    percent_unread_MO = sum(Meters_Unread_Since_MO) / sum(TotalMeters)
+    ) %>%
+  dplyr::filter(Period > "2019-03-01")
 
 forecast_MO <- lm(percent_unread_MO ~ Period, data = history_MO[(nrow(history_MO)-4):nrow(history_MO),])
 
 predict_MO <- data.frame(
   Period = c(
-    max(history_MO$Period)%m+%months(1),
-    max(history_MO$Period)%m+%months(2),
-    max(history_MO$Period)%m+%months(3)
+    max(history_MO$Period) %m+% months(1),
+    max(history_MO$Period) %m+% months(2),
+    max(history_MO$Period) %m+% months(3)
     )
   )
 
@@ -882,7 +777,7 @@ ggplot2::ggplot(
 ```{r, echo=FALSE, warning=FALSE, error=FALSE, fig.height=4.8, fig.width=10}
     longunread_avg <- longunread%>%
       dplyr::filter(Period == max(longunread$Period))%>%
-      dplyr::summarise(Total = sum(Meters_Unread_in_12mo)/sum(Total_Meters))
+      dplyr::summarise(Total = sum(Meters_Unread_in_12mo)/sum(TotalMeters))
 
 graph_data <- MOSLR::MPOP_data_prep(df.longunread = longunread,tp.details = tp_details, longunread.table = T, by = "Retailer", my.dir = my_dir)
 
@@ -1389,7 +1284,7 @@ percent <- longunread%>%
     )%>%
   dplyr::mutate(
     percent = scales::percent(
-      Meters_Unread_in_12mo/Total_Meters)
+      Meters_Unread_in_12mo/TotalMeters)
     )%>%
   tidyr::pivot_wider(
     ., 
@@ -1405,7 +1300,7 @@ total_percent <- longunread%>%
     Period == max(longunread$Period)
     )%>%
   dplyr::summarise(
-    Total = paste(round(100*sum(Meters_Unread_in_12mo)/sum(Total_Meters),1),"%")
+    Total = paste(round(100*sum(Meters_Unread_in_12mo)/sum(TotalMeters),1),"%")
     )%>%
   dplyr::mutate(
     WholesalerID = "Total"
@@ -1419,7 +1314,7 @@ ret_percent <- longunread%>%
      )%>%
   dplyr::group_by(RetailerID)%>%
   dplyr::summarise(
-    percent = paste(round(100*sum(Meters_Unread_in_12mo)/sum(Total_Meters),1),"%")
+    percent = paste(round(100*sum(Meters_Unread_in_12mo)/sum(TotalMeters),1),"%")
     )%>%
   dplyr::mutate(
     WholesalerID = "Total"
@@ -1439,7 +1334,7 @@ whole_percent <- longunread%>%
     WholesalerID
     )%>%
   dplyr::summarise(
-    Total = paste(round(100*sum(Meters_Unread_in_12mo)/sum(Total_Meters),1),"%")
+    Total = paste(round(100*sum(Meters_Unread_in_12mo)/sum(TotalMeters),1),"%")
     )
 
 unread_percent <- dplyr::bind_rows(
