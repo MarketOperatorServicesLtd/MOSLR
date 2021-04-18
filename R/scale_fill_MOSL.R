@@ -35,7 +35,7 @@ scale_fill_MOSL <- function(colours = NA, reverse = FALSE, palette = NA, discret
 
       if(reverse) colours <- rev(colours)
 
-      scale_fill_manual(values = unname(MOSL_colours(colours)))
+      ggplot2::scale_fill_manual(values = unname(MOSL_colours(colours)))
 
 
   } else{
@@ -44,11 +44,11 @@ scale_fill_MOSL <- function(colours = NA, reverse = FALSE, palette = NA, discret
 
   if (discrete) {
 
-    discrete_scale("fill", paste0("MOSL", palette), palette = pal, ...)
+    ggplot2::discrete_scale("fill", paste0("MOSL", palette), palette = pal, ...)
 
   } else {
 
-    scale_fill_gradientn(colours = pal(256), ...)
+    ggplot2::scale_fill_gradientn(colours = pal(256), ...)
 
   }
       }

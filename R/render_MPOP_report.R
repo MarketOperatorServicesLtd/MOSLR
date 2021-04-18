@@ -17,7 +17,8 @@
 #'
 #' @examples
 #'
-#'
+
+
 render_MPOP_report <- function(
   rmd.file = "MPOP.Rmd",
   my.dir = getwd(),
@@ -93,8 +94,8 @@ render_MPOP_report <- function(
       readr::read_csv(paste0(my_dir, "/data/inputs/vacancy.csv")) %>%
         dplyr::group_by(RetailerID, Period) %>%
         dplyr::summarise(
-          Premises = sum(Premises),
-          Vacant_Premises = sum(VacantPremises)
+          Premises = sum(Premises, na.rm = TRUE),
+          Vacant_Premises = sum(VacantPremises, na.rm = TRUE)
           ) %>%
         dplyr::rename(TradingPartyID = RetailerID),
       readr::read_csv(paste0(my_dir, "/data/inputs/vacancy.csv")) %>%

@@ -44,7 +44,9 @@ MPOP_data_prep <- function(
 
 
   if (vacancy.table) {
+
     if (load.data) {
+
       tp_details <-
         readr::read_csv(paste0(my_dir, "/data/inputs/tp_details.csv")) %>%
         dplyr::mutate(
@@ -64,7 +66,7 @@ MPOP_data_prep <- function(
           whole_vacant > 200,
           ret_vacant > 200
           ) %>%
-        dplyr::mutate(Period = as.Date(Period)) %>%
+        #dplyr::mutate(Period = as.Date(Period)) %>%
         dplyr::left_join(tp_details, by = c("RetailerID" = "Trading.Party.ID")) %>%
         dplyr::rename(Retailer = TradingPartyName, ShortRet = ShortName) %>%
         dplyr::left_join(tp_details, by = c("WholesalerID" = "Trading.Party.ID")) %>%
@@ -80,45 +82,43 @@ MPOP_data_prep <- function(
 
       vacant_TP <-
         readr::read_csv(paste0(my_dir, "/data/inputs/Vacancy_TP.csv")) %>%
-        dplyr::mutate(percent = paste(round(100 * (Vacant_Premises) / (Premises), 1), "%"),
-        Period = as.Date(Period)) %>%
-        dplyr::left_join(tp_details, by = c("TradingPartyID" = "Trading.Party.ID"))
+        dplyr::select(TradingPartyID, Period, Premises, Vacant_Premises)
 
       vacant_Total <-
         readr::read_csv(paste0(my_dir, "/data/inputs/Vacancy_Total.csv"))
 
     } else {
 
-      vacant_TP <-
-        readr::read_csv(paste0(my_dir, "/data/inputs/Vacancy_TP.csv")) %>%
-        dplyr::select(TradingPartyID, Period, Premises, Vacant_Premises) %>%
-        dplyr::mutate(percent = paste(round(100 * (Vacant_Premises) / (Premises), 1), "%")) %>%
-        dplyr::left_join(tp_details, by = c("TradingPartyID" = "Trading.Party.ID"))
+      vacant_TP <- readr::read_csv(paste0(my_dir, "/data/inputs/Vacancy_TP.csv"))
 
       vacant_Total <- readr::read_csv(paste0(my_dir, "/data/inputs/Vacancy_Total.csv"))
+
     }
 
 
     # Prep vacancy data -------------------------------------------------------
 
     last12_vac <- vacant %>%
-      dplyr::filter(Period == max(vacant$Period) %m-% months(12)) %>%
+      dplyr::filter(Period == max(vacant$Period, na.rm = TRUE) %m-% months(12)) %>%
       dplyr::group_by_at(.vars = by) %>%
       dplyr::summarise(
-        april_percent = sum(VacantPremises) / sum(Premises),
-        Total_Premises_april = sum(Premises)
+        april_percent = sum(VacantPremises, na.rm = TRUE) / sum(Premises, na.rm = TRUE),
+        Total_Premises_april = sum(Premises, na.rm = TRUE)
       )
 
     last1_vac <- vacant %>%
       dplyr::filter(Period == max(vacant$Period) %m-% months(1)) %>%
       dplyr::group_by_at(.vars = by) %>%
-      dplyr::summarise(last_percent = sum(VacantPremises) / sum(Premises),)
+      dplyr::summarise(last_percent = sum(VacantPremises, na.rm = TRUE) / sum(Premises, na.rm = TRUE))
 
     if (by %in% c("Retailer", "Wholesaler")) {
+
       main_vac <- vacant_TP %>%
         dplyr::filter(
+          Period == max(vacant$Period, na.rm = TRUE),
           stringr::str_sub(TradingPartyID, -2) == paste0("-", substr(by, 1, 1)),
-          Premises > 200) %>%
+          Premises > 200
+          ) %>%
         dplyr::rename_at(dplyr::vars(TradingPartyName), dplyr::funs(paste0(by))) %>%
         dplyr::rename(
           TotalPremises = Premises,
@@ -137,6 +137,7 @@ MPOP_data_prep <- function(
         ) %>%
         dplyr::filter(TotalPremises > 6000) %>%
         dplyr::mutate(ShortName = Pair)
+
     }
 
 
@@ -167,6 +168,7 @@ MPOP_data_prep <- function(
 
 
   } else if (longunread.table) {
+
     if (load.data) {
       tp_details <-
         readr::read_csv(paste0(my_dir, "/data/inputs/tp_details.csv")) %>%
@@ -179,10 +181,10 @@ MPOP_data_prep <- function(
         readr::read_csv(paste0(my_dir, "/data/inputs/longunread.csv")) %>%
         dplyr::mutate(Period = as.Date(paste0(Period, "-01"), "%Y-%m-%d")) %>%
         dplyr::group_by(WholesalerID, Period) %>%
-        dplyr::mutate(whole_meters = sum(Total_Meters)) %>%
+        dplyr::mutate(whole_meters = sum(TotalMeters)) %>%
         dplyr::ungroup() %>%
         dplyr::group_by(RetailerID, Period) %>%
-        dplyr::mutate(ret_meters = sum(Total_Meters)) %>%
+        dplyr::mutate(ret_meters = sum(TotalMeters)) %>%
         dplyr::ungroup() %>%
         dplyr::filter(whole_meters > 100, ret_meters > 100) %>%
         dplyr::left_join(tp_details, by = c("RetailerID" = "Trading.Party.ID")) %>%
@@ -201,8 +203,8 @@ MPOP_data_prep <- function(
       dplyr::filter(Period == max(longunread$Period) %m-% months(12)) %>%
       dplyr::group_by_at(.vars = by) %>%
       dplyr::summarise(
-        april_percent = sum(Meters_Unread_in_12mo) / sum(Total_Meters),
-        Total_Meters_april = sum(Total_Meters)
+        april_percent = sum(Meters_Unread_in_12mo) / sum(TotalMeters),
+        Total_Meters_april = sum(TotalMeters)
       ) %>%
       dplyr::filter(Total_Meters_april > 100) %>%
       dplyr::select(by, Total_Meters_april, april_percent)
@@ -211,7 +213,7 @@ MPOP_data_prep <- function(
     last1_long <- longunread %>%
       dplyr::filter(Period == max(longunread$Period) %m-% months(1)) %>%
       dplyr::group_by_at(.vars = by) %>%
-      dplyr::summarise(last_percent = sum(Meters_Unread_in_12mo) / sum(Total_Meters)) %>%
+      dplyr::summarise(last_percent = sum(Meters_Unread_in_12mo) / sum(TotalMeters)) %>%
       dplyr::select(by, last_percent)
 
     main_table <- longunread %>%
@@ -226,8 +228,8 @@ MPOP_data_prep <- function(
         }
       } %>%
       dplyr::summarise(
-        percent = sum(Meters_Unread_in_12mo) / sum(Total_Meters),
-        TotalMeters = sum(Total_Meters),
+        percent = sum(Meters_Unread_in_12mo) / sum(TotalMeters),
+        TotalMeters = sum(TotalMeters),
         PureLUMs = sum(Meters_Unread_in_12mo)
       ) %>%
       dplyr::left_join(., last12_long, by = by) %>%
