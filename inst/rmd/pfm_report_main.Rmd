@@ -11,7 +11,7 @@ output:
     fig_caption: true
 header-includes:
 - \usepackage{titling}
-- \pretitle{\begin{center}\LARGE\includegraphics[width=24cm]{mosl_title.png}\\[\bigskipamount]}
+- \pretitle{\begin{center}\LARGE\includegraphics[width = 24cm]{mosl_title.png}\\[\bigskipamount]}
 - \posttitle{\end{center}}
 - \usepackage{xcolor}
 - \usepackage{color}
@@ -27,7 +27,7 @@ header-includes:
 - \pagestyle{fancy}
 - \fancyhf{}
 - \lfoot{MOSL Performance Report}
-- \rhead{\includegraphics[width=6cm]{mosl_header.png}}
+- \rhead{\includegraphics[width = 6cm]{mosl_header.png}}
 - \rfoot{Page \thepage}
 classoption: table
 ---
@@ -70,20 +70,14 @@ tryCatch(
     ggplot2::scale_fill_manual(values = c("#425563", "azure3")) +
     ggplot2::coord_flip() +
     ggplot2::theme_bw() +
-    ggplot2::theme(
-      text = ggplot2::element_text(size = 15)
-      ) +
+    ggplot2::theme(text = ggplot2::element_text(size = 15)) +
     ggplot2::labs(
       title = "Ranking of Overall MPS Performance",
-      subtitle = 
-        paste0(
-          "Rolling 6-month mean of aggregate MPS performance by Trading Party (", 
-          mps_aggregate_perf_temp$tp_type, "s)"
-          ),
-      caption = "Source: MOSL"
-      ) +
-    ggplot2::ylab("") + ggplot2::xlab("")
-  }, error = function(e){}
+      subtitle = paste0("Rolling 6-month mean of aggregate MPS performance by Trading Party (", mps_aggregate_perf_temp$tp_type, "s)"),
+      caption = "Source: MOSL", x = "", y = ""
+      )
+  }, 
+  error = function(e){}
 )
 
 ```
@@ -123,7 +117,8 @@ tryCatch(
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("") + ggplot2::xlab("")
-  }, error = function(e){}
+  }, 
+  error = function(e){}
 )
 
 ```
@@ -155,13 +150,12 @@ tryCatch(
       ) +
     ggplot2::labs(
       title = "Ranking of Overall OPS Performance (Outstanding)",
-      subtitle = 
-        paste0(
-          "Rolling 6-month mean of aggregate OPS performance by Trading Party"),
+      subtitle = "Rolling 6-month mean of aggregate OPS performance by Trading Party",
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("") + ggplot2::xlab("")
-  }, error = function(e){}
+  }, 
+  error = function(e){}
 )
 
 ```
@@ -171,13 +165,16 @@ tryCatch(
 ### MPS
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
-MPS_grouping <- dplyr::tibble("Customer Access"=c("MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 5",""), 
-                       "Disconnection/ Reconnection" = c("MPS 6", rep("", 5)),
-                       "Meter Read Submission" = c("MPS 7", "MPS 8", "MPS 9", "MPS 10", "MPS 11", ""),
-                       "Cyclic Meter Reads" = c("MPS 12", "MPS 13", "MPS 14", "MPS 15", "MPS 18", "MPS 19"),
-                       "Transfer Reads" = c("MPS 16", "MPS 17", rep("", 4)))
 
-MPS_grouping%>% 
+MPS_grouping <- dplyr::tibble(
+  "Customer Access" = c("MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 5",""), 
+  "Disconnection/ Reconnection" = c("MPS 6", rep("", 5)),
+  "Meter Read Submission" = c("MPS 7", "MPS 8", "MPS 9", "MPS 10", "MPS 11", ""),
+  "Cyclic Meter Reads" = c("MPS 12", "MPS 13", "MPS 14", "MPS 15", "MPS 18", "MPS 19"),
+  "Transfer Reads" = c("MPS 16", "MPS 17", rep("", 4))
+  )
+
+MPS_grouping %>% 
   kableExtra::kable(
     format = "latex", 
     caption = "Details of MPS Groupings",
@@ -198,19 +195,23 @@ MPS_grouping%>%
     ) %>%
   kableExtra::row_spec(0, bold = TRUE)%>%
   kableExtra::column_spec(1:ncol(MPS_grouping), width = "2.4cm")
+
 ```
 
 ### OPS
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
-OPS_grouping <- dplyr::tibble("Metering" = c("OPS B1a", "OPS B3a", "OPS B3b", "OPS B5a", rep("", 4)),
-                       "Supply Check" = c("OPS C1a", "OPS C1b", "OPS C2a", "OPS C3a", "OPS C4a", "OPS C4b", "OPS C5a", "OPS C6a"),
-                       Complaints = c("OPS F5a", "OPS F5b", rep("", 6)),
-                       "Trade Effluent" = c("OPS G2a", "OPS G4a", "OPS G4b", rep("", 5)),
-                       Allowances = c("OPS H1a", rep("", 7)),
-                       "Disconnection/ Reconnection" = c("OPS I1a", "OPS I1b", "OPS I8a", "OPS I8b", rep("", 4)))
 
-OPS_grouping%>% 
+OPS_grouping <- dplyr::tibble(
+  "Metering" = c("OPS B1a", "OPS B3a", "OPS B3b", "OPS B5a", rep("", 4)),
+  "Supply Check" = c("OPS C1a", "OPS C1b", "OPS C2a", "OPS C3a", "OPS C4a", "OPS C4b", "OPS C5a", "OPS C6a"),
+  Complaints = c("OPS F5a", "OPS F5b", rep("", 6)),
+  "Trade Effluent" = c("OPS G2a", "OPS G4a", "OPS G4b", rep("", 5)),
+  Allowances = c("OPS H1a", rep("", 7)),
+  "Disconnection/ Reconnection" = c("OPS I1a", "OPS I1b", "OPS I8a", "OPS I8b", rep("", 4))
+  )
+
+OPS_grouping %>% 
   kableExtra::kable(
     format = "latex", 
     caption = "Details of OPS groupings",
@@ -229,8 +230,9 @@ OPS_grouping%>%
       full_width = FALSE
       )
     ) %>%
-  kableExtra::row_spec(0, bold = TRUE)%>%
+  kableExtra::row_spec(0, bold = TRUE) %>%
   kableExtra::column_spec(1:ncol(OPS_grouping), width = "2.4cm")
+
 ```
 
 ## Performance Criteria

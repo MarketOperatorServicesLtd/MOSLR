@@ -34,7 +34,7 @@ scale_colour_MOSL <- function(colours = NA, reverse = FALSE, palette = NA, discr
 
       if(reverse) colours <- rev(colours)
 
-      scale_colour_manual(values = unname(MOSL_colours(colours)))
+      ggplot2::scale_colour_manual(values = unname(MOSL_colours(colours)))
 
     } else {
 
@@ -42,11 +42,11 @@ scale_colour_MOSL <- function(colours = NA, reverse = FALSE, palette = NA, discr
 
       if (discrete) {
 
-        discrete_scale("colour", paste0("MOSL", palette), palette = pal, ...)
+        ggplot2::discrete_scale("colour", paste0("MOSL", palette), palette = pal, ...)
 
       } else {
 
-        scale_colour_gradientn(colours = pal(256), ...)
+        ggplot2::scale_colour_gradientn(colours = pal(256), ...)
 
       }
     }

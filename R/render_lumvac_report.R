@@ -1,8 +1,8 @@
 
-#' Render MPOP Report
+#' Render Long Unread Meter and Vacancy Report
 #'
 #' This functions prepares and loads the required
-#' datasets and renders the monthly MPOP report
+#' datasets and renders the monthly LUMs and vacancy report
 #'
 #' @param rmd.file character
 #' @param my.dir character
@@ -18,9 +18,8 @@
 #' @examples
 #'
 
-
-render_MPOP_report <- function(
-  rmd.file = "MPOP.Rmd",
+render_lumvac_report <- function(
+  rmd.file = "lum-vacancy_report_main.Rmd",
   my.dir = getwd(),
   load.data = TRUE,
   dir.output = paste0(my.dir, "/LUMsVacancyReport"),
@@ -28,6 +27,7 @@ render_MPOP_report <- function(
   data.period = Sys.Date() %m-% months(1),
   ...
   )
+
   {
 
   # Setup -------------------------------------------------------------------
@@ -45,7 +45,7 @@ render_MPOP_report <- function(
       )
 
     longunread <-
-      readr::read_csv(paste0(my_dir, "/data/inputs/longunread.csv")) %>%
+      readr::read_csv(paste0(my_dir, "/data/inputs/longunread.csv"), ) %>%
       #dplyr::mutate(Period = as.Date(paste0(Period, "-01"), "%Y-%m-%d")) %>%
       dplyr::group_by(WholesalerID, Period) %>%
       dplyr::mutate(whole_meters = sum(TotalMeters)) %>%
@@ -97,13 +97,15 @@ render_MPOP_report <- function(
           Premises = sum(Premises, na.rm = TRUE),
           Vacant_Premises = sum(VacantPremises, na.rm = TRUE)
           ) %>%
+        dplyr::ungroup() %>%
         dplyr::rename(TradingPartyID = RetailerID),
       readr::read_csv(paste0(my_dir, "/data/inputs/vacancy.csv")) %>%
         dplyr::group_by(WholesalerID, Period) %>%
         dplyr::summarise(
-          Premises = sum(Premises),
-          Vacant_Premises = sum(VacantPremises)
+          Premises = sum(Premises, na.rm = TRUE),
+          Vacant_Premises = sum(VacantPremises, na.rm = TRUE)
         ) %>%
+        dplyr::ungroup() %>%
         dplyr::rename(TradingPartyID = WholesalerID)
       ) %>%
       dplyr::mutate(

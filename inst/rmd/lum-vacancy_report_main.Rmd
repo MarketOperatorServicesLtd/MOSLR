@@ -4,7 +4,6 @@ date: "`r format(as.Date(data.period), '%B %Y')`"
 fontsize: 12pt
 output:
   pdf_document:
-    latex_engine: lualatex
     number_section: yes
     toc: yes
     fig_caption: true
@@ -39,7 +38,9 @@ classoption: table
 
 ```{r setup, include = FALSE}
 
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE, fig.align = "centre")
+
+table_format <- if(knitr::is_latex_output()) "latex" else "pandoc"
 
 `%m+%` <- lubridate::`%m+%`
 
@@ -67,10 +68,14 @@ table_legend_vac <- data.frame(
 
 ```
 
-```{r child = "vacancy_reporting.Rmd"}
+\newpage
+
+```{r child = "lum-vacancy_report_vac.Rmd"}
 
 ```
 
 \newpage
 
+```{r child = "lum-vacancy_report_lums.Rmd", eval = FALSE}
 
+```
