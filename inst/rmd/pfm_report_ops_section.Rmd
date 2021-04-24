@@ -37,7 +37,40 @@ tryCatch(
 
 ```
 
-<br>
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
+
+OPS_grouping <- dplyr::tibble(
+  "Metering" = c("OPS B1a", "OPS B3a", "OPS B3b", "OPS B5a", rep("", 4)),
+  "Supply Check" = c("OPS C1a", "OPS C1b", "OPS C2a", "OPS C3a", "OPS C4a", "OPS C4b", "OPS C5a", "OPS C6a"),
+  "Complaints" = c("OPS F5a", "OPS F5b", rep("", 6)),
+  "Trade Effluent" = c("OPS G2a", "OPS G4a", "OPS G4b", rep("", 5)),
+  "Allowances" = c("OPS H1a", rep("", 7)),
+  "Disconnection/ Reconnection" = c("OPS I1a", "OPS I1b", "OPS I8a", "OPS I8b", rep("", 4))
+  )
+
+OPS_grouping %>% 
+  kableExtra::kable(
+    format = "latex", 
+    caption = "Details of OPS groupings",
+    linesep = "",
+    format.args = list(big.mark = ","),
+    booktabs = TRUE,
+    align = "c"
+    ) %>%
+  kableExtra::kable_styling(
+    font_size = 10,
+    latex_options = c(
+      "repeat_header",
+      "HOLD_position",
+      "striped",
+      position = "center", 
+      full_width = FALSE
+      )
+    ) %>%
+  kableExtra::row_spec(0, bold = TRUE) %>%
+  kableExtra::column_spec(1:ncol(OPS_grouping), width = "2.4cm")
+
+```
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
 
@@ -65,7 +98,7 @@ tryCatch(
     dplyr::mutate_if(is.numeric, scales::dollar_format(prefix = "£")) %>%
     tidyr::gather("Standard", "Charges", -Period) %>%
     tidyr::spread(Period, Charges) %>%
-    kableExtra::kable (
+    kableExtra::kable(
       format = "latex", 
       caption = "Breakdown of Charges by Standard", 
       linesep = "",
@@ -77,7 +110,7 @@ tryCatch(
       font_size = 10,
       latex_options = c(
         "repeat_header",
-        "hold_position",
+        "HOLD_position",
         "striped",
         position = "center", 
         full_width = FALSE,
@@ -96,7 +129,7 @@ As of `r format(data.period, "%B-%Y")`, MOSL were monitoring `r SHORT.NAME`'s pe
 
 * `r paste(unique(perf_status_ops$PerformanceMeasure), collapse = " and ")`
 
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5, eval = include.aggregate}
 
 tryCatch(
   expr = {
@@ -202,7 +235,7 @@ tryCatch(
       font_size = 10,
       latex_options = c(
         "repeat_header",
-        "hold_position",
+        "HOLD_position",
         "striped",
         position = "center", 
         full_width = FALSE,
@@ -251,7 +284,7 @@ tryCatch(
       font_size = 10,
       latex_options = c(
         "repeat_header",
-        "hold_position",
+        "HOLD_position",
         "striped",
         position = "center", 
         full_width = FALSE,
@@ -264,11 +297,20 @@ tryCatch(
 
 ```
 
-`r SHORT.NAME`'s 6-month average aggregate OPS performance for completed tasks is `r scales::percent(ops_aggregate_perf_temp$Agg_Perf_roll[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"], accuracy = 1)`, which currently ranks as:
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
 
-* `r scales::ordinal(ops_aggregate_perf_temp$rank_all[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"])` out of `r ops_aggregate_perf_temp$n_all[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"]` for all Trading Parties
-* `r scales::ordinal(ops_aggregate_perf_temp$rank_type[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"])` out of `r paste0(ops_aggregate_perf_temp$n_type[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"], " ", ops_aggregate_perf_temp$tp_type[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"])`s
-* `r scales::ordinal(ops_aggregate_perf_temp$rank_subtype[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"])` out of `r ops_aggregate_perf_temp$n_subtype[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"]` trading parties with licence type `r ops_aggregate_perf_temp$sub_type[ops_aggregate_perf_temp$PerformanceMeasure == "Completed"]`
+ops_perf_comp <- ops_aggregate_perf_temp %>%
+  dplyr::filter(PerformanceMeasure == "Completed")
+  
+ops_perf_outs <- ops_aggregate_perf_temp %>%
+  dplyr::filter(PerformanceMeasure == "Outstanding")
+
+```
+
+`r SHORT.NAME`'s 6-month aggregate OPS performance for completed tasks is `r scales::percent(ops_perf_comp$Agg_Perf_roll, accuracy = 1)`, which currently ranks as:
+
+* `r scales::ordinal(ops_perf_comp$rank_type)` out of `r paste0(ops_perf_comp$n_type, " ", ops_perf_comp$tp_type)`s
+* `r scales::ordinal(ops_perf_comp$rank_league)` out of `r paste(ops_perf_comp$n_league, ops_perf_comp$LeagueGroup)`
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 6}
 
@@ -276,14 +318,13 @@ tryCatch(
   expr = {
   ops_aggregate_perf %>%
     dplyr::filter(
-      sub_type == as.character(ops_aggregate_perf_temp$sub_type),
       Period == data.period,
       PerformanceMeasure == "Completed"
       ) %>%
     ggplot2::ggplot() +
     ggplot2::geom_bar(
       ggplot2::aes(
-        x = reorder(ShortName, Agg_Perf_roll), 
+        x = reorder(ShortName, -rank_league), 
         y = Agg_Perf_roll,
         fill = dplyr::if_else(Trading.Party.ID == TRADING.PARTY, "highlight", "normal")
         ), 
@@ -293,29 +334,23 @@ tryCatch(
     ggplot2::scale_fill_manual(values = c("#425563", "azure3")) +
     ggplot2::coord_flip() +
     ggplot2::theme_bw() + 
-    ggplot2::theme(
-      text = ggplot2::element_text(size = 15)
-      ) +
+    ggplot2::theme(text = ggplot2::element_text(size = 15)) +
     ggplot2::labs(
-      title = "Ranking of Overall OPS Performance (Completed)",
-      subtitle = 
-        paste0(
-          "Rolling 6-month mean of aggregate OPS performance by Trading Party (", 
-          ops_aggregate_perf_temp$sub_type, ")"
-          ),
-      caption = "Source: MOSL"
+      title = "Peer Comparison League Tables: Operational Performance Standards (Completed)",
+      subtitle = "Six-month rolling aggregate performance",
+      caption = "Source: MOSL", x = "", y = ""
       ) +
-    ggplot2::ylab("") + ggplot2::xlab("")
-  }, error = function(e){}
+    ggplot2::facet_wrap(~LeagueGroup, scales = "free_y", ncol = 2)
+  }, 
+  error = function(e){}
 )
 
 ```
 
-`r SHORT.NAME`'s 6-month average aggregate OPS performance for outstanding tasks is `r scales::percent(ops_aggregate_perf_temp$Agg_Perf_roll[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"], accuracy = 1)`, which currently ranks as:
+`r SHORT.NAME`'s 6-month aggregate OPS performance for outstanding tasks is `r scales::percent(ops_perf_outs$Agg_Perf_roll, accuracy = 1)`, which currently ranks as:
 
-* `r scales::ordinal(ops_aggregate_perf_temp$rank_all[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"])` out of `r ops_aggregate_perf_temp$n_all[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"]` for all Trading Parties
-* `r scales::ordinal(ops_aggregate_perf_temp$rank_type[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"])` out of `r paste0(ops_aggregate_perf_temp$n_type[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"], " ", ops_aggregate_perf_temp$tp_type[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"])`s
-* `r scales::ordinal(ops_aggregate_perf_temp$rank_subtype[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"])` out of `r ops_aggregate_perf_temp$n_subtype[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"]` trading parties with licence type `r ops_aggregate_perf_temp$sub_type[ops_aggregate_perf_temp$PerformanceMeasure == "Outstanding"]`
+* `r scales::ordinal(ops_perf_outs$rank_type)` out of `r paste0(ops_perf_outs$n_type, " ", ops_perf_outs$tp_type)`s
+* `r scales::ordinal(ops_perf_outs$rank_league)` out of `r paste(ops_perf_outs$n_league, ops_perf_outs$LeagueGroup)`
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 6}
 
@@ -323,14 +358,13 @@ tryCatch(
   expr = {
   ops_aggregate_perf %>%
     dplyr::filter(
-      sub_type == as.character(ops_aggregate_perf_temp$sub_type),
       Period == data.period,
       PerformanceMeasure == "Outstanding"
       ) %>%
     ggplot2::ggplot() +
     ggplot2::geom_bar(
       ggplot2::aes(
-        x = reorder(ShortName, Agg_Perf_roll), 
+        x = reorder(ShortName, -rank_league), 
         y = Agg_Perf_roll,
         fill = dplyr::if_else(Trading.Party.ID == TRADING.PARTY, "highlight", "normal")
         ), 
@@ -340,25 +374,20 @@ tryCatch(
     ggplot2::scale_fill_manual(values = c("#425563", "azure3")) +
     ggplot2::coord_flip() +
     ggplot2::theme_bw() + 
-    ggplot2::theme(
-      text = ggplot2::element_text(size = 15)
-      ) +
+    ggplot2::theme(text = ggplot2::element_text(size = 15)) +
     ggplot2::labs(
-      title = "Ranking of Overall OPS Performance (Outstanding)",
-      subtitle = 
-        paste0(
-          "Rolling 6-month mean of aggregate OPS performance by Trading Party (", 
-          ops_aggregate_perf_temp$sub_type, ")"
-          ),
-      caption = "Source: MOSL"
+      title = "Peer Comparison League Tables: Operational Performance Standards (Outstanding)",
+      subtitle = "Six-month rolling aggregate performance",
+      caption = "Source: MOSL", x = "", y = ""
       ) +
-    ggplot2::ylab("") + ggplot2::xlab("")
-  }, error = function(e){}
+    ggplot2::facet_wrap(~LeagueGroup, scales = "free_y", ncol = 2)
+  }, 
+  error = function(e){}
 )
 
 ```
 
-The current status of `r SHORT.NAME`'s performance against each standard and performance measure is summarised in the table(s) below: 
+The current status of `r SHORT.NAME`'s performance against each standard and performance measure as of `r format(data.period, "%B-%Y")` is summarised in the table(s) below.
 
 ``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
@@ -367,24 +396,20 @@ for (MEASURE in unique(perf_status_ops_temp$PerformanceMeasure)) {
   tryCatch(
   expr = {
     perf_status_ops_temp %>%
-      dplyr::filter(
-        PerformanceMeasure == MEASURE
-        ) %>%
-      dplyr::select(
-        Standard, SecondaryCategory, Consistency, PerfRating, Status, Action
-        ) %>%
+      dplyr::filter(PerformanceMeasure == MEASURE) %>%
+      dplyr::select(Standard, SecondaryCategory, TaskVolume, Performance, Status, Action) %>%
       dplyr::mutate(
-        Status = tidyr::replace_na(Status, "")
+        Status = tidyr::replace_na(Status, ""),
+        TaskVolume = scales::comma(TaskVolume, accuracy = 1),
+        Performance = scales::percent(Performance, accuracy = 1)
         ) %>%
       kableExtra::kable(
         format = "latex", 
         caption = paste0("Current Status of OPS (", MEASURE, ")"),
         linesep = "",
         booktabs = TRUE,
-        col.names = c("OPS", "Category", "Performance Consistency", "Performance Rating", "IPRP Status", "MOSL Action"),
-        align = c("llcccc")
+        col.names = c("OPS", "Category", "Task\nVolume", "Performance", "Rectification\nStatus", "MOSL\nAction")
         ) %>%
-      kableExtra::column_spec(3:4, width = "3.5cm") %>%
       kableExtra::kable_styling(
         latex_options = c(
           "repeat_header",
@@ -406,11 +431,9 @@ for (MEASURE in unique(perf_status_ops_temp$PerformanceMeasure)) {
 
 ```
 
-<br>
+See Appendix for an explanation of how MOSL evaluates Trading Party performance against the standards.
 
-See Appendix for an explanation of how MOSL rates Trading Party performance and consistency against the standards.
-
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 6}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 6, eval = include.consistency}
 
 tryCatch(
   expr = {
@@ -469,7 +492,7 @@ cat(unlist(res), sep = "\n")
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
-metrics.list <- c("MarketMean", "MarketMedian", "MarketTaskVolume")
+metrics.list <- c("MarketMean", "MarketTaskVolume")
 
 for (METRIC in metrics.list) {
 
@@ -498,7 +521,7 @@ for (METRIC in metrics.list) {
         ) %>%
       kableExtra::kable(
         format = "latex", 
-        caption = paste0("Market ", base::gsub("_", x = METRIC, replacement = " "), " (", MEASURE, ")"), 
+        caption = paste0("Market ", base::gsub("Market", x = METRIC, replacement = " "), " (", MEASURE, ")"), 
         linesep = "",
         digits = 1,
         booktabs = TRUE,

@@ -1,5 +1,5 @@
 ---
-title: 'Portfolio Manager Report: `r paste0(TRADING.PARTY.NAME, " (",TRADING.PARTY,")")`'
+title: 'Performance Report: `r paste0(TRADING.PARTY.NAME, " (",TRADING.PARTY,")")`'
 date: "`r format(as.Date(data.period), '%B %Y')`"
 fontsize: 12pt
 output:
@@ -46,9 +46,9 @@ classoption: table
 
 # Appendix
 
-## Full MPS Performance ranking
+`r if (include.full.ranking) { paste0("## Full MPS Performance ranking") }`
 
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 8}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, eval = include.full.ranking}
 
 tryCatch(
   expr = {
@@ -88,9 +88,9 @@ tryCatch(
 
 ```
 
-`r if(nrow(ops_data_clean_temp)>0){paste("## Full OPS Performance ranking")}`
+`r if (include.full.ranking & nrow(ops_data_clean_temp) > 0) { paste("## Full OPS Performance ranking") }`
 
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, eval = nrow(ops_data_clean_temp) > 0}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, eval = (include.full.ranking & nrow(ops_data_clean_temp) > 0)}
 
 tryCatch(
   expr = {
@@ -128,7 +128,7 @@ tryCatch(
 
 ```
 
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, eval = nrow(ops_data_clean_temp) > 0}
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 8, eval = (include.full.ranking & nrow(ops_data_clean_temp) > 0)}
 
 tryCatch(
   expr = {
@@ -166,124 +166,56 @@ tryCatch(
 
 ```
 
-## Grouping details
-
-### MPS
-
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
-MPS_grouping <- dplyr::tibble("Customer Access"=c("MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 5",""), 
-                       "Disconnection/ Reconnection" = c("MPS 6", rep("", 5)),
-                       "Meter Read Submission" = c("MPS 7", "MPS 8", "MPS 9", "MPS 10", "MPS 11", ""),
-                       "Cyclic Meter Reads" = c("MPS 12", "MPS 13", "MPS 14", "MPS 15", "MPS 18", "MPS 19"),
-                       "Transfer Reads" = c("MPS 16", "MPS 17", rep("", 4)))
-
-MPS_grouping%>% 
-  kableExtra::kable(
-    format = "latex", 
-    caption = "Details of MPS Groupings",
-    linesep = "",
-    format.args = list(big.mark = ","),
-    booktabs = TRUE,
-    align = "c"
-    ) %>%
-  kableExtra::kable_styling(
-    font_size = 10,
-    latex_options = c(
-      "repeat_header",
-      "HOLD_position",
-      "striped",
-      position = "center", 
-      full_width = FALSE
-      )
-    ) %>%
-  kableExtra::row_spec(0, bold = TRUE)%>%
-  kableExtra::column_spec(1:ncol(MPS_grouping), width = "2.4cm")
-```
-
-### OPS
-
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
-OPS_grouping <- dplyr::tibble("Metering" = c("OPS B1a", "OPS B3a", "OPS B3b", "OPS B5a", rep("", 4)),
-                       "Supply Check" = c("OPS C1a", "OPS C1b", "OPS C2a", "OPS C3a", "OPS C4a", "OPS C4b", "OPS C5a", "OPS C6a"),
-                       Complaints = c("OPS F5a", "OPS F5b", rep("", 6)),
-                       "Trade Effluent" = c("OPS G2a", "OPS G4a", "OPS G4b", rep("", 5)),
-                       Allowances = c("OPS H1a", rep("", 7)),
-                       "Disconnection/ Reconnection" = c("OPS I1a", "OPS I1b", "OPS I8a", "OPS I8b", rep("", 4)))
-
-OPS_grouping%>% 
-  kableExtra::kable(
-    format = "latex", 
-    caption = "Details of OPS groupings",
-    linesep = "",
-    format.args = list(big.mark = ","),
-    booktabs = TRUE,
-    align = "c"
-    ) %>%
-  kableExtra::kable_styling(
-    font_size = 10,
-    latex_options = c(
-      "repeat_header",
-      "HOLD_position",
-      "striped",
-      position = "center", 
-      full_width = FALSE
-      )
-    ) %>%
-  kableExtra::row_spec(0, bold = TRUE)%>%
-  kableExtra::column_spec(1:ncol(OPS_grouping), width = "2.4cm")
-```
-
 ## Performance Criteria
 
-### Market Performance Standards
+### Market Performance Standards (MPS)
 
-A Trading Party's performance will be flagged when the ratio of on-time task completion to total tasks completed for that MPS falls below the peer mean and peer median level for three consecutive months. "Peer mean" and "peer median" refer, respectively, to the mean and median of all on-time task ratios for every Trading Party in the market. 
+```{r, message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
 
-The following MPS are currently subject to this criterion: MPS 1, MPS 2, MPS 3, MPS 4, MPS 7, MPS 12, MPS 16, MPS 17.
+MPS_IPRP_LIST <- Standards_details %>%
+  dplyr::filter(StandardKey == "MPS", IPRPeligible) %>%
+  dplyr::pull(Standard)
+
+OPS_IPRP_LIST <- Standards_details %>%
+  dplyr::filter(StandardKey == "OPS", IPRPeligible) %>%
+  dplyr::pull(Standard)
+
+```
+
+A Trading Party's performance will be flagged when the ratio of on-time task completion to total tasks completed for that MPS falls below the peer mean level for three consecutive months. "Peer mean" refers to the mean of all on-time task ratios for every Trading Party in the market. 
+
+The following MPS are currently subject to this criterion: `r paste(MPS_IPRP_LIST, collapse = ", ")`.
 
 MPS performance will also be flagged when it is lower than the threshold percentage, set by MOSL. Note that this threshold can change. 
 
-Currently, only MPS 18 is subject to a threshold, of 75%.
+### Operational Performance Standards (OPS)
 
-When evaluating these performance flags, MOSL takes into account other factors, including: performance relative to comparable peers; number of tasks relative to size; and other important Trading Party activities, such as data improvement activity and significant operational changes.
+Performance is flagged when the following measures fall below a threshold for three consecutive months:
 
-Persistently poor performance could lead to the issue being escalated to MOSL's Performance Resolution process through an Initial Performance Rectification Plan (IPRP). Failure to improve over time at this stage could lead to the issue being further escalated to a Performance Rectification Plan (PRP) overseen by MPC and / or Panel.
+* Key Performance Indicator (KPI): ratio of on-time task completion to total tasks completed
+* Additional Performance Indicator (API): ratio of tasks outstanding in time to total tasks outstanding)
 
-### Operational Performance Standards
+Currently, the thresholds are 85% for the KPI and 75% for the API. for the following OPS: `r paste(OPS_IPRP_LIST, collapse = ", ")`.
 
-A Trading Party’s performance will be flagged when the KPI (ratio of on-time task completion to total tasks completed) for that OPS falls below the set threshold for three consecutive months. Similarly, performance will also be flagged when the API (ratio of tasks outstanding in time to total tasks outstanding) for that OPS falls below the set threshold for three consecutive months. Currently, the thresholds are 85% for the KPI and 75% for the API.
+## Evaluation of Performance
 
-The following OPS are currently subject to these criteria: OPS B5a, OPS C1a.
+When evaluating performance flags, MOSL takes into account other factors, including: 
 
-When evaluating these performance flags, MOSL takes into account other factors, including: performance relative to comparable peers; number of tasks relative to size; and other important Trading Party activities, such as data improvement activity and significant operational changes.
+* Performance relative to comparable peers
+* Number of tasks relative to size
+* Other important Trading Party activities (e.g.  data improvement activity and significant operational changes)
 
-Persistently poor performance could lead to the issue being escalated to MOSL’s Performance Resolution process through an Initial Performance Rectification Plan (IPRP). Failure to improve over time at this stage could lead to the issue being further escalated to a Performance Rectification Plan (PRP) overseen by MPC and / or Panel.
-
-## Rating and Categorisation of Performance
-
-As part of its analysis of historical performance, MOSL categorises performance over a 6-month period according to **consistency** and by **rating** absolute performance. Consistency is based on a 6-month rolling standard deviation of performance (whether in relation to a particular standard or aggregated across a group or all standards), with the following classification:
-
-* Less than 1% is "Very Consistent
-* Between 1-2% is "Consistent"
-* Between 2-5% is "Inconsistent"
-* Greater than 5% is "Very Inconsistent"
-
-The performance rating is based on a 6-month rolling mean of performance (whether in relation to a particular standard or aggregated across a group or all standards) and is classified on an absolute scale as follows:
-
-* Greater than 90% is "Very Good"
-* Between 80-90% is "Good"
-* Between 70-80% is "Poor"
-* Less than 70% is "Very Poor"
+Persistently poor performance could lead to the issue being escalated to MOSL's Performance Resolution process through an Initial Performance Rectification Plan (IPRP). Failure to improve over time at this stage could lead to the issue being further escalated to a Performance Rectification Plan (PRP) overseen by the MPC.
 
 ## Categorisation and MOSL Actions
 
-The categorisation of a performance standard or Additional Performance Indicator (API) each period is determined by the following:
+The categorisation of a performance standard or Additional Performance Indicator (API) in each period is determined by the following:
 
-* Whether Performance Rectification is underway (i.e. an IPRP or PRP has been initiated)
+* Whether an IPRP or PRP has been initiated
 * Performance in the previous period
 * MOSL actions in the previous period
 
-A new period begins once the performance data has been processed for the previous period. For example MPS data is processed on the 6th business day of each month and therefore the 6th business day marks the beginning of the period for MPS. Other standards will have different starting points. 
+MPS data is processed on the 6th business day of each month and marks the beginning of the period for MPS. 
 
 ```{r pressure, echo = FALSE, fig.cap = "Diagram of possible states and corresponding MOSL actions", out.width = '100%'}
 

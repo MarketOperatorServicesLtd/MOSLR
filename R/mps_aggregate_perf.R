@@ -14,42 +14,74 @@
 mps_aggregate_perf <- function(
   my.dir = getwd(),
   df = readRDS(paste0(my.dir, "/data/rdata/mps_data_clean.Rda")),
-  tp.details = utils::read.csv(paste0(my.dir, "/data/inputs/tp_details.csv"))
+  tp.details = utils::read.csv(paste0(my.dir, "/data/inputs/tp_details.csv")),
+  spid.counts = utils::read.csv(paste0(my.dir, "/data/inputs/spid_counts.csv"))
   ) {
 
   mps_aggregate_perf <- df %>%
     dplyr::group_by(PerformanceMeasure, Period, Trading.Party.ID) %>%
     dplyr::summarise(
-      Agg_Perf = stats::weighted.mean(Performance, TaskVolume, na.rm = TRUE)
+      Avg_Perf = stats::weighted.mean(Performance, TaskVolume, na.rm = TRUE),
+      TaskVolume = sum(TaskVolume, na.rm = TRUE),
+      OnTimeTasks = sum(OnTimeTasks, na.rm = TRUE)
       ) %>%
     dplyr::ungroup() %>%
-    dplyr::left_join(
-      tp.details,
-      by = c("Trading.Party.ID")
-      ) %>%
+    dplyr::left_join(tp.details, by = c("Trading.Party.ID")) %>%
+    dplyr::left_join(spid.counts, by = c("Trading.Party.ID" = "TradingPartyID")) %>%
     dplyr::arrange(Trading.Party.ID, Period) %>%
     dplyr::group_by(Trading.Party.ID) %>%
     dplyr::mutate(
-      Agg_Perf_roll = zoo::rollapply(Agg_Perf, 6, mean, align = "right", fill = NA)
+      Avg_Perf_roll = zoo::rollapply(Avg_Perf, 6, mean, align = "right", fill = NA),
+      Agg_TaskV_roll = zoo::rollapply(TaskVolume, 6, sum, align = "right", fill = NA),
+      Agg_Comp_roll = zoo::rollapply(OnTimeTasks, 6, sum, align = "right", fill = NA),
+      Agg_Perf_roll = Agg_Comp_roll / Agg_TaskV_roll
       ) %>%
     dplyr::ungroup() %>%
-    tidyr::drop_na(Agg_Perf_roll) %>%
+    tidyr::drop_na(Avg_Perf_roll, Agg_Perf_roll) %>%
     dplyr::group_by(Period) %>%
     dplyr::mutate(
       n_all = dplyr::n(),
       rank_all = rank(-Agg_Perf_roll)
-      ) %>%
+    ) %>%
     dplyr::ungroup() %>%
     dplyr::group_by(Period, tp_type) %>%
     dplyr::mutate(
       n_type = dplyr::n(),
       rank_type = rank(-Agg_Perf_roll)
-      ) %>%
+    ) %>%
     dplyr::ungroup() %>%
     dplyr::group_by(Period, sub_type) %>%
     dplyr::mutate(
       n_subtype = dplyr::n(),
       rank_subtype = rank(-Agg_Perf_roll)
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(
+      LeagueGroup = dplyr::case_when(
+        sub_type == "NAV" & tp_type == "Wholesaler" ~ "NAV Wholesalers",
+        sub_type == "Self-supply" | sub_type == "NAV" ~ "Self Supply Retailers & NAVs",
+        sub_type == "WaSC" ~ "Wholesalers (WaSCs)",
+        sub_type == "WoC" ~ "Wholesalers (WoCs)",
+        TotalSPID >= 5000 ~ "Retailers with > 5k SPIDs",
+        TotalSPID < 5000 ~ "Retailers with < 5k SPIDs",
+        TRUE ~ "Other"
+      ),
+      LeagueGroup = factor(
+        LeagueGroup,
+        levels = c(
+          "Retailers with > 5k SPIDs",
+          "Retailers with < 5k SPIDs",
+          "Self Supply Retailers & NAVs",
+          "Wholesalers (WaSCs)",
+          "Wholesalers (WoCs)",
+          "NAV Wholesalers"
+          )
+        )
+    ) %>%
+    dplyr::group_by(Period, LeagueGroup) %>%
+    dplyr::mutate(
+      n_league = dplyr::n(),
+      rank_league = rank(-Agg_Perf_roll)
     ) %>%
     dplyr::ungroup()
 

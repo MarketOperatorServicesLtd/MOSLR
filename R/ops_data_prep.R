@@ -10,7 +10,6 @@
 #' @param save.output logical
 #' @param ops.details character
 #' @param ops.thresholds character
-#' @param ops.charges character
 #'
 #' @return
 #' @export
@@ -24,7 +23,6 @@ ops_data_prep <- function(
   ops.data = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_data.csv")),
   ops.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")),
   ops.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_thresholds.csv")),
-  ops.charges = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_Charges.csv")),
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   save.output = TRUE
@@ -45,12 +43,26 @@ ops_data_prep <- function(
       TaskCompletion = OnTimeTasksCompleted / TaskVolumeCompleted,
       OutstandingOntime = OnTimeTasksOutstanding / TaskVolumeOutstanding
       ) %>%
-    dplyr::filter(!Standard %in% c("OPS G4a", "OPS G4b"))
+    dplyr::filter(!Standard %in% c(
+      "OPS G4a",
+      "OPS G4b",
+      "OPS A1a",
+      "OPS A2a",
+      "OPS A2b",
+      "OPS A2c",
+      "OPS A3a",
+      "OPS A3b",
+      "OPS A4a"
+      )
+      )
 
   tasks_completed <- ops_data_clean %>%
     dplyr::select(
-      Trading.Party.ID, Period, Standard,
-      TaskCompletion, TaskVolumeCompleted,
+      Trading.Party.ID,
+      Period,
+      Standard,
+      TaskCompletion,
+      TaskVolumeCompleted,
       OnTimeTasksCompleted
       ) %>%
     dplyr::rename(
@@ -58,14 +70,17 @@ ops_data_prep <- function(
       TaskVolume = TaskVolumeCompleted,
       OnTimeTasks = OnTimeTasksCompleted
       ) %>%
-    dplyr::mutate(
-      PerformanceMeasure = "Completed"
+    dplyr::mutate(PerformanceMeasure = "Completed",
+      Charges = (TaskVolume - OnTimeTasks) * 40
       )
 
   tasks_outstanding <- ops_data_clean %>%
     dplyr::select(
-      Trading.Party.ID, Period, Standard,
-      OutstandingOntime, TaskVolumeOutstanding,
+      Trading.Party.ID,
+      Period,
+      Standard,
+      OutstandingOntime,
+      TaskVolumeOutstanding,
       OnTimeTasksOutstanding
       ) %>%
     dplyr::rename(
@@ -74,20 +89,14 @@ ops_data_prep <- function(
       OnTimeTasks = OnTimeTasksOutstanding
       ) %>%
     dplyr::mutate(
-      PerformanceMeasure = "Outstanding"
+      PerformanceMeasure = "Outstanding",
+      Charges = 0
       )
 
   ops_data_clean <- base::rbind(tasks_completed, tasks_outstanding)
 
   ops_thresholds <- ops.thresholds %>%
-    dplyr::mutate(
-      Period = as.Date(Period, format = "%d/%m/%Y")
-      )
-
-  ops.charges <- ops.charges %>%
-    dplyr::mutate(
-      Period = as.Date(Period, format = "%d/%m/%Y")
-      )
+    dplyr::mutate(Period = as.Date(Period, format = "%d/%m/%Y"))
 
 
 # Creating summary --------------------------------------------------------
@@ -102,29 +111,13 @@ ops_data_prep <- function(
     dplyr::ungroup() %>%
     dplyr::arrange(Standard, Period)
 
-  ops_data_clean <-
-    dplyr::left_join(
-      ops_data_clean,
-      ops_summary,
-      by = c("Period", "Standard", "PerformanceMeasure")
-      ) %>%
-    dplyr::left_join(
-      ops_thresholds,
-      by = c("Standard", "Period", "PerformanceMeasure")
-      ) %>%
+  ops_data_clean <- ops_data_clean %>%
+    dplyr::left_join(ops_summary, by = c("Period", "Standard", "PerformanceMeasure")) %>%
+    dplyr::left_join(ops_thresholds, by = c("Standard", "Period", "PerformanceMeasure")) %>%
     dplyr::group_by(Trading.Party.ID, Standard, PerformanceMeasure) %>%
-    dplyr::mutate(
-      Threshold = zoo::na.locf(Threshold, na.rm = FALSE)
-      ) %>%
+    dplyr::mutate(Threshold = zoo::na.locf(Threshold, na.rm = FALSE)) %>%
     dplyr::ungroup() %>%
-    dplyr::left_join(
-      ops.charges,
-      by = c("Trading.Party.ID", "Period", "Standard")
-      ) %>%
-    dplyr::left_join(
-      ops.details,
-      by = c("Standard")
-      ) %>%
+    dplyr::left_join(ops.details, by = c("Standard")) %>%
     dplyr::mutate(
       TaskShare = TaskVolume / MarketTaskVolume,
       BelowPeer = dplyr::if_else (

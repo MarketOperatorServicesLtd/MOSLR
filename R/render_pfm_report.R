@@ -29,13 +29,11 @@ render_PFM_report <- function(
   load.data = TRUE,
   excluded.list = NULL,
   rmd.file = "pfm_report_main.Rmd",
-  output.dir =
-    paste0(
-      my.dir,
-      "/PfmReports/",
-      format(Sys.Date(), "%Y-%m")
-      ),
-  data.period = Sys.Date() %m-% months(1)
+  output.dir = paste0(my.dir, "/PfmReports/", format(Sys.Date(), "%Y-%m")),
+  data.period = Sys.Date() %m-% months(1),
+  include.aggregate = FALSE,
+  include.consistency = FALSE,
+  include.full.ranking = FALSE
   ) {
 
   my_dir <- my.dir
@@ -54,6 +52,7 @@ render_PFM_report <- function(
   if (load.data) {
 
     tp_details <- utils::read.csv(paste0(my.dir, "/data/inputs/tp_details.csv"))
+    spid_counts <- utils::read.csv(paste0(my.dir, "/data/inputs/spid_counts.csv"))
     Standards_details <- utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")) %>%
       dplyr::mutate(Standard = as.character(Standard))
 
@@ -65,8 +64,8 @@ render_PFM_report <- function(
     perf_status_ops <- readRDS(paste0(my.dir, "/data/rdata/perf_status_ops.Rda"))
     ops_summary <- readRDS(paste0(my.dir, "/data/rdata/ops_summary.Rda"))
 
-    mps_aggregate_perf <- MOSLR::mps_aggregate_perf(df = mps_data_clean, tp.details = tp_details)
-    ops_aggregate_perf <- MOSLR::ops_aggregate_perf(df = ops_data_clean, tp.details = tp_details)
+    mps_aggregate_perf <- MOSLR::mps_aggregate_perf(df = mps_data_clean, tp.details = tp_details, spid.counts = spid_counts)
+    ops_aggregate_perf <- MOSLR::ops_aggregate_perf(df = ops_data_clean, tp.details = tp_details, spid.counts = spid_counts)
 
   }
 

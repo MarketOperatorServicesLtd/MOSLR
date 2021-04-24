@@ -59,15 +59,9 @@ mps_create_tracker <- function(
   mps_data_clean <- readRDS(paste0(my.dir, "/data/rdata/mps_data_clean.Rda"))
 
   Rectification_plans <- utils::read.csv(paste0(my.dir, "/data/inputs/Rectification_plans_mps.csv")) %>%
-    dplyr::mutate(
-      Period = as.Date(Period, format = "%d/%m/%Y")
-      ) %>%
-    dplyr::group_by(
-      Trading.Party.ID, Standard
-      ) %>%
-    dplyr::mutate(
-      PlanEndDate = max(Period)
-      ) %>%
+    dplyr::mutate(Period = as.Date(Period, format = "%d/%m/%Y")) %>%
+    dplyr::group_by(Trading.Party.ID, Standard) %>%
+    dplyr::mutate(PlanEndDate = max(Period)) %>%
     dplyr::ungroup()
 
   tracking_sheet <- utils::read.csv(paste0(my.dir, "/data/inputs/tracking_mps.csv")) %>%
@@ -75,28 +69,18 @@ mps_create_tracker <- function(
       Period = as.Date(Period, format = "%d/%m/%Y") %m-% months(-1),
       key = as.factor(paste(Trading.Party.ID, Standard))
       ) %>%
-    dplyr::select(
-      Period, Action, key, Template_Sent, Response_Received_Template
-    )
+    dplyr::select(Period, Action, key, Template_Sent, Response_Received_Template)
 
 
 # Creating monthly tracking sheet -------------------------
 
   monthly_tracking <- mps_data_clean %>%
-    dplyr::left_join(
-      Rectification_plans,
-      by = c("Period", "Standard", "Trading.Party.ID", "PerformanceMeasure")
-      ) %>%
-    dplyr::left_join(
-      tracking_sheet,
-      by = c("Period", "key")
-      ) %>%
+    dplyr::left_join(Rectification_plans, by = c("Period", "Standard", "Trading.Party.ID", "PerformanceMeasure")) %>%
+    dplyr::left_join(tracking_sheet, by = c("Period", "key")) %>%
     dplyr::mutate(
       Action = tolower(Action),
       Delta = Performance - Planned_Perf,
       DeltaQuant = Delta / Planned_Perf,
-      Performance = as.numeric(format(Performance, digits = 3)),
-      Planned_Perf = as.numeric(format(Planned_Perf, digits = 3)),
       Status = dplyr::case_when(
         (DeltaQuant > 0.05) ~ paste0(RectificationType, ": Above plan"),
         (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ paste0(RectificationType, ": On-track"),
