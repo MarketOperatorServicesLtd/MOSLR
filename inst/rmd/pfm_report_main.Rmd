@@ -11,7 +11,7 @@ output:
     fig_caption: true
 header-includes:
 - \usepackage{titling}
-- \pretitle{\begin{center}\LARGE\includegraphics[width=24cm]{mosl_title.png}\\[\bigskipamount]}
+- \pretitle{\begin{center}\LARGE\includegraphics[width = 24cm]{mosl_title.png}\\[\bigskipamount]}
 - \posttitle{\end{center}}
 - \usepackage{xcolor}
 - \usepackage{color}
@@ -27,7 +27,7 @@ header-includes:
 - \pagestyle{fancy}
 - \fancyhf{}
 - \lfoot{MOSL Performance Report}
-- \rhead{\includegraphics[width=6cm]{mosl_header.png}}
+- \rhead{\includegraphics[width = 6cm]{mosl_header.png}}
 - \rfoot{Page \thepage}
 classoption: table
 ---
@@ -70,20 +70,14 @@ tryCatch(
     ggplot2::scale_fill_manual(values = c("#425563", "azure3")) +
     ggplot2::coord_flip() +
     ggplot2::theme_bw() +
-    ggplot2::theme(
-      text = ggplot2::element_text(size = 15)
-      ) +
+    ggplot2::theme(text = ggplot2::element_text(size = 15)) +
     ggplot2::labs(
       title = "Ranking of Overall MPS Performance",
-      subtitle = 
-        paste0(
-          "Rolling 6-month mean of aggregate MPS performance by Trading Party (", 
-          mps_aggregate_perf_temp$tp_type, "s)"
-          ),
-      caption = "Source: MOSL"
-      ) +
-    ggplot2::ylab("") + ggplot2::xlab("")
-  }, error = function(e){}
+      subtitle = paste0("Rolling 6-month mean of aggregate MPS performance by Trading Party (", mps_aggregate_perf_temp$tp_type, "s)"),
+      caption = "Source: MOSL", x = "", y = ""
+      )
+  }, 
+  error = function(e){}
 )
 
 ```
@@ -123,7 +117,8 @@ tryCatch(
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("") + ggplot2::xlab("")
-  }, error = function(e){}
+  }, 
+  error = function(e){}
 )
 
 ```
@@ -155,13 +150,12 @@ tryCatch(
       ) +
     ggplot2::labs(
       title = "Ranking of Overall OPS Performance (Outstanding)",
-      subtitle = 
-        paste0(
-          "Rolling 6-month mean of aggregate OPS performance by Trading Party"),
+      subtitle = "Rolling 6-month mean of aggregate OPS performance by Trading Party",
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("") + ggplot2::xlab("")
-  }, error = function(e){}
+  }, 
+  error = function(e){}
 )
 
 ```
