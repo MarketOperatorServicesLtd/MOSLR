@@ -8,7 +8,6 @@
 #' @param mps.thresholds character
 #' @param csv.outputs character
 #' @param rda.outputs character
-#' @param tp.details character
 #' @param Standards.details character
 #' @param save.output logical
 #'
@@ -24,7 +23,6 @@ mps_data_prep <- function(
   my.dir = getwd(),
   mps.data = utils::read.csv(paste0(my.dir, "/data/inputs/MPS_data.csv")),
   mps.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_thresholds.csv")),
-  tp.details = utils::read.csv(paste0(my.dir, "/data/inputs/tp_details.csv")),
   Standards.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")),
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
