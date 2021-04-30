@@ -5,32 +5,20 @@
 \title{Prepare MPOP report data}
 \usage{
 MPOP_data_prep(
-  df.longunread = NULL,
-  df.vacancy = NULL,
-  tp.details = NULL,
-  longunread.table = F,
-  vacancy.table = F,
-  by = "Retailer",
-  my.dir = getwd(),
-  load.data = F
+  df = NULL,
+  df.tp = NULL,
+  output.table = c("vacancy", "longunread"),
+  by = "Retailer"
 )
 }
 \arguments{
-\item{df.longunread}{dataframe}
+\item{df}{dataframe}
 
-\item{df.vacancy}{dataframe}
+\item{df.tp}{character}
 
-\item{tp.details}{dataframe}
-
-\item{longunread.table}{boolean}
-
-\item{vacancy.table}{boolean}
+\item{output.table}{character}
 
 \item{by}{character}
-
-\item{my.dir}{character}
-
-\item{load.data}{boolean}
 }
 \value{
 
@@ -40,7 +28,5 @@ Prepares data for bubble charts and/or Trading
 Party ranking tables in MPOP reporting
 }
 \examples{
-
-
 
 }

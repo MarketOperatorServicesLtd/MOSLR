@@ -9,7 +9,6 @@ mps_data_prep(
   mps.data = utils::read.csv(paste0(my.dir, "/data/inputs/MPS_data.csv")),
   mps.thresholds = utils::read.csv(paste0(my.dir,
     "/data/inputs/Standards_thresholds.csv")),
-  tp.details = utils::read.csv(paste0(my.dir, "/data/inputs/tp_details.csv")),
   Standards.details = utils::read.csv(paste0(my.dir,
     "/data/inputs/Standards_details.csv")),
   csv.outputs = paste0(my.dir, "/data/outputs"),
@@ -23,8 +22,6 @@ mps_data_prep(
 \item{mps.data}{character}
 
 \item{mps.thresholds}{character}
-
-\item{tp.details}{character}
 
 \item{Standards.details}{character}
 

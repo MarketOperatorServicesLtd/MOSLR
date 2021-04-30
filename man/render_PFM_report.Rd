@@ -12,7 +12,10 @@ render_PFM_report(
   excluded.list = NULL,
   rmd.file = "pfm_report_main.Rmd",
   output.dir = paste0(my.dir, "/PfmReports/", format(Sys.Date(), "\%Y-\%m")),
-  data.period = Sys.Date() \%m-\% months(1)
+  data.period = Sys.Date() \%m-\% months(1),
+  include.aggregate = FALSE,
+  include.consistency = FALSE,
+  include.full.ranking = FALSE
 )
 }
 \arguments{

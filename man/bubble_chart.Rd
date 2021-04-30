@@ -6,28 +6,30 @@
 \usage{
 bubble_chart(
   df = NULL,
-  longunread.graph = F,
-  vacancy.graph = F,
-  by = "Retailer",
-  my.dir = getwd(),
-  prep.data = F,
-  vertical.sep = 0.15
+  vertical.sep = 0.15,
+  title = NULL,
+  subtitle = NULL,
+  caption = NULL,
+  x_lab = NULL,
+  y_lab = NULL
 )
 }
 \arguments{
 \item{df}{dataframe}
 
-\item{longunread.graph}{boolean}
+\item{vertical.sep}{numerical}
 
-\item{vacancy.graph}{boolean}
+\item{title}{character}
 
-\item{by}{character, one of c("Retailer", "Wholesaler", "Pair")}
+\item{subtitle}{character}
+
+\item{caption}{character}
 
 \item{my.dir}{character}
 
-\item{prep.data}{boolean}
+\item{x}{character}
 
-\item{vertical.sep}{numerical}
+\item{y}{character}
 }
 \value{
 A bubble graph for MPOP reporting

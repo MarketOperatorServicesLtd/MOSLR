@@ -10,7 +10,6 @@ ops_data_prep(
   ops.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")),
   ops.thresholds = utils::read.csv(paste0(my.dir,
     "/data/inputs/Standards_thresholds.csv")),
-  ops.charges = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_Charges.csv")),
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   save.output = TRUE
@@ -24,8 +23,6 @@ ops_data_prep(
 \item{ops.details}{character}
 
 \item{ops.thresholds}{character}
-
-\item{ops.charges}{character}
 
 \item{csv.outputs}{character}
 

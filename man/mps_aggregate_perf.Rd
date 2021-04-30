@@ -7,7 +7,8 @@
 mps_aggregate_perf(
   my.dir = getwd(),
   df = readRDS(paste0(my.dir, "/data/rdata/mps_data_clean.Rda")),
-  tp.details = utils::read.csv(paste0(my.dir, "/data/inputs/tp_details.csv"))
+  tp.details = utils::read.csv(paste0(my.dir, "/data/inputs/tp_details.csv")),
+  spid.counts = utils::read.csv(paste0(my.dir, "/data/inputs/spid_counts.csv"))
 )
 }
 \arguments{
