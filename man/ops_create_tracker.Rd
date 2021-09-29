@@ -12,8 +12,8 @@ ops_create_tracker(
   period.only = TRUE,
   save.output = TRUE,
   keep.vars = FALSE,
-  filter.category = c("IPRP: on-track", "Normal monitoring",
-    "Performance flag: 6 month")
+  filter.category = c("IPRP: on-track", "Normal monitoring"),
+  DataBase = TRUE
 )
 }
 \arguments{

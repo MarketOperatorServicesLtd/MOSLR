@@ -24,12 +24,13 @@
 ops_create_tracker <- function(
   period = Sys.Date() %m-% months(1),
   my.dir = getwd(),
+  conf.loc = NULL,
   rda.outputs = paste0(my.dir, "/data/rdata"),
   dir.ops.tracking = paste0(my.dir, "/data/tracking/ops"),
   period.only = TRUE,
   save.output = TRUE,
   keep.vars = FALSE,
-  filter.category = c("IPRP: on-track", "Normal monitoring", "Performance flag: 6 month"),
+  filter.category = c("IPRP: On-track", "PRP: On-track", "IPRP: Above plan", "PRP: Above plan", "Normal monitoring"),
   DataBase = TRUE
 ) {
 
@@ -56,12 +57,25 @@ ops_create_tracker <- function(
   # Importing data ----------------------------------------------------------
 
   if(DataBase){
+    Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
+
+    if(is.null(conf.loc)){
+      err <-  try(conf <- config::get(), TRUE)
+      if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else if( conf.loc == "select"){
+      conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else{
+      conf <- config::get(file = conf.loc)
+    }
+
+
     con <- odbc::dbConnect(odbc::odbc(),
-                           Driver = "SQL Server",
-                           Server = "data-mgmt",
-                           Database = "MOSL_Sandpit",
-                           Port = 1433,
-                           trusted_connection = "True")
+                           Driver = conf$Driver,
+                           Server = conf$Server,
+                           Database = conf$Database,
+                           Port = conf$Port,
+                           trusted_connection = conf$trusted_connection)
+
     ops_data_clean <- dplyr::tbl(con, "PERF_OPSDataClean") %>%
       dplyr::as_tibble(
       ) %>%
@@ -79,16 +93,25 @@ ops_create_tracker <- function(
 
   }
 
-  endpoint_url <- "https://stmosldataanalyticswe.blob.core.windows.net/"
-  sas <- readr::read_file(ifelse(file.exists(paste0(my.dir, "/data/inputs/digitaldata_sas.txt")), paste0(my.dir, "/data/inputs/digitaldata_sas.txt"), choose.files()))
-  bl_endp_key <- AzureStor::storage_endpoint(endpoint = endpoint_url, sas = sas)
+  Sys.setenv(R_CONFIG_ACTIVE = "digitaldata")
+
+  if(is.null(conf.loc)){
+    err <-  try(conf <- config::get(), TRUE)
+    if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else if( conf.loc == "select"){
+    conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else{
+    conf <- config::get(file = conf.loc)
+  }
+
+  bl_endp_key <- AzureStor::storage_endpoint(endpoint = conf$endpoint, sas = conf$sas)
   cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
 
 
 
   IPRP_plans <-
     AzureStor::storage_read_csv(cont,
-      "PerfReports/IPRP_plans_ops.csv"
+      "PerfReports/data/inputs/IPRP_plans_ops.csv"
       ) %>%
     dplyr::mutate(
       Period = as.Date(Period, format = "%d/%m/%Y")
@@ -103,7 +126,7 @@ ops_create_tracker <- function(
 
 
 
-  tracking_sheet <- AzureStor::storage_read_csv(cont, paste0("/PerfReports/tracking_ops.csv"))%>%
+  tracking_sheet <- AzureStor::storage_read_csv(cont, paste0("/PerfReports/data/inputs/tracking_ops.csv"))%>%
     dplyr::mutate(
       Period = as.Date(Period, format = "%d/%m/%Y") %m-% months(-1)
     ) %>%
@@ -212,13 +235,15 @@ ops_create_tracker <- function(
     }
 
   if (save.output) {
+
     if(!DataBase){
-       utils::write.csv(monthly_tracking,
+    utils::write.csv(monthly_tracking,
                      paste0(dir.ops.tracking, "/", format(period, "%Y-%m"), "_monthly-tracking-ops.csv"),
                      row.names = FALSE)
     saveRDS(monthly_tracking,
             file = paste0(rda.outputs, "/monthly_tracking_ops_pre.Rda")
             )
+
     }
 
     AzureStor::storage_write_csv(monthly_tracking,

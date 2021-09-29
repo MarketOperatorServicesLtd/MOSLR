@@ -21,6 +21,7 @@
 
 mps_data_prep <- function(
   my.dir = getwd(),
+  conf.loc = NULL,
   mps.data,
   mps.thresholds,
   Standards.details,
@@ -36,36 +37,56 @@ mps_data_prep <- function(
 
   # Importing raw data ------------------------------------------------------
   if(DataBase){
+    Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
+
+    if(is.null(conf.loc)){
+    err <-  try(conf <- config::get(), TRUE)
+    if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else if( conf.loc == "select"){
+      conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else{
+      conf <- config::get(file = conf.loc)
+    }
+
 
     con <- odbc::dbConnect(odbc::odbc(),
-                   Driver = "SQL Server",
-                   Server = "data-mgmt",
-                   Database = "MOSL_Sandpit",
-                   Port = 1433,
-                   trusted_connection = "True")
+                   Driver = conf$Driver,
+                   Server = conf$Server,
+                   Database = conf$Database,
+                   Port = conf$Port,
+                   trusted_connection = conf$trusted_connection)
 
     mps_data <- dplyr::tbl(con, "PERF_MPSData") %>% dplyr::as_tibble()
 
-    mps_thresholds <- dplyr::tbl(con, "PERF_StandardsThresholds") %>%
-      dplyr::as_tibble() %>%
-      dplyr::mutate(
-        Period = as.Date(Period, format = "%d/%m/%Y")
-      )
-
-    Standards.details <- dplyr::tbl(con, "PERF_StandardsDetails") %>% dplyr::as_tibble()
 
   } else{
     mps_data <- utils::read.csv(paste0(my.dir, "/data/inputs/MPS_data.csv"))
 
-    mps_thresholds <- utils::read.csv(paste0(my.dir, "/data/inputs/Standards_thresholds.csv")) %>%
-      dplyr::mutate(
-        Period = as.Date(Period, format = "%d/%m/%Y"))
 
-    Standards.details <- utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv"))
 
   }
 
 
+  Sys.setenv(R_CONFIG_ACTIVE = "digitaldata")
+
+  if(is.null(conf.loc)){
+    err <-  try(conf <- config::get(), TRUE)
+    if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else if( conf.loc == "select"){
+    conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else{
+    conf <- config::get(file = conf.loc)
+  }
+
+  bl_endp_key <- AzureStor::storage_endpoint(endpoint = conf$endpoint, sas = conf$sas)
+  cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+
+  mps_thresholds <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/Standards_thresholds.csv") %>%
+    dplyr::mutate(
+      Period = as.Date(Period, format = "%d/%m/%Y")
+    )
+
+  Standards.details <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/Standards_details.csv")
 
 
   # Importing and cleaning MPS data -----------------------------------------

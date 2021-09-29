@@ -25,21 +25,18 @@
 
 plot_perf_graphs_all <- function(
   my.dir = getwd(),
+  conf.loc = NULL,
   df.mps = NULL,
   df.ops = NULL,
   load.data = TRUE,
-  output.dir =
-    paste0(
-      my.dir,
-      "/graphs"
-    ),
+  output.dir = paste0(my.dir, "/graphs"),
   run.parallel = FALSE,
   action.points = FALSE,
   mps.graphs = TRUE,
   ops.graphs = TRUE,
   iprp.graphs = TRUE,
   ops.iprp.graphs = TRUE,
-  DataBase = TRUE
+  database = TRUE
 ){
 
   perf_status_mps <- df.mps
@@ -52,12 +49,22 @@ plot_perf_graphs_all <- function(
 
   if(load.data){
     if(DataBase){
+      Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
+      if(is.null(conf.loc)){
+        err <-  try(conf <- config::get(), TRUE)
+        if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+      } else if( conf.loc == "select"){
+        conf <- config::get(file = choose.files(caption = "Select configuration file"))
+      } else{
+        conf <- config::get(file = conf.loc)
+      }
+
       con <- odbc::dbConnect(odbc::odbc(),
-                             Driver = "SQL Server",
-                             Server = "data-mgmt",
-                             Database = "MOSL_Sandpit",
-                             Port = 1433,
-                             trusted_connection = "True")
+                             Driver = conf$Driver,
+                             Server = conf$Server,
+                             Database = conf$Database,
+                             Port = conf$Port,
+                             trusted_connection = conf$trusted_connection)
 
       perf_status_mps <- dplyr::tbl(con, "PERF_MPSPERFStatus") %>%
         dplyr::as_tibble()  %>%
@@ -66,20 +73,31 @@ plot_perf_graphs_all <- function(
         dplyr::as_tibble()  %>%
         dplyr::mutate(Period = as.Date(Period),
                       Details = iconv(Details),
-                      Context = iconv(Context))
+                      Context = iconv(Context),
+                      key = as.factor(paste(Trading.Party.ID, Standard)))
       odbc::dbDisconnect(con)
     }else{
       perf_status_mps <- readRDS(paste0(my.dir, "/data/rdata/perf_status_mps.Rda"))%>%
         dplyr::filter(TaskVolume > 0)
       perf_status_ops <- readRDS(paste0(my.dir, "/data/rdata/perf_status_ops.Rda"))%>%
-        dplyr::filter(TaskVolume > 0)
+        dplyr::filter(TaskVolume > 0) %>%
+        mutate(key = as.factor(paste(Trading.Party.ID, Standard)))
     }
 
   }
 
-  endpoint_url <- "https://stmosldataanalyticswe.blob.core.windows.net/"
-  sas <- readr::read_file(ifelse(file.exists(paste0(my.dir, "/data/inputs/digitaldata_sas.txt")), paste0(my.dir, "/data/inputs/digitaldata_sas.txt"), choose.files()))
-  bl_endp_key <- AzureStor::storage_endpoint(endpoint = endpoint_url, sas = sas)
+  Sys.setenv(R_CONFIG_ACTIVE = "digitaldata")
+
+  if(is.null(conf.loc)){
+    err <-  try(conf <- config::get(), TRUE)
+    if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else if( conf.loc == "select"){
+    conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else{
+    conf <- config::get(file = conf.loc)
+  }
+
+  bl_endp_key <- AzureStor::storage_endpoint(endpoint = conf$endpoint, sas = conf$sas)
   cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
 
 
@@ -127,7 +145,7 @@ plot_perf_graphs_all <- function(
                   graph.title = paste(TP, standard),
                   include.iprp = on.Rectification,
                   action.points = action.points
-                )+
+                )%>%
                   ggplot2::ggsave(file = paste0(output.dir, "/MPS/", paste(TP, standard), ".png"))
 
                 AzureStor::storage_upload(cont,
@@ -191,7 +209,7 @@ plot_perf_graphs_all <- function(
                                  graph.title = paste(TP, standard, "KPI"),
                                  include.iprp = on.iprp.KPI,
                                  action.points = action.points
-                               )+
+                               )%>%
                                  ggplot2::ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " KPI.png"))
                                AzureStor::storage_upload(cont,
                                                          paste0(output.dir, "/OPS/", paste(TP, standard), " KPI.png"),
@@ -211,7 +229,7 @@ plot_perf_graphs_all <- function(
                                  graph.title = paste(TP, standard, "API"),
                                  include.iprp = on.iprp.API,
                                  action.points = action.points
-                               )+
+                               )%>%
                                  ggplot2::ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " API.png"))
 
                                AzureStor::storage_upload(cont,
@@ -226,7 +244,7 @@ plot_perf_graphs_all <- function(
 
                            tryCatch(
                              expr = {
-                               MOSLR::plot_perf_graph(
+                               myplot <- MOSLR::plot_perf_graph(
                                  df = plot_data_OPS,
                                  trading.party = TP,
                                  standard = standard,
@@ -234,8 +252,8 @@ plot_perf_graphs_all <- function(
                                  include.iprp = on.iprp,
                                  action.points = action.points
                                )+
-                                 ggplot2::facet_wrap(~PerformanceMeasure)+
-                                 ggplot2::ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), ".png"), width = 12)
+                                 ggplot2::facet_wrap(~PerformanceMeasure)
+                                 ggplot2::ggsave(myplot, file = paste0(output.dir, "/OPS/", paste(TP, standard), ".png"), width = 12)
 
                                AzureStor::storage_upload(cont,
                                                          paste0(output.dir, "/OPS/", paste(TP, standard), ".png"),
@@ -272,7 +290,7 @@ plot_perf_graphs_all <- function(
                                graph.title = iprp.key,
                                include.iprp = T,
                                action.points = action.points
-                             )+
+                             )%>%
                                ggplot2::ggsave(file = paste0(output.dir,"/IPRP/", iprp.key, ".png"))
 
                              AzureStor::storage_upload(cont,
@@ -306,7 +324,7 @@ plot_perf_graphs_all <- function(
 
                          tryCatch(
                            expr = {
-                             MOSLR::plot_perf_graph(
+                             myplot <- MOSLR::plot_perf_graph(
                                df = plot_data_OPS_iprp,
                                trading.party = TP ,
                                standard = standard,
@@ -314,8 +332,8 @@ plot_perf_graphs_all <- function(
                                include.iprp = T,
                                action.points = action.points
                              )+
-                               ggplot2::facet_wrap(~PerformanceMeasure)+
-                               ggplot2::ggsave(file = paste0(output.dir, "/OPS.IPRP/", paste(TP, standard), ".png"), width = 12)
+                               ggplot2::facet_wrap(~PerformanceMeasure)
+                               ggplot2::ggsave(myplot, file = paste0(output.dir, "/OPS.IPRP/", paste(TP, standard), ".png"), width = 12)
 
                              AzureStor::storage_upload(cont,
                                                        paste0(output.dir, "/OPS.IPRP/", paste(TP, standard), ".png"),
@@ -366,7 +384,7 @@ plot_perf_graphs_all <- function(
                 graph.title = paste(TP, standard),
                 include.iprp = on.Rectification,
                 action.points = action.points
-              )+
+              ) %>%
                 ggplot2::ggsave(file = paste0(output.dir,"/MPS/", paste(TP, standard), ".png"))
 
               AzureStor::storage_upload(cont,
@@ -426,7 +444,7 @@ plot_perf_graphs_all <- function(
                 graph.title = paste(TP, standard, "KPI"),
                 include.iprp = on.iprp.KPI,
                 action.points = action.points
-              )+
+              )%>%
                 ggplot2::ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " KPI.png"))
               AzureStor::storage_upload(cont,
                                         paste0(output.dir, "/OPS/", paste(TP, standard), " KPI.png"),
@@ -446,7 +464,7 @@ plot_perf_graphs_all <- function(
                 graph.title = paste(TP, standard, "API"),
                 include.iprp = on.iprp.API,
                 action.points = action.points
-              )+
+              )%>%
                 ggplot2::ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), " API.png"))
 
               AzureStor::storage_upload(cont,
@@ -460,7 +478,7 @@ plot_perf_graphs_all <- function(
 
           tryCatch(
             expr = {
-              MOSLR::plot_perf_graph(
+              myplot <- MOSLR::plot_perf_graph(
                 df = plot_data_OPS,
                 trading.party = TP,
                 standard = standard,
@@ -468,8 +486,8 @@ plot_perf_graphs_all <- function(
                 include.iprp = on.iprp,
                 action.points = action.points
               )+
-                ggplot2::facet_wrap(~PerformanceMeasure)+
-                ggplot2::ggsave(file = paste0(output.dir, "/OPS/", paste(TP, standard), ".png"), width = 12)
+                ggplot2::facet_wrap(~PerformanceMeasure)
+                ggplot2::ggsave(myplot, file = paste0(output.dir, "/OPS/", paste(TP, standard), ".png"), width = 12)
 
               AzureStor::storage_upload(cont,
                                         paste0(output.dir, "/OPS/", paste(TP, standard), ".png"),
@@ -505,7 +523,7 @@ plot_perf_graphs_all <- function(
               graph.title = iprp.key,
               include.iprp = T,
               action.points = action.points
-            )+
+            )%>%
               ggplot2::ggsave(file = paste0(output.dir,"/IPRP/", iprp.key, ".png"))
 
             AzureStor::storage_upload(cont,
@@ -537,7 +555,7 @@ plot_perf_graphs_all <- function(
 
         tryCatch(
           expr = {
-            MOSLR::plot_perf_graph(
+            myplot <- MOSLR::plot_perf_graph(
               df = plot_data_OPS_iprp,
               trading.party = TP ,
               standard = standard,
@@ -545,8 +563,8 @@ plot_perf_graphs_all <- function(
               include.iprp = T,
               action.points = action.points
             )+
-              ggplot2::facet_wrap(~PerformanceMeasure)+
-              ggplot2::ggsave(file = paste0(output.dir, "/OPS.IPRP/", paste(TP, standard), ".png"), width = 12)
+              ggplot2::facet_wrap(~PerformanceMeasure)
+              ggplot2::ggsave(myplot, file = paste0(output.dir, "/OPS.IPRP/", paste(TP, standard), ".png"), width = 12)
 
             AzureStor::storage_upload(cont,
                                       paste0(output.dir, "/OPS.IPRP/", paste(TP, standard), ".png"),

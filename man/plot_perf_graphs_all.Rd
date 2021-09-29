@@ -10,11 +10,21 @@ plot_perf_graphs_all(
   df.ops = NULL,
   load.data = TRUE,
   output.dir = paste0(my.dir, "/graphs"),
-  run.parallel = FALSE
+  run.parallel = FALSE,
+  action.points = FALSE,
+  mps.graphs = TRUE,
+  ops.graphs = TRUE,
+  iprp.graphs = TRUE,
+  ops.iprp.graphs = TRUE,
+  DataBase = TRUE
 )
 }
 \arguments{
 \item{my.dir}{character}
+
+\item{df.mps}{dataframe}
+
+\item{df.ops}{dataframe}
 
 \item{load.data}{boolean}
 
@@ -22,7 +32,17 @@ plot_perf_graphs_all(
 
 \item{run.parallel}{boolean}
 
-\item{df}{dataframe}
+\item{action.points}{boolean}
+
+\item{mps.graphs}{boolean}
+
+\item{ops.graphs}{boolean}
+
+\item{iprp.graphs}{boolean}
+
+\item{ops.iprp.graphs}{boolean}
+
+\item{DataBase}{boolean}
 }
 \value{
 

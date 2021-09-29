@@ -13,7 +13,8 @@ mps_process_tracker(
   save.dir.csv = paste0(my.dir, "/data/outputs/perf_status_", tolower(StandardKey),
     ".csv"),
   keep.vars = TRUE,
-  period.create = Sys.Date() \%m-\% months(1)
+  period.create = Sys.Date() \%m-\% months(1),
+  DataBase = TRUE
 )
 }
 \arguments{

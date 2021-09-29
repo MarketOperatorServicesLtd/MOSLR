@@ -15,7 +15,8 @@ render_PFM_report(
   data.period = Sys.Date() \%m-\% months(1),
   include.aggregate = FALSE,
   include.consistency = FALSE,
-  include.full.ranking = FALSE
+  include.full.ranking = FALSE,
+  DataBase = TRUE
 )
 }
 \arguments{

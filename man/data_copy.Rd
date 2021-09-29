@@ -6,10 +6,9 @@
 \usage{
 data_copy(
   my.dir = getwd(),
-  server.from = "data-mgmt3",
-  server.to = "data-mgmt",
-  db.to = "MOSL_Sandpit",
-  query = "",
+  conf.from = "datamgmt3",
+  conf.to = "sandpit",
+  query = NULL,
   saveDB = TRUE,
   output.table = "PERF_OPSData",
   overwrite = TRUE,
@@ -20,12 +19,6 @@ data_copy(
 }
 \arguments{
 \item{my.dir}{working directory}
-
-\item{server.from}{server name for the source data}
-
-\item{server.to}{server name to where data is copied to}
-
-\item{db.to}{database name to where data is copied to}
 
 \item{query}{SQL query that gets the source data}
 
@@ -40,6 +33,12 @@ data_copy(
 \item{save.csv}{should a csv file be saved}
 
 \item{csv.file}{name of the csv file}
+
+\item{server.from}{server name for the source data}
+
+\item{server.to}{server name to where data is copied to}
+
+\item{db.to}{database name to where data is copied to}
 }
 \value{
 

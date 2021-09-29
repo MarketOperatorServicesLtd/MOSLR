@@ -23,9 +23,9 @@
 #'
 data_copy <- function(
   my.dir = getwd(),
-  server.from = "data-mgmt3",
-  server.to = "data-mgmt",
-  db.to = "MOSL_Sandpit",
+  conf.loc = NULL,
+  conf.from = "datamgmt3",
+  conf.to = "sandpit",
   query = NULL,
   saveDB = TRUE,
   output.table = "PERF_OPSData",
@@ -36,39 +36,30 @@ data_copy <- function(
 ) {
 
   if(is.null(query)){
-    query <- "SELECT  tp.TradingPartyName as [Trading.Party.ID]
-      , sub.Period
-	    , x.Standard
-      , x.TasksStartedWithinPeriod
-      , x.TasksCompletedWithinPeriod
-      , x.TasksCompletedWithinTime
-      , x.TasksCompletedPermittedDeferral
-      , x.TasksCompletedExtremelyLate
-      , x.TasksRejectedWithinPeriod
-      , x.TasksOutstandingEndPeriod
-      , x.TasksOutstandingWithinTime
-      , x.TasksOutstandingOutsideTime
-      , x.TasksOutstandingOutsideTimeExtremelyLate
-FROM [MOSL_MarketPerformance].[dbo].[OPSPerformance] x
-
-RIGHT JOIN [MOSL_MarketPerformance].[dbo].[vwOPSLatestValidSubmissions] sub
-	ON x.SubmissionID = sub.SubmissionID
-
-RIGHT JOIN [BatchTransactionServer].[dbo].[TradingParties] tp
-	ON sub.TradingPartyID = tp.TradingPartyID
-
-WHERE LEFT(x.Standard, 5) <> 'OPS A' AND
-	(x.TasksStartedWithinPeriod + x.TasksCompletedWithinPeriod
-	+ x.TasksRejectedWithinPeriod + x.TasksOutstandingEndPeriod) <> 0
-	AND tp.TradingPartyName <> 'MOSLTEST-W'
-	AND Period >= '2019-04-01'"
+    query <- readr::read_file(ifelse(
+      file.exists(paste0(my.dir, "/data/inputs/OPSquery.txt")),
+      paste0(my.dir, "/data/inputs/OPSquery.txt"),
+      choose.files(caption = "Select file with the OPS query")))
   }
 
+
+  Sys.setenv(R_CONFIG_ACTIVE = conf.from)
+
+  if(is.null(conf.loc)){
+    err <-  try(conf <- config::get(), TRUE)
+    if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else if( conf.loc == "select"){
+    conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else{
+    conf <- config::get(file = conf.loc)
+  }
+
+
   con.from <- odbc::dbConnect(odbc::odbc(),
-                              Driver = "SQL Server",
-                              Server = server.from,
-                              Port = 1433,
-                              trusted_connection="True")
+                         Driver = conf$Driver,
+                         Server = conf$Server,
+                         Port = conf$Port,
+                         trusted_connection = conf$trusted_connection)
 
   ops.data <- odbc::dbGetQuery(con.from, query)
 
@@ -77,12 +68,19 @@ WHERE LEFT(x.Standard, 5) <> 'OPS A' AND
 
   if(saveDB){
 
+    Sys.setenv(R_CONFIG_ACTIVE = conf.to)
+    conf <- config::get(file = ifelse(
+      file.exists(paste0(my.dir, "/data/inputs/config.yml")),
+      paste0(my.dir, "/data/inputs/config.yml"),
+      choose.files(caption = "Select configuration file")))
+
     con.to <- odbc::dbConnect(odbc::odbc(),
-                              Driver = "SQL Server",
-                              Server = server.to,
-                              Database = db.to,
-                              Port = 1433,
-                              trusted_connection="True")
+                           Driver = conf$Driver,
+                           Server = conf$Server,
+                           Database = conf$Database,
+                           Port = conf$Port,
+                           trusted_connection = conf$trusted_connection)
+
 
     odbc::dbWriteTable(con.to, output.table, ops.data, overwrite = overwrite, append = append)
 

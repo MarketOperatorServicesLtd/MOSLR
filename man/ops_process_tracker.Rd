@@ -10,7 +10,8 @@ ops_process_tracker(
   save.dir.rds = paste0(my.dir, "/data/rdata/perf_status_ops.Rda"),
   save.dir.csv = paste0(my.dir, "/data/outputs/perf_status_ops.csv"),
   keep.vars = TRUE,
-  period.create = Sys.Date() \%m-\% months(1)
+  period.create = Sys.Date() \%m-\% months(1),
+  DataBase = TRUE
 )
 }
 \arguments{

@@ -21,9 +21,10 @@
 
 ops_data_prep <- function(
   my.dir = getwd(),
-  ops.data = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_data.csv")),
-  ops.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")),
-  ops.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_thresholds.csv")),
+  conf.loc = NULL,
+  ops.data,
+  ops.details,
+  ops.thresholds,
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   save.output = TRUE,
@@ -35,27 +36,61 @@ ops_data_prep <- function(
 
   if(DataBase) {
 
-    con <- odbc::dbConnect(odbc::odbc(),
-                         Driver = "SQL Server",
-                         Server = "data-mgmt",
-                         Database = "MOSL_Sandpit",
-                         Port = 1433,
-                         trusted_connection = "True")
+    Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
 
-    ops.data <- MOSLR::data_copy()
-    ops.details <- dplyr::tbl(con, "PERF_StandardsDetails") %>%
-      dplyr::as_tibble() %>%
-      dplyr::mutate(
-        Details = iconv(Details),
-        Context = iconv(Context)
-        )
-    ops.thresholds <- dplyr::tbl(con, "PERF_StandardsThresholds") %>% dplyr::as_tibble()
+    if(is.null(conf.loc)){
+      err <-  try(conf <- config::get(), TRUE)
+      if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else if( conf.loc == "select"){
+      conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else{
+      conf <- config::get(file = conf.loc)
+    }
+
+
+    con <- odbc::dbConnect(odbc::odbc(),
+                           Driver = conf$Driver,
+                           Server = conf$Server,
+                           Database = conf$Database,
+                           Port = conf$Port,
+                           trusted_connection = conf$trusted_connection)
+
+    ops.data <- MOSLR::data_copy(my.dir = my.dir, conf.loc = conf.loc)
+
 
   } else {
       ops.data <- utils::read.csv(paste0(my.dir, "/data/inputs/OPS_data.csv"))
-      ops.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv"))
-      ops.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_thresholds.csv"))
     }
+
+
+
+
+  Sys.setenv(R_CONFIG_ACTIVE = "digitaldata")
+
+  if(is.null(conf.loc)){
+    err <-  try(conf <- config::get(), TRUE)
+    if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else if( conf.loc == "select"){
+    conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else{
+    conf <- config::get(file = conf.loc)
+  }
+
+
+  bl_endp_key <- AzureStor::storage_endpoint(endpoint = conf$endpoint, sas = conf$sas)
+  cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+
+  ops.thresholds <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/Standards_thresholds.csv") %>%
+    dplyr::mutate(
+      Period = as.Date(Period, format = "%d/%m/%Y")
+    )
+
+  ops.details <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/Standards_details.csv") %>%
+    dplyr::mutate(
+      Details = iconv(Details),
+      Context = iconv(Context)
+    )
+
 
 
   # Cleaning data -----------------------------
@@ -180,6 +215,7 @@ ops_data_prep <- function(
     utils::write.csv(ops_data_clean, paste0(csv.outputs, "/ops_data_clean.csv"))
     saveRDS(ops_data_clean, file = paste0(rda.outputs, "/ops_data_clean.Rda"))
     }
+
   }
 
   if(DataBase) odbc::dbDisconnect(con)

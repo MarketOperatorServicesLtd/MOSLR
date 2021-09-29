@@ -6,6 +6,21 @@ As of `r format(data.period, "%B-%Y")`, MOSL were monitoring `r SHORT.NAME`'s pe
 
 * `r paste(unique(perf_status_api_temp$PerformanceMeasure), collapse = " and ")`
 
+The current APIs are
+
+\begin{enumerate}
+\item GIS Issues: The proportion of meters that have no verifiable issues with their GIS coordinates. The issues currently measured are:
+\begin{itemize}
+\item >20 meters stacked: Marked as an issue when 20 or more meters are marked to be in a $10cm\times 10cm$ area
+\item UPRN/Postocde centre: Marked as an issue when the GIS coordinates match exactly with the UPRN/Postcode centre coordinates
+\item Far from UPRN/Postcode centre: Marked as an issue when the GIS coordinates are more than 1km away from the UPRN/Postcode centre coordinates
+\end{itemize}
+\item UPRN Completeness: The proportion of premises that have a Unique Property Reference Number (UPRN)
+\item VOA Completeness: The proportion of premises that have a Valuation Office Agency (VOA) Billing Authority Reference Number
+\end{enumerate}
+
+For more information on the data items mentioned, see [$\color{blue}{\text{\bf here}}$](https://mosl.co.uk/document/market-codes/3802-csd-0301-v14-0/file)
+
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5, eval = include.aggregate}
 
 tryCatch(

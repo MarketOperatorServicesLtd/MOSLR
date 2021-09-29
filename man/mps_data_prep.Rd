@@ -6,14 +6,13 @@
 \usage{
 mps_data_prep(
   my.dir = getwd(),
-  mps.data = utils::read.csv(paste0(my.dir, "/data/inputs/MPS_data.csv")),
-  mps.thresholds = utils::read.csv(paste0(my.dir,
-    "/data/inputs/Standards_thresholds.csv")),
-  Standards.details = utils::read.csv(paste0(my.dir,
-    "/data/inputs/Standards_details.csv")),
+  mps.data,
+  mps.thresholds,
+  Standards.details,
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
-  save.output = TRUE
+  save.output = TRUE,
+  DataBase = TRUE
 )
 }
 \arguments{

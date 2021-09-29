@@ -22,6 +22,7 @@
 
 ops_process_tracker <- function(
   my.dir = getwd(),
+  conf.loc = NULL,
   save.output = TRUE,
   save.dir.rds = paste0(my.dir, "/data/rdata/perf_status_ops.Rda"),
   save.dir.csv = paste0(my.dir, "/data/outputs/perf_status_ops.csv"),
@@ -47,12 +48,24 @@ ops_process_tracker <- function(
   }
 
   if(DataBase){
+    Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
+
+    if(is.null(conf.loc)){
+      err <-  try(conf <- config::get(), TRUE)
+      if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else if( conf.loc == "select"){
+      conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else{
+      conf <- config::get(file = conf.loc)
+    }
+
+
     con <- odbc::dbConnect(odbc::odbc(),
-                           Driver = "SQL Server",
-                           Server = "data-mgmt",
-                           Database = "MOSL_Sandpit",
-                           Port = 1433,
-                           trusted_connection = "True")
+                           Driver = conf$Driver,
+                           Server = conf$Server,
+                           Database = conf$Database,
+                           Port = conf$Port,
+                           trusted_connection = conf$trusted_connection)
   }
 
 
@@ -76,16 +89,25 @@ ops_process_tracker <- function(
       -Action, - Rationale, -PFM_Commentary, -Template_Sent, -Response_Received_Template
       )
 
-    endpoint_url <- "https://stmosldataanalyticswe.blob.core.windows.net/"
-    sas <- readr::read_file(ifelse(file.exists(paste0(my.dir, "/data/inputs/digitaldata_sas.txt")), paste0(my.dir, "/data/inputs/digitaldata_sas.txt"), choose.files()))
-    bl_endp_key <- AzureStor::storage_endpoint(endpoint = endpoint_url, sas = sas)
-    cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+  Sys.setenv(R_CONFIG_ACTIVE = "digitaldata")
 
-    monthly_tracking_post <- AzureStor::storage_read_csv(cont, paste0("/PerfReports/tracking_ops.csv")) %>%
+  if(is.null(conf.loc)){
+    err <-  try(conf <- config::get(), TRUE)
+    if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else if( conf.loc == "select"){
+    conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else{
+    conf <- config::get(file = conf.loc)
+  }
+
+  bl_endp_key <- AzureStor::storage_endpoint(endpoint = conf$endpoint, sas = conf$sas)
+  cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+
+    monthly_tracking_post <- AzureStor::storage_read_csv(cont, paste0("/PerfReports/data/inputs/tracking_ops.csv")) %>%
       dplyr::mutate(
         Period = as.Date(Period, format = "%d/%m/%Y"),
-        Rationale = as.character(Rationale),
-        PFM_Commentary = as.character(PFM_Commentary)
+        Rationale = as.character(iconv(Rationale)),
+        PFM_Commentary = as.character(iconv(PFM_Commentary))
       ) %>%
       dplyr::select(
         Period, Trading.Party.ID, Standard, PerformanceMeasure, Action,
@@ -93,7 +115,7 @@ ops_process_tracker <- function(
       )
 
 
-  saveRDS(monthly_tracking_post, paste0(my.dir, "/data/rdata/monthly_tracking_ops_post.Rda"))
+ # saveRDS(monthly_tracking_post, paste0(my.dir, "/data/rdata/monthly_tracking_ops_post.Rda"))
 
 
   # Full Joining IPRP status and ops tracking ----------------------------------
@@ -145,7 +167,7 @@ ops_process_tracker <- function(
     } else{
       utils::write.csv(perf_status_ops, save.dir.csv, row.names = FALSE)
       saveRDS(perf_status_ops, save.dir.rds)
-    }
+ }
   }
   if(DataBase) odbc::dbDisconnect(con)
   invisible(perf_status_ops)

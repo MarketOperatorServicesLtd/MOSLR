@@ -24,6 +24,7 @@
 
 render_PFM_report <- function(
   my.dir = getwd(),
+  conf.loc = NULL,
   tp.list = NULL,
   prep.data = TRUE,
   load.data = TRUE,
@@ -54,12 +55,24 @@ render_PFM_report <- function(
   if (load.data) {
 
     if(DataBase){
+      Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
+
+      if(is.null(conf.loc)){
+        err <-  try(conf <- config::get(), TRUE)
+        if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+      } else if( conf.loc == "select"){
+        conf <- config::get(file = choose.files(caption = "Select configuration file"))
+      } else{
+        conf <- config::get(file = conf.loc)
+      }
+
+
       con <- odbc::dbConnect(odbc::odbc(),
-                             Driver = "SQL Server",
-                             Server = "data-mgmt",
-                             Database = "MOSL_Sandpit",
-                             Port = 1433,
-                             trusted_connection = "True")
+                             Driver = conf$Driver,
+                             Server = conf$Server,
+                             Database = conf$Database,
+                             Port = conf$Port,
+                             trusted_connection = conf$trusted_connection)
 
       tp_details <- dplyr::tbl(con, "PERF_TPDetails") %>% dplyr::as_tibble()
       spid_counts <- dplyr::tbl(con, "PERF_SPIDCounts") %>% dplyr::as_tibble()
@@ -180,10 +193,19 @@ render_PFM_report <- function(
   }
 
 
-    endpoint_url <- "https://stmosldataanalyticswe.blob.core.windows.net/"
-    sas <- readr::read_file(ifelse(file.exists(paste0(my.dir, "/data/inputs/digitaldata_sas.txt")), paste0(my.dir, "/data/inputs/digitaldata_sas.txt"), choose.files()))
-    bl_endp_key <- AzureStor::storage_endpoint(endpoint = endpoint_url, sas = sas)
-    cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+  Sys.setenv(R_CONFIG_ACTIVE = "digitaldata")
+
+  if(is.null(conf.loc)){
+    err <-  try(conf <- config::get(), TRUE)
+    if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else if( conf.loc == "select"){
+    conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else{
+    conf <- config::get(file = conf.loc)
+  }
+
+  bl_endp_key <- AzureStor::storage_endpoint(endpoint = conf$endpoint, sas = conf$sas)
+  cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
 
 
 
@@ -278,7 +300,7 @@ render_PFM_report <- function(
 
         AzureStor::storage_upload(cont,
                                   paste0(output.dir, "/", TRADING.PARTY, "_performance-report_", format(Sys.Date(), "%Y-%m"), ".pdf"),
-                                  paste0("PerfReports/Reports/",TRADING.PARTY, "/", TRADING.PARTY, "_performance-report_", format(Sys.Date(), "%Y-%m"), ".pdf"))
+                                  paste0("PerfReports/Reports/",format(Sys.Date(), "%Y-%m"), "/", TRADING.PARTY, "_performance-report_", format(Sys.Date(), "%Y-%m"), ".pdf"))
 
       },
 

@@ -6,13 +6,13 @@
 \usage{
 ops_data_prep(
   my.dir = getwd(),
-  ops.data = utils::read.csv(paste0(my.dir, "/data/inputs/OPS_data.csv")),
-  ops.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")),
-  ops.thresholds = utils::read.csv(paste0(my.dir,
-    "/data/inputs/Standards_thresholds.csv")),
+  ops.data,
+  ops.details,
+  ops.thresholds,
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
-  save.output = TRUE
+  save.output = TRUE,
+  DataBase = TRUE
 )
 }
 \arguments{
@@ -28,7 +28,9 @@ ops_data_prep(
 
 \item{rda.outputs}{character}
 
-\item{save.output}{logical}
+\item{save.output}{boolean}
+
+\item{DataBase}{boolean}
 }
 \value{
 
