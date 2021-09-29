@@ -7,8 +7,11 @@
 mps_process_tracker(
   my.dir = getwd(),
   save.output = TRUE,
-  save.dir.rds = paste0(my.dir, "/data/rdata/perf_status_mps.Rda"),
-  save.dir.csv = paste0(my.dir, "/data/outputs/perf_status_mps.csv"),
+  StandardKey = "MPS",
+  save.dir.rds = paste0(my.dir, "/data/rdata/perf_status_", tolower(StandardKey),
+    ".Rda"),
+  save.dir.csv = paste0(my.dir, "/data/outputs/perf_status_", tolower(StandardKey),
+    ".csv"),
   keep.vars = TRUE,
   period.create = Sys.Date() \%m-\% months(1)
 )

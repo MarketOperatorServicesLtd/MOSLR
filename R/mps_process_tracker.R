@@ -23,12 +23,18 @@
 mps_process_tracker <- function(
   my.dir = getwd(),
   save.output = TRUE,
-  save.dir.rds = paste0(my.dir, "/data/rdata/perf_status_mps.Rda"),
-  save.dir.csv = paste0(my.dir, "/data/outputs/perf_status_mps.csv"),
+  StandardKey = "MPS",
+  save.dir.rds = paste0(my.dir, "/data/rdata/perf_status_", tolower(StandardKey), ".Rda"),
+  save.dir.csv = paste0(my.dir, "/data/outputs/perf_status_", tolower(StandardKey), ".csv"),
   keep.vars = TRUE,
-  period.create = Sys.Date() %m-% months(1)
+  period.create = Sys.Date() %m-% months(1),
+  DataBase = TRUE
   ) {
 
+
+  if(!StandardKey %in% c('MPS', 'API')){
+    stop("Variable StandardKey has to be either 'MPS' or 'API'")
+  }
 
 # Setting parameters ------------------------------------------------------
 
@@ -39,12 +45,21 @@ mps_process_tracker <- function(
       c(
         "Period", "SecondaryCategory", "Trading.Party.ID", "Standard", "Action",
         "Rationale", "PFM_Commentary", "PerfFlag3m", "PerfFlag6m",
-        "ActiveIPRP", "IPRPend", "MilestoneFlag", "Pending", "UnderReview",
-        "OnWatchIPRPend",  "OnWatch", "Consistency", "PerfRating", "IPRPeligible",
+        "ActiveIPRP", "ActivePRP", "IPRPend", "PRPend", "MilestoneFlag", "Pending", "UnderReview",
+        "OnWatchRectificationEnd",  "OnWatch", "Consistency", "PerfRating", "IPRPeligible",
         "CumWatch", "CumIPRP", "CumResubmit", "CumEscalate", "CumExtend",
         "PerformanceMeasure"
       )
   }
+
+  if(DataBase){
+    con <- odbc::dbConnect(odbc::odbc(),
+                           Driver = "SQL Server",
+                           Server = "data-mgmt",
+                           Database = "MOSL_Sandpit",
+                           Port = 1433,
+                           trusted_connection = "True")
+    }
 
 
 # Importing data ----------------------------------------------------------
@@ -60,29 +75,34 @@ mps_process_tracker <- function(
       period.only = FALSE,
       save.output = FALSE,
       keep.vars = TRUE,
-      filter.category = NULL
+      filter.category = NULL,
+      StandardKey = StandardKey,
+      DataBase = DataBase
       ) %>%
     dplyr::select(
       -Action, - Rationale, -PFM_Commentary, -Template_Sent, -Response_Received_Template
       )
 
-  monthly_tracking_post <- utils::read.csv(paste0(my.dir,"/data/inputs/tracking_mps.csv")) %>%
+  endpoint_url <- "https://stmosldataanalyticswe.blob.core.windows.net/"
+  sas <- readr::read_file(ifelse(file.exists(paste0(my.dir, "/data/inputs/digitaldata_sas.txt")), paste0(my.dir, "/data/inputs/digitaldata_sas.txt"), choose.files()))
+  bl_endp_key <- AzureStor::storage_endpoint(endpoint = endpoint_url, sas = sas)
+  cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+
+  monthly_tracking_post <- AzureStor::storage_read_csv(cont, paste0("/PerfReports/tracking_", tolower(StandardKey), ".csv")) %>%
     dplyr::mutate(
       Period = as.Date(Period, format = "%d/%m/%Y"),
       Rationale = as.character(Rationale),
       PFM_Commentary = as.character(PFM_Commentary)
-      ) %>%
+    ) %>%
     dplyr::select(
       Period, Trading.Party.ID, Standard, PerformanceMeasure, Action,
       Rationale, PFM_Commentary, Response_Received_Template
-      )
-
-  saveRDS(monthly_tracking_post, paste0(my.dir, "/data/rdata/monthly_tracking_mps_post.Rda"))
+    )
 
 
 # Full Joining IPRP status and mps tracking ----------------------------------
 
-  perf_status_mps <- monthly_tracking_pre %>%
+  perf_status <- monthly_tracking_pre %>%
     dplyr::full_join(
       monthly_tracking_post,
       by = c("Period", "Trading.Party.ID", "Standard", "PerformanceMeasure")
@@ -94,7 +114,7 @@ mps_process_tracker <- function(
         levels = c(
           "MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 5", "MPS 6", "MPS 7",
           "MPS 8", "MPS 9", "MPS 10", "MPS 12", "MPS 13", "MPS 14",
-          "MPS 15", "MPS 16", "MPS 17", "MPS 18", "MPS 19"
+          "MPS 15", "MPS 16", "MPS 17", "MPS 18", "MPS 19", "UPRN Completeness", "VOA Completeness", "GIS Issues"
           )
         )
       ) %>%
@@ -118,10 +138,14 @@ mps_process_tracker <- function(
       }
 
   if(save.output) {
-    utils::write.csv(perf_status_mps, save.dir.csv, row.names = FALSE)
-    saveRDS(perf_status_mps, save.dir.rds)
+    utils::write.csv(perf_status, save.dir.csv, row.names = FALSE)
+    saveRDS(perf_status, save.dir.rds)
+    if(DataBase){
+      sql.field.types <- list(PFM_Commentary = "nvarchar(2100)")
+      odbc::dbWriteTable(con, paste0("PERF_", StandardKey, "PerfStatus"), perf_status, overwrite = TRUE, field.types = sql.field.types)
+    }
   }
-
-  invisible(perf_status_mps)
+ if(DataBase) odbc::dbDisconnect(con)
+  invisible(perf_status)
 
 }

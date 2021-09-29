@@ -21,22 +21,51 @@
 
 mps_data_prep <- function(
   my.dir = getwd(),
-  mps.data = utils::read.csv(paste0(my.dir, "/data/inputs/MPS_data.csv")),
-  mps.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_thresholds.csv")),
-  Standards.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv")),
+  mps.data,
+  mps.thresholds,
+  Standards.details,
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
-  save.output = TRUE
+  save.output = TRUE,
+  DataBase = TRUE
   ) {
 
 
-  # Importing raw data ------------------------------------------------------
 
-  mps_data <- mps.data
-  mps_thresholds <- mps.thresholds %>%
-    dplyr::mutate(
-      Period = as.Date(Period, format = "%d/%m/%Y")
+
+
+  # Importing raw data ------------------------------------------------------
+  if(DataBase){
+
+    con <- odbc::dbConnect(odbc::odbc(),
+                   Driver = "SQL Server",
+                   Server = "data-mgmt",
+                   Database = "MOSL_Sandpit",
+                   Port = 1433,
+                   trusted_connection = "True")
+
+    mps_data <- dplyr::tbl(con, "PERF_MPSData") %>% dplyr::as_tibble()
+
+    mps_thresholds <- dplyr::tbl(con, "PERF_StandardsThresholds") %>%
+      dplyr::as_tibble() %>%
+      dplyr::mutate(
+        Period = as.Date(Period, format = "%d/%m/%Y")
       )
+
+    Standards.details <- dplyr::tbl(con, "PERF_StandardsDetails") %>% dplyr::as_tibble()
+
+  } else{
+    mps_data <- utils::read.csv(paste0(my.dir, "/data/inputs/MPS_data.csv"))
+
+    mps_thresholds <- utils::read.csv(paste0(my.dir, "/data/inputs/Standards_thresholds.csv")) %>%
+      dplyr::mutate(
+        Period = as.Date(Period, format = "%d/%m/%Y"))
+
+    Standards.details <- utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv"))
+
+  }
+
+
 
 
   # Importing and cleaning MPS data -----------------------------------------
@@ -52,6 +81,7 @@ mps_data_prep <- function(
       Performance = OnTimeTasks / TaskVolume,
       PerformanceMeasure = "Completed"
       ) %>%
+    dplyr::mutate_at(dplyr::vars(Performance), ~replace(., is.nan(.), NA)) %>%
     dplyr::arrange(
       Period, Trading.Party.ID, Standard
       ) %>%
@@ -93,6 +123,7 @@ mps_data_prep <- function(
   # Creating summary grouped by Standard with market metrics by month ------------
 
   mps_summary <- mps_data_clean %>%
+    dplyr::filter(!is.na(Performance)) %>%
     dplyr::group_by(Period, Standard) %>%
     dplyr::summarise(
       MarketMean = mean(Performance, na.rm = TRUE),
@@ -121,7 +152,13 @@ mps_data_prep <- function(
     saveRDS(mps_summary, file = paste0(rda.outputs, "/mps_summary.Rda"))
     utils::write.csv(mps_data_clean, paste0(csv.outputs, "/MPS_data_clean.csv"))
     saveRDS(mps_data_clean, file = paste0(rda.outputs, "/mps_data_clean.Rda"))
-    }
+    if(DataBase){
+      odbc::dbWriteTable(con, "PERF_MPSSummary", mps_summary, overwrite = TRUE)
+      odbc::dbWriteTable(con, "PERF_MPSDataClean", mps_data_clean, overwrite = TRUE)
+      }
+  }
+
+  if(DataBase) odbc::dbDisconnect(con)
 
   invisible(mps_data_clean)
 

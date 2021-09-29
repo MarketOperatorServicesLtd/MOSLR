@@ -28,10 +28,12 @@ mps_create_tracker <- function(
   my.dir = getwd(),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   dir.mps.tracking = paste0(my.dir, "/data/tracking/mps"),
+  StandardKey = "MPS",
   period.only = TRUE,
   save.output = TRUE,
   keep.vars = FALSE,
   iprp.list = NULL,
+  DataBase = TRUE,
   filter.category = c("IPRP: On-track", "PRP: On-track", "IPRP: Above plan", "PRP: Above plan", "Normal monitoring", "Performance flag: 6 month")
   ) {
 
@@ -56,31 +58,72 @@ mps_create_tracker <- function(
 
 # Importing data ----------------------------------------------------------
 
-  mps_data_clean <- readRDS(paste0(my.dir, "/data/rdata/mps_data_clean.Rda"))
+  if(DataBase){
+    con <- odbc::dbConnect(odbc::odbc(),
+                           Driver = "SQL Server",
+                           Server = "data-mgmt",
+                           Database = "MOSL_Sandpit",
+                           Port = 1433,
+                           trusted_connection = "True")
+    if(StandardKey == 'MPS'){
+      data_clean <- dplyr::tbl(con, "PERF_MPSDataClean") %>%
+        dplyr::as_tibble() %>%
+        dplyr::mutate(Period = as.Date(Period),
+                      Threshold = as.numeric(Threshold))
 
-  Rectification_plans <- utils::read.csv(paste0(my.dir, "/data/inputs/Rectification_plans_mps.csv")) %>%
+    } else if (StandardKey == 'API'){
+      data_clean <- dplyr::tbl(con, "PERF_APIDataClean") %>%
+        dplyr::as_tibble() %>%
+        dplyr::mutate(Period = as.Date(Period),
+                      Threshold = as.numeric(Threshold))
+    } else {
+      stop("Variable StandardKey has to be either 'MPS' or 'API'")}
+  } else{
+
+    if(StandardKey == 'MPS'){
+    data_clean <- readRDS(paste0(my.dir, "/data/rdata/mps_data_clean.Rda"))
+  } else if (StandardKey == 'API'){
+    data_clean <- read.csv(paste0(my.dir, "/data/outputs/API_data_clean.csv"), fileEncoding="UTF-8-BOM") %>%
+    dplyr::mutate(Period = as.Date(Period),
+                  Threshold = as.numeric(Threshold))
+  } else {
+    stop("Variable StandardKey has to be either 'MPS' or 'API'")}
+  }
+
+
+
+
+  endpoint_url <- "https://stmosldataanalyticswe.blob.core.windows.net/"
+  sas <- readr::read_file(ifelse(file.exists(paste0(my.dir, "/data/inputs/digitaldata_sas.txt")), paste0(my.dir, "/data/inputs/digitaldata_sas.txt"), choose.files()))
+  bl_endp_key <- AzureStor::storage_endpoint(endpoint = endpoint_url, sas = sas)
+  cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+
+  Rectification_plans <- AzureStor::storage_read_csv(cont, paste0("PerfReports/Rectification_plans_", tolower(StandardKey), ".csv")) %>%
     dplyr::mutate(Period = as.Date(Period, format = "%d/%m/%Y")) %>%
     dplyr::group_by(Trading.Party.ID, Standard) %>%
     dplyr::mutate(PlanEndDate = max(Period)) %>%
     dplyr::ungroup()
 
-  tracking_sheet <- utils::read.csv(paste0(my.dir, "/data/inputs/tracking_mps.csv")) %>%
+  tracking_sheet <- AzureStor::storage_read_csv(cont, paste0("/PerfReports/tracking_", tolower(StandardKey), ".csv")) %>%
     dplyr::mutate(
       Period = as.Date(Period, format = "%d/%m/%Y") %m-% months(-1),
       key = as.factor(paste(Trading.Party.ID, Standard))
-      ) %>%
+    ) %>%
     dplyr::select(Period, Action, key, Template_Sent, Response_Received_Template)
+
+
+
 
 
 # Creating monthly tracking sheet -------------------------
 
-  monthly_tracking <- mps_data_clean %>%
+  monthly_tracking <- data_clean %>%
     dplyr::left_join(Rectification_plans, by = c("Period", "Standard", "Trading.Party.ID", "PerformanceMeasure")) %>%
     dplyr::left_join(tracking_sheet, by = c("Period", "key")) %>%
     dplyr::mutate(
       Action = tolower(Action),
       Delta = Performance - Planned_Perf,
-      DeltaQuant = Delta / Planned_Perf,
+      DeltaQuant = Delta / (Planned_Perf+0.01),
       Status = dplyr::case_when(
         (DeltaQuant > 0.05) ~ paste0(RectificationType, ": Above plan"),
         (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ paste0(RectificationType, ": On-track"),
@@ -157,7 +200,7 @@ mps_create_tracker <- function(
       !Status %in% filter.category
       ) %>%
     {if (!keep.vars) {
-      dplyr::select(., var_list)
+      dplyr::select(., all_of(var_list))
       } else {
         dplyr::select(., dplyr::everything())
         }
@@ -170,10 +213,11 @@ mps_create_tracker <- function(
       }
 
   if (save.output) {
-  utils::write.csv(monthly_tracking, paste0(dir.mps.tracking, "/", format(period, "%Y-%m"), "_monthly-tracking-mps.csv"), row.names = FALSE)
-  saveRDS(monthly_tracking, file = paste0(rda.outputs, "/monthly_tracking_mps_pre.Rda"))
-  }
-
+  utils::write.csv(monthly_tracking, paste0(dir.mps.tracking, "/", format(period, "%Y-%m"), "_monthly-tracking-", tolower(StandardKey), ".csv"), row.names = FALSE)
+  saveRDS(monthly_tracking, file = paste0(rda.outputs, "/monthly_tracking_", tolower(StandardKey), "_pre.Rda"))
+  AzureStor::storage_write_csv(monthly_tracking, cont, paste0("PerfReports/tracking/",  format(period, "%Y-%m"), "_monthly-tracking-", tolower(StandardKey), ".csv"))
+}
+  if(DataBase) odbc::dbDisconnect(con)
   invisible(monthly_tracking)
 
 }

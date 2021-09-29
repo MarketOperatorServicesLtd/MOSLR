@@ -9,6 +9,7 @@ mps_create_tracker(
   my.dir = getwd(),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   dir.mps.tracking = paste0(my.dir, "/data/tracking/mps"),
+  StandardKey = "MPS",
   period.only = TRUE,
   save.output = TRUE,
   keep.vars = FALSE,

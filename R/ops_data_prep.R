@@ -7,9 +7,10 @@
 #' @param csv.outputs character
 #' @param rda.outputs character
 #' @param my.dir character
-#' @param save.output logical
+#' @param save.output boolean
 #' @param ops.details character
 #' @param ops.thresholds character
+#' @param DataBase boolean
 #'
 #' @return
 #' @export
@@ -25,24 +26,53 @@ ops_data_prep <- function(
   ops.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_thresholds.csv")),
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
-  save.output = TRUE
+  save.output = TRUE,
+  DataBase = TRUE
   ) {
+
+
+
+
+  if(DataBase) {
+
+    con <- odbc::dbConnect(odbc::odbc(),
+                         Driver = "SQL Server",
+                         Server = "data-mgmt",
+                         Database = "MOSL_Sandpit",
+                         Port = 1433,
+                         trusted_connection = "True")
+
+    ops.data <- MOSLR::data_copy()
+    ops.details <- dplyr::tbl(con, "PERF_StandardsDetails") %>%
+      dplyr::as_tibble() %>%
+      dplyr::mutate(
+        Details = iconv(Details),
+        Context = iconv(Context)
+        )
+    ops.thresholds <- dplyr::tbl(con, "PERF_StandardsThresholds") %>% dplyr::as_tibble()
+
+  } else {
+      ops.data <- utils::read.csv(paste0(my.dir, "/data/inputs/OPS_data.csv"))
+      ops.details = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_details.csv"))
+      ops.thresholds = utils::read.csv(paste0(my.dir, "/data/inputs/Standards_thresholds.csv"))
+    }
 
 
   # Cleaning data -----------------------------
 
   ops_data_clean <- ops.data %>%
     dplyr::rename(
-      TaskVolumeCompleted = Tasks.Completed.Within.Period,
-      TaskVolumeOutstanding = Tasks.Outstanding.End.Period,
-      OnTimeTasksCompleted = Tasks.Completed.Within.Time,
-      OnTimeTasksOutstanding = Tasks.Outstanding.Within.Time
+      TaskVolumeCompleted = TasksCompletedWithinPeriod,
+      TaskVolumeOutstanding = TasksOutstandingEndPeriod,
+      OnTimeTasksCompleted = TasksCompletedWithinTime,
+      OnTimeTasksOutstanding = TasksOutstandingWithinTime
       ) %>%
     dplyr::mutate(
-      Period = as.Date(Period, format = "%d/%m/%Y"),
+      Period = as.Date(Period),
       TaskCompletion = OnTimeTasksCompleted / TaskVolumeCompleted,
       OutstandingOntime = OnTimeTasksOutstanding / TaskVolumeOutstanding
       ) %>%
+    dplyr::mutate_at(dplyr::vars(TaskCompletion, OutstandingOntime), ~replace(., is.nan(.), NA)) %>%
     dplyr::filter(!Standard %in% c(
       "OPS G4a",
       "OPS G4b",
@@ -102,6 +132,7 @@ ops_data_prep <- function(
 # Creating summary --------------------------------------------------------
 
   ops_summary <- ops_data_clean %>%
+    dplyr::filter(!is.na(Performance)) %>%
     dplyr::group_by(Period, Standard, PerformanceMeasure) %>%
     dplyr::summarise(
       MarketMean = mean(Performance, na.rm = TRUE),
@@ -143,8 +174,13 @@ ops_data_prep <- function(
     saveRDS(ops_summary, file = paste0(rda.outputs, "/ops_summary.Rda"))
     utils::write.csv(ops_data_clean, paste0(csv.outputs, "/ops_data_clean.csv"))
     saveRDS(ops_data_clean, file = paste0(rda.outputs, "/ops_data_clean.Rda"))
+    if(DataBase){
+      odbc::dbWriteTable(con, "PERF_OPSSummary", ops_summary, overwrite = TRUE)
+      odbc::dbWriteTable(con, "PERF_OPSDataClean", ops_data_clean, overwrite = TRUE)
+    }
   }
 
+  if(DataBase) odbc::dbDisconnect(con)
   invisible(ops_data_clean)
 
 }

@@ -29,7 +29,8 @@ ops_create_tracker <- function(
   period.only = TRUE,
   save.output = TRUE,
   keep.vars = FALSE,
-  filter.category = c("IPRP: on-track", "Normal monitoring", "Performance flag: 6 month")
+  filter.category = c("IPRP: on-track", "Normal monitoring", "Performance flag: 6 month"),
+  DataBase = TRUE
 ) {
 
   # Setting parameters ------------------------------------------------------
@@ -54,11 +55,40 @@ ops_create_tracker <- function(
 
   # Importing data ----------------------------------------------------------
 
-  ops_data_clean <- readRDS(paste0(my.dir, "/data/rdata/ops_data_clean.Rda"))
+  if(DataBase){
+    con <- odbc::dbConnect(odbc::odbc(),
+                           Driver = "SQL Server",
+                           Server = "data-mgmt",
+                           Database = "MOSL_Sandpit",
+                           Port = 1433,
+                           trusted_connection = "True")
+    ops_data_clean <- dplyr::tbl(con, "PERF_OPSDataClean") %>%
+      dplyr::as_tibble(
+      ) %>%
+      dplyr::mutate(
+        Period = as.Date(Period),
+        Threshold = as.numeric(Threshold),
+        Details = iconv(Details),
+        Context = iconv(Context)
+        )  %>%
+      dplyr::mutate(
+
+      )
+  } else{
+    ops_data_clean <- readRDS(paste0(my.dir, "/data/rdata/ops_data_clean.Rda"))
+
+  }
+
+  endpoint_url <- "https://stmosldataanalyticswe.blob.core.windows.net/"
+  sas <- readr::read_file(ifelse(file.exists(paste0(my.dir, "/data/inputs/digitaldata_sas.txt")), paste0(my.dir, "/data/inputs/digitaldata_sas.txt"), choose.files()))
+  bl_endp_key <- AzureStor::storage_endpoint(endpoint = endpoint_url, sas = sas)
+  cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+
+
 
   IPRP_plans <-
-    utils::read.csv(
-      paste0(my.dir, "/data/inputs/IPRP_plans_ops.csv")
+    AzureStor::storage_read_csv(cont,
+      "PerfReports/IPRP_plans_ops.csv"
       ) %>%
     dplyr::mutate(
       Period = as.Date(Period, format = "%d/%m/%Y")
@@ -71,13 +101,15 @@ ops_create_tracker <- function(
       ) %>%
     dplyr::ungroup()
 
-  tracking_sheet <- utils::read.csv(paste0(my.dir, "/data/inputs/tracking_ops.csv")) %>%
+
+
+  tracking_sheet <- AzureStor::storage_read_csv(cont, paste0("/PerfReports/tracking_ops.csv"))%>%
     dplyr::mutate(
       Period = as.Date(Period, format = "%d/%m/%Y") %m-% months(-1)
-      ) %>%
+    ) %>%
     dplyr::select(
       Period, Action, Trading.Party.ID, Standard, PerformanceMeasure, Template_Sent, Response_Received_Template
-      )
+    )
 
 
   # Creating monthly tracking sheet -------------------------
@@ -180,10 +212,19 @@ ops_create_tracker <- function(
     }
 
   if (save.output) {
-    utils::write.csv(monthly_tracking, paste0(dir.ops.tracking, "/", format(period, "%Y-%m"), "_monthly-tracking-ops.csv"), row.names = FALSE)
-    saveRDS(monthly_tracking, file = paste0(rda.outputs, "/monthly_tracking_ops_pre.Rda"))
-  }
+    utils::write.csv(monthly_tracking,
+                     paste0(dir.ops.tracking, "/", format(period, "%Y-%m"), "_monthly-tracking-ops.csv"),
+                     row.names = FALSE)
+    saveRDS(monthly_tracking,
+            file = paste0(rda.outputs, "/monthly_tracking_ops_pre.Rda")
+            )
+    AzureStor::storage_write_csv(monthly_tracking,
+                                 cont,
+                                 paste0("PerfReports/tracking/",  format(period, "%Y-%m"), "_monthly-tracking-ops.csv")
+                                 )
+    }
 
+  if(DataBase) odbc::dbDisconnect(con)
   invisible(monthly_tracking)
 
 }

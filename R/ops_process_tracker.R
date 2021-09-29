@@ -26,7 +26,8 @@ ops_process_tracker <- function(
   save.dir.rds = paste0(my.dir, "/data/rdata/perf_status_ops.Rda"),
   save.dir.csv = paste0(my.dir, "/data/outputs/perf_status_ops.csv"),
   keep.vars = TRUE,
-  period.create = Sys.Date() %m-% months(1)
+  period.create = Sys.Date() %m-% months(1),
+  DataBase = TRUE
 ) {
 
 
@@ -45,6 +46,15 @@ ops_process_tracker <- function(
       )
   }
 
+  if(DataBase){
+    con <- odbc::dbConnect(odbc::odbc(),
+                           Driver = "SQL Server",
+                           Server = "data-mgmt",
+                           Database = "MOSL_Sandpit",
+                           Port = 1433,
+                           trusted_connection = "True")
+  }
+
 
   # Importing data ----------------------------------------------------------
 
@@ -59,22 +69,29 @@ ops_process_tracker <- function(
       period.only = FALSE,
       save.output = FALSE,
       keep.vars = TRUE,
-      filter.category = NULL
+      filter.category = NULL,
+      DataBase = DataBase
       ) %>%
     dplyr::select(
       -Action, - Rationale, -PFM_Commentary, -Template_Sent, -Response_Received_Template
       )
 
-  monthly_tracking_post <- utils::read.csv(paste0(my.dir,"/data/inputs/tracking_ops.csv")) %>%
-    dplyr::mutate(
-      Period = as.Date(Period, format = "%d/%m/%Y"),
-      Rationale = as.character(Rationale),
-      PFM_Commentary = as.character(PFM_Commentary)
+    endpoint_url <- "https://stmosldataanalyticswe.blob.core.windows.net/"
+    sas <- readr::read_file(ifelse(file.exists(paste0(my.dir, "/data/inputs/digitaldata_sas.txt")), paste0(my.dir, "/data/inputs/digitaldata_sas.txt"), choose.files()))
+    bl_endp_key <- AzureStor::storage_endpoint(endpoint = endpoint_url, sas = sas)
+    cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+
+    monthly_tracking_post <- AzureStor::storage_read_csv(cont, paste0("/PerfReports/tracking_ops.csv")) %>%
+      dplyr::mutate(
+        Period = as.Date(Period, format = "%d/%m/%Y"),
+        Rationale = as.character(Rationale),
+        PFM_Commentary = as.character(PFM_Commentary)
       ) %>%
-    dplyr::select(
-      Period, Trading.Party.ID, Standard, PerformanceMeasure, Action,
-      Rationale, PFM_Commentary, Response_Received_Template
+      dplyr::select(
+        Period, Trading.Party.ID, Standard, PerformanceMeasure, Action,
+        Rationale, PFM_Commentary, Response_Received_Template
       )
+
 
   saveRDS(monthly_tracking_post, paste0(my.dir, "/data/rdata/monthly_tracking_ops_post.Rda"))
 
@@ -123,8 +140,12 @@ ops_process_tracker <- function(
   if(save.output) {
     utils::write.csv(perf_status_ops, save.dir.csv, row.names = FALSE)
     saveRDS(perf_status_ops, save.dir.rds)
+    if(DataBase){
+      sql.field.types <- list(PFM_Commentary = "nvarchar(500)")
+      odbc::dbWriteTable(con, "PERF_OPSPerfStatus", perf_status_ops, overwrite = TRUE, field.types = sql.field.types)
+    }
   }
-
+  if(DataBase) odbc::dbDisconnect(con)
   invisible(perf_status_ops)
 
 }

@@ -44,6 +44,12 @@ classoption: table
 
 \newpage
 
+```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, child = "pfm_report_api_section.Rmd", eval = nrow(api_data_clean_temp) > 0}
+
+```
+
+\newpage
+
 # Appendix
 
 `r if (include.full.ranking) { paste0("## Full MPS Performance ranking") }`
@@ -167,7 +173,7 @@ tryCatch(
 ```{r, message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
 
 MPS_IPRP_LIST <- Standards_details %>%
-  dplyr::filter(StandardKey == "MPS", IPRPeligible) %>%
+  dplyr::filter(StandardKey == "MPS", IPRPeligible, Standard != "MPS 18") %>%
   dplyr::pull(Standard)
 
 OPS_IPRP_LIST <- Standards_details %>%
@@ -180,7 +186,9 @@ A Trading Party's performance will be flagged when the ratio of on-time task com
 
 The following MPS are currently subject to this criterion: `r paste(MPS_IPRP_LIST, collapse = ", ")`.
 
-MPS performance will also be flagged when it is lower than the threshold percentage, set by MOSL. Note that this threshold can change. 
+MPS performance will also be flagged when it is lower than the threshold percentage, set by MOSL. Note that this threshold can change. The following MPS are currently subject to this criterion: MPS 18.
+
+A Trading Party’s performance may also be flagged if performance falls below the peer mean level or threshold level for any three months out of the latest six month period.
 
 ### Operational Performance Standards (OPS)
 
@@ -190,6 +198,8 @@ Performance is flagged when the following measures fall below a threshold for th
 * Additional Performance Indicator (API): ratio of tasks outstanding in time to total tasks outstanding)
 
 Currently, the thresholds are 85% for the KPI and 75% for the API. for the following OPS: `r paste(OPS_IPRP_LIST, collapse = ", ")`.
+
+A Trading Party’s performance may also be flagged if performance falls below the threshold level for any three months out of the latest six month period.
 
 ## Evaluation of Performance
 
@@ -209,7 +219,7 @@ The categorisation of a performance standard or Additional Performance Indicator
 * Performance in the previous period
 * MOSL actions in the previous period
 
-MPS data is processed on the 6th business day of each month and marks the beginning of the period for MPS. 
+MPS data is processed after the 10th business day of each month and marks the beginning of the period for MPS. 
 
 ```{r pressure, echo = FALSE, fig.cap = "Diagram of possible states and corresponding MOSL actions", out.width = '100%'}
 
