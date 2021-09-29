@@ -180,6 +180,7 @@ ops_data_prep <- function(
     utils::write.csv(ops_data_clean, paste0(csv.outputs, "/ops_data_clean.csv"))
     saveRDS(ops_data_clean, file = paste0(rda.outputs, "/ops_data_clean.Rda"))
     }
+
   }
 
   if(DataBase) odbc::dbDisconnect(con)

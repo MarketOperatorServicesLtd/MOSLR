@@ -212,13 +212,15 @@ ops_create_tracker <- function(
     }
 
   if (save.output) {
+
     if(!DataBase){
-       utils::write.csv(monthly_tracking,
+    utils::write.csv(monthly_tracking,
                      paste0(dir.ops.tracking, "/", format(period, "%Y-%m"), "_monthly-tracking-ops.csv"),
                      row.names = FALSE)
     saveRDS(monthly_tracking,
             file = paste0(rda.outputs, "/monthly_tracking_ops_pre.Rda")
             )
+
     }
 
     AzureStor::storage_write_csv(monthly_tracking,

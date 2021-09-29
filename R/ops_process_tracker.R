@@ -145,7 +145,7 @@ ops_process_tracker <- function(
     } else{
       utils::write.csv(perf_status_ops, save.dir.csv, row.names = FALSE)
       saveRDS(perf_status_ops, save.dir.rds)
-    }
+ }
   }
   if(DataBase) odbc::dbDisconnect(con)
   invisible(perf_status_ops)
