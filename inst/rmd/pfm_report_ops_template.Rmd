@@ -119,7 +119,7 @@ perf_status_ops %>%
     Action != ""
     ) %>%
   dplyr::select(Period, PerformanceMeasure, Action, Rationale) %>%
-  dplyr::mutate(Period = format(Period, "%Y-%m")) %>%
+  dplyr::mutate(Period = format(as.Date(Period), "%Y-%m")) %>%
   kableExtra::kable(
     format = "latex", 
     caption = paste0("Rationale for Recent MOSL Actions for ", OPS_CHUNK),
@@ -159,7 +159,7 @@ perf_status_ops %>%
     Period, PerformanceMeasure, PFM_Commentary
     ) %>%
   dplyr::mutate(
-    Period = format(Period, "%Y-%m")
+    Period = format(as.Date(Period), "%Y-%m")
     ) %>%
   kableExtra::kable(
     format = "latex", 
@@ -198,7 +198,7 @@ perf_status_ops %>%
     Period, PerformanceMeasure, Performance, Planned_Perf, DeltaQuant, Status
     ) %>%
   tidyr::drop_na() %>%
-  dplyr::mutate(Period = format(Period, "%Y-%m")) %>%
+  dplyr::mutate(Period = format(as.Date(Period), "%Y-%m")) %>%
   kableExtra::kable(
     format = "latex", 
     caption = "IPRP Performance Tracking",

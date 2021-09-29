@@ -1,141 +1,22 @@
-# Market Performance Standards
-
-## Uncapped Performance Charges
-
-The data below shows performance charges before the cap has been applied (known as uncapped charges). The actual amount of charges payable for underperformance against the Market Performance Standards will have a cap applied. The maximum amount charged in a month will be the capped amount. If uncapped charges fall below the capped amount, the entire uncapped charge will be payable. More information can be found in Section 3.4 and 3.5 of CSD 0002: Market Performance Framework.
-
-```{r, message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5}
-
-tryCatch(
-  expr = {
-  mps_data_clean_temp %>%
-    dplyr::filter(
-      Period <= data.period
-      ) %>%
-    dplyr::select(
-      Trading.Party.ID, Period, Standard, Charges, Group
-      ) %>%
-    ggplot2::ggplot(
-      ggplot2::aes(x = Period, y = Charges, fill = Group)
-      ) + 
-    ggplot2::geom_bar(stat = "identity") + 
-    ggplot2::theme(
-      legend.title = ggplot2::element_blank(),
-      text = ggplot2::element_text(size = 15)
-      ) +
-    ggplot2::scale_y_continuous(
-      labels = scales::dollar_format(prefix = "£"),
-      breaks = scales::pretty_breaks(4)
-      ) +
-    ggplot2::theme_bw() +
-    ggplot2::scale_fill_manual(values = c("#425563", "#05C3DE", "#005F83", "#00A499", "#FFAA4D", "#F9E547", "#8866BC")) +
-    ggplot2::labs(
-      title = "Performance Charges",
-      subtitle = "Breakdown by month and standard grouping",
-      caption = "Source: MOSL"
-      ) +
-    ggplot2::ylab("") + ggplot2::xlab("")
-  }, error = function(e){}
-)
-
-```
-
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
-
-MPS_grouping <- dplyr::tibble(
-  "Customer Access" = c("MPS 1", "MPS 2", "MPS 3", "MPS 4", "MPS 5",""), 
-  "Disconnection/ Reconnection" = c("MPS 6", rep("", 5)),
-  "Meter Read Submission" = c("MPS 7", "MPS 8", "MPS 9", "MPS 10", "MPS 11", ""),
-  "Cyclic Meter Reads" = c("MPS 12", "MPS 13", "MPS 14", "MPS 15", "MPS 18", "MPS 19"),
-  "Transfer Reads" = c("MPS 16", "MPS 17", rep("", 4))
-  )
-
-MPS_grouping %>% 
-  kableExtra::kable(
-    format = "latex", 
-    caption = "Details of MPS Groupings",
-    linesep = "",
-    format.args = list(big.mark = ","),
-    booktabs = TRUE,
-    align = "c"
-    ) %>%
-  kableExtra::kable_styling(
-    font_size = 10,
-    latex_options = c(
-      "repeat_header",
-      "HOLD_position",
-      "striped",
-      position = "center", 
-      full_width = FALSE
-      )
-    ) %>%
-  kableExtra::row_spec(0, bold = TRUE) %>%
-  kableExtra::column_spec(1:ncol(MPS_grouping), width = "2.4cm")
-
-```
-
-```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE}
-
-# Creating table of charges by MPS ---------------- 
-
-tryCatch(
-  expr = {
-  mps_data_clean_temp %>%
-    dplyr::filter(
-      Period >= data.period %m-% months(11)
-      ) %>%
-    dplyr::select(Period, Standard, Charges) %>%
-    dplyr::mutate(
-      Period = format(Period, "%Y-%m")
-      ) %>% 
-    tidyr::spread(Standard, Charges) %>%
-    dplyr::mutate(
-      Total = rowSums(dplyr::select(., -Period), na.rm = TRUE)
-      ) %>%
-    dplyr::mutate_if(~ any(is.na(.)), ~ ifelse(is.na(.), 0, .)) %>%
-    dplyr::mutate_if(is.numeric, scales::dollar_format(prefix = "£")) %>%
-    kableExtra::kable(
-      format = "latex", 
-      caption = "Breakdown of Charges by Standard", 
-      linesep = "",
-      format.args = list(big.mark = ","),
-      booktabs = TRUE,
-      align = "c"
-      ) %>%
-    kableExtra::kable_styling(
-      font_size = 10,
-      latex_options = c(
-        "repeat_header",
-        "HOLD_position",
-        "striped",
-        position = "center", 
-        full_width = FALSE,
-        "scale_down"
-        )
-      ) %>%
-    kableExtra::row_spec(0, bold = TRUE)
-  }, error = function(e){}
-)
-
-```
+# Additional Performance Indicators
 
 ## Performance Overview
 
-As of `r format(data.period, "%B-%Y")`, MOSL were monitoring `r SHORT.NAME`'s performance against `r nrow(perf_status_mps_temp)` standards. The performance of Trading Parties against these standards is measured according to:
+As of `r format(data.period, "%B-%Y")`, MOSL were monitoring `r SHORT.NAME`'s performance against `r nrow(perf_status_api_temp)` standards. The performance of Trading Parties against these standards is measured according to:
 
-* `r paste(unique(perf_status_mps_temp$PerformanceMeasure), collapse = " and ")`
+* `r paste(unique(perf_status_api_temp$PerformanceMeasure), collapse = " and ")`
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 5, eval = include.aggregate}
 
 tryCatch(
   expr = {
-  agg_perf <- mps_aggregate_perf %>%
+  agg_perf <- api_aggregate_perf %>%
     dplyr::filter(Trading.Party.ID == TRADING.PARTY) %>%
     dplyr::select(Period, Agg_Perf_roll) %>%
     dplyr::rename(GroupPerf = Agg_Perf_roll) %>%
     dplyr::mutate(Group = "Aggregate Performance")
   
-  mps_data_clean_temp %>%
+  api_data_clean_temp %>%
     dplyr::group_by(Period, Group) %>%
     dplyr::summarise(
       GroupPerf = sum(OnTimeTasks) / sum(TaskVolume)
@@ -183,9 +64,9 @@ tryCatch(
       values = c("#425563", "#05C3DE", "#005F83", "#00A499", "#FFAA4D", "#F9E547", "#8866BC")
       ) +
     ggplot2::labs(
-      title = paste0("MPS On-Time Task Completion: ", SHORT.NAME),
+      title = paste0("API Performance: ", SHORT.NAME),
       subtitle = "Breakdown by month and standard",
-      caption = "Source: MOSL\nNote: Aggregate performance corresponds to the 6-month average of aggregate MPS performance"
+      caption = "Source: MOSL\nNote: Aggregate performance corresponds to the 6-month average of aggregate API performance"
       ) +
     ggplot2::ylab("") + ggplot2::xlab("")
   }, 
@@ -198,9 +79,9 @@ tryCatch(
 
 tryCatch(
   expr = {
-  mps_data_clean_temp %>% 
+  api_data_clean_temp %>% 
     dplyr::filter(
-      Period >= max(mps_data_clean_temp$Period) %m-% months(11)
+      Period >= max(api_data_clean_temp$Period) %m-% months(11)
       ) %>%
     dplyr::mutate(
       Performance = scales::percent(Performance, accuracy = 1),
@@ -212,7 +93,7 @@ tryCatch(
     tidyr::spread(key = Standard, value = Performance) %>%
     kableExtra::kable(
       format = "latex", 
-      caption = "MPS Performance by Month",
+      caption = "API Performance by Month",
       linesep = "",
       format.args = list(big.mark = ","),
       booktabs = TRUE,
@@ -235,17 +116,17 @@ tryCatch(
 
 ```
 
-`r SHORT.NAME`'s 6-month aggregate MPS performance is `r scales::percent(mps_aggregate_perf_temp$Agg_Perf_roll, accuracy = 1)`, which currently ranks as:
+`r SHORT.NAME`'s 6-month aggregate API performance is `r scales::percent(api_aggregate_perf_temp$Agg_Perf_roll, accuracy = 1)`, which currently ranks as:
 
-* `r scales::ordinal(mps_aggregate_perf_temp$rank_all)` out of `r mps_aggregate_perf_temp$n_all` for all Trading Parties
-* `r scales::ordinal(mps_aggregate_perf_temp$rank_type)` out of `r paste0(mps_aggregate_perf_temp$n_type, " ", mps_aggregate_perf_temp$tp_type)`s
-* `r scales::ordinal(mps_aggregate_perf_temp$rank_league)` out of `r paste(mps_aggregate_perf_temp$n_league, mps_aggregate_perf_temp$LeagueGroup)`
+* `r scales::ordinal(api_aggregate_perf_temp$rank_all)` out of `r api_aggregate_perf_temp$n_all` for all Trading Parties
+* `r scales::ordinal(api_aggregate_perf_temp$rank_type)` out of `r paste0(api_aggregate_perf_temp$n_type, " ", api_aggregate_perf_temp$tp_type)`s
+* `r scales::ordinal(api_aggregate_perf_temp$rank_league)` out of `r paste(api_aggregate_perf_temp$n_league, api_aggregate_perf_temp$LeagueGroup)`
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 14, fig.height = 12}
 
 tryCatch(
   expr = {
-  mps_aggregate_perf %>%
+  api_aggregate_perf %>%
     dplyr::filter(Period == data.period) %>%
     ggplot2::ggplot() +
     ggplot2::geom_bar(
@@ -263,24 +144,24 @@ tryCatch(
     ggplot2::theme_bw() +
     ggplot2::theme(text = ggplot2::element_text(size = 15)) +
     ggplot2::labs(
-      title = "Peer Comparison Tables: Market Performance Standards",
+      title = "Peer Comparison Tables: Additional Performance Indicators",
       subtitle = "Six-month rolling aggregate performance",
       caption = "Source: MOSL", x = "", y = ""
       ) +
-    ggplot2::facet_wrap(~LeagueGroup, scales = "free", ncol = 2)
+    ggplot2::facet_wrap(~LeagueGroup, scales = "free_y", ncol = 2)
   }, 
   error = function(e){}
 )
 
 ```
 
-The current status of `r SHORT.NAME`'s performance against each standard and performance measure as of `r format(data.period, "%B-%Y")` is summarised in the table(s) below.
+<!-- The current status of `r SHORT.NAME`'s performance against each standard and performance measure as of `r format(data.period, "%B-%Y")` is summarised in the table(s) below. -->
 
-``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
+``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis", eval=FALSE}
 
 tryCatch(
   expr = {
-  perf_status_mps_temp %>%
+  perf_status_api_temp %>%
     dplyr::select(Standard, SecondaryCategory, TaskVolume, Performance, Status, Action) %>%
     dplyr::mutate(
       Status = tidyr::replace_na(Status, ""),
@@ -289,10 +170,10 @@ tryCatch(
       ) %>%
     kableExtra::kable(
       format = "latex", 
-      caption = "Current Status of MPS",
+      caption = "Current Status of API",
       linesep = "",
       booktabs = TRUE,
-      col.names = c("MPS", "Category", "Task\nVolume", "Performance", "Rectification\nStatus", "MOSL\nAction")
+      col.names = c("API", "Category", "Task\nVolume", "Performance", "Rectification\nStatus", "MOSL\nAction")
       ) %>%
     kableExtra::kable_styling(
       latex_options = c(
@@ -310,13 +191,13 @@ tryCatch(
 
 ```
 
-See Appendix for an explanation of how MOSL evaluates Trading Party performance against the standards.
+<!-- See Appendix for an explanation of how MOSL evaluates Trading Party performance against the standards. -->
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, fig.width = 12, fig.height = 6, eval = include.consistency}
 
 tryCatch(
   expr = {
-  perf_status_mps_temp %>%
+  perf_status_api_temp %>%
     ggplot2::ggplot() +
     ggrepel::geom_label_repel(
       ggplot2::aes(
@@ -338,8 +219,8 @@ tryCatch(
       text = ggplot2::element_text(size = 15)
       ) +
     ggplot2::labs(
-      title = paste0("MPS Performance and Consistency as of ", format(as.Date(data.period), '%B %Y')),
-      subtitle = "Rolling 6-month mean and standard deviation of MPS performance",
+      title = paste0("API Performance and Consistency as of ", format(as.Date(data.period), '%B %Y')),
+      subtitle = "Rolling 6-month mean and standard deviation of API performance",
       caption = "Source: MOSL"
       ) +
     ggplot2::ylab("Performance") + ggplot2::xlab("Consistency")
@@ -352,12 +233,12 @@ tryCatch(
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
-mps_list <- unique(as.character(perf_status_mps_temp$Standard))
+api_list <- unique(as.character(perf_status_api_temp$Standard))
 
-res <- lapply(mps_list, function (MPS_CHUNK) {
+res <- lapply(api_list, function (API_CHUNK) {
   
   knitr::knit_child(
-    "pfm_report_mps_template.Rmd", envir = environment(), quiet = TRUE
+    "pfm_report_api_template.Rmd", envir = environment(), quiet = TRUE
     )
   }
   )
@@ -376,7 +257,7 @@ metrics.list <- c("MarketMean", "MarketTaskVolume")
 
 for (METRIC in metrics.list) {
 
-  mps_summary %>% 
+  api_summary %>% 
     dplyr::select(
       Period, Standard, METRIC
       ) %>% 

@@ -29,4 +29,7 @@ Imports:
     stringr,
     scales,
     zoo,
-    ggrepel
+    ggrepel,
+    odbc,
+    AzureStor,
+    AzureRMR

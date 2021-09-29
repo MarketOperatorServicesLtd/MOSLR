@@ -336,11 +336,11 @@ tryCatch(
     ggplot2::theme_bw() + 
     ggplot2::theme(text = ggplot2::element_text(size = 15)) +
     ggplot2::labs(
-      title = "Peer Comparison League Tables: Operational Performance Standards (Completed)",
+      title = "Peer Comparison Tables: Operational Performance Standards (Completed)",
       subtitle = "Six-month rolling aggregate performance",
       caption = "Source: MOSL", x = "", y = ""
       ) +
-    ggplot2::facet_wrap(~LeagueGroup, scales = "free_y", ncol = 2)
+    ggplot2::facet_wrap(~LeagueGroup, scales = "free", ncol = 2)
   }, 
   error = function(e){}
 )
@@ -376,7 +376,7 @@ tryCatch(
     ggplot2::theme_bw() + 
     ggplot2::theme(text = ggplot2::element_text(size = 15)) +
     ggplot2::labs(
-      title = "Peer Comparison League Tables: Operational Performance Standards (Outstanding)",
+      title = "Peer Comparison Tables: Operational Performance Standards (Outstanding)",
       subtitle = "Six-month rolling aggregate performance",
       caption = "Source: MOSL", x = "", y = ""
       ) +
@@ -472,7 +472,7 @@ tryCatch(
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis"}
 
-ops_list <- levels(droplevels(perf_status_ops$Standard[perf_status_ops$Trading.Party.ID == TRADING.PARTY & perf_status_ops$TaskVolume > 0]))
+ops_list <- unique(as.character(perf_status_ops$Standard[perf_status_ops$Trading.Party.ID == TRADING.PARTY & perf_status_ops$TaskVolume > 0]))
 
 res <- lapply(ops_list, function (OPS_CHUNK) {
   

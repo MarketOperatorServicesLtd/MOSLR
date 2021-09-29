@@ -1,49 +1,50 @@
 
-### `r paste0(MPS_CHUNK, ": ", Standards_details$Context[Standards_details$Standard == MPS_CHUNK])`
+### `r paste0(API_CHUNK)`
 
-> `r Standards_details$Details[Standards_details$Standard == MPS_CHUNK]`
+> `r Standards_details$Details[Standards_details$Standard == API_CHUNK]`
 
 ```{r message = FALSE, echo = FALSE, error = TRUE, warning = FALSE}
 
-MPS_TASKS <- perf_status_mps_temp %>%
-  dplyr::filter(Standard == MPS_CHUNK) %>%
+API_TASKS <- perf_status_api_temp %>%
+  dplyr::filter(Standard == API_CHUNK) %>%
   dplyr::pull(TaskVolume)
 
-MPS_PERF <- perf_status_mps_temp %>%
-  dplyr::filter(Standard == MPS_CHUNK) %>%
+API_PERF <- perf_status_api_temp %>%
+  dplyr::filter(Standard == API_CHUNK) %>%
   dplyr::pull(Performance)
 
-MPS_SUMPERF3M <- perf_status_mps_temp %>%
-  dplyr::filter(Standard == MPS_CHUNK) %>% 
+API_SUMPERF3M <- perf_status_api_temp %>%
+  dplyr::filter(Standard == API_CHUNK) %>% 
   dplyr::pull(SumPerf3m)
 
 ```
 
 For `r format(data.period, "%B-%Y")`, `r SHORT.NAME` had:
 
-* `r scales::comma(MPS_TASKS)` completed tasks for `r MPS_CHUNK` `r dplyr::if_else(!is.na(MPS_PERF), paste0("with on-time task completion of ", scales::percent(MPS_PERF)), "")`
+* `r scales::comma(API_TASKS)` `r dplyr::if_else(API_CHUNK == "GIS Issues", "meters", "premises")`.  `r API_CHUNK` `r dplyr::if_else(!is.na(API_PERF), paste0("performance is at ", scales::percent(API_PERF)), "")`
 
-Below is a graph showing `r SHORT.NAME`'s historical performance against `r MPS_CHUNK`. MOSL action points and Rectification milestones are shown, if applicable. 
+Below is a graph showing `r SHORT.NAME`'s historical performance against `r API_CHUNK`. MOSL action points and Rectification milestones are shown, if applicable. 
 
 ```{r message = FALSE, echo = FALSE, error = TRUE, warning = FALSE, fig.width = 12, fig.height = 5}
 
-on_plan <- perf_status_mps_temp %>%
-  dplyr::filter(Standard == MPS_CHUNK) %>%
+on_plan <- perf_status_api_temp %>%
+  dplyr::filter(Standard == API_CHUNK) %>%
   dplyr::pull(Rectification)
 
-graph <- perf_status_mps %>%
+graph <- perf_status_api %>%
   dplyr::filter(TaskVolume > 0) %>%
   MOSLR::plot_perf_graph(
     df = ., 
     load.data = FALSE,
-    standard = MPS_CHUNK,
+    standard = API_CHUNK,
     trading.party = TRADING.PARTY,
     period.start = data.period %m-% months(11),
     period.end = data.period, 
     action.points = TRUE,
     include.iprp = on_plan,
-    graph.title = MPS_CHUNK,
-    sub.title = Standards_details$Context[Standards_details$Standard == MPS_CHUNK],
+    graph.title = API_CHUNK,
+    sub.title = Standards_details$Context[Standards_details$Standard == API_CHUNK],
+    fill.label = dplyr::if_else(API_CHUNK == "GIS Issues", "Meters", "Premises")
     ) +
   ggplot2::theme(text = ggplot2::element_text(size = 15))
 
@@ -58,28 +59,28 @@ tryCatch(
 
 ```
 
-For `r MPS_CHUNK` there have been `r dplyr::if_else(is.na(MPS_SUMPERF3M), 0, MPS_SUMPERF3M)` performance flag(s) over the last 12 months.
+<!-- For `r API_CHUNK` there have been `r dplyr::if_else(is.na(API_SUMPERF3M), 0, API_SUMPERF3M)` performance flag(s) over the last 12 months. -->
 
-`r if (on_plan) { paste0(MPS_CHUNK, " is currently on a Rectification plan. See below for further details.") }`
+`r if (on_plan) { paste0(API_CHUNK, " is currently on a Rectification plan. See below for further details.") }`
 
 <br> 
 
 ```{r message = FALSE, echo = FALSE, error = TRUE, warning = FALSE} 
 
-RATIONALE_CHUNK <- perf_status_mps %>% 
+RATIONALE_CHUNK <- perf_status_api %>% 
   dplyr::filter(
     Period >= data.period %m-% months(6),
     Trading.Party.ID == TRADING.PARTY, 
-    Standard == MPS_CHUNK, 
+    Standard == API_CHUNK, 
     Action != ""
     ) %>%
   nrow() > 0
 
-PFM_COMM_CHUNK <- perf_status_mps %>% 
+PFM_COMM_CHUNK <- perf_status_api %>% 
   dplyr::filter(
     Period >= data.period %m-% months(6),
     Trading.Party.ID == TRADING.PARTY, 
-    Standard == MPS_CHUNK, 
+    Standard == API_CHUNK, 
     !is.na(PFM_Commentary), 
     PFM_Commentary != ""
     ) %>%
@@ -87,30 +88,30 @@ PFM_COMM_CHUNK <- perf_status_mps %>%
 
 ```
 
-`r if (RATIONALE_CHUNK) { paste0("The table below shows the rationale for MOSL actions regarding ",  paste0(MPS_CHUNK), ".") }`
+`r if (RATIONALE_CHUNK) { paste0("The table below shows the rationale for MOSL actions regarding ",  paste0(API_CHUNK), ".") }`
 
 ``` {r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results = "asis", eval = RATIONALE_CHUNK}
 
-comment_date <- perf_status_mps_temp %>%
-  dplyr::filter(Standard == MPS_CHUNK) %>%
+comment_date <- perf_status_api_temp %>%
+  dplyr::filter(Standard == API_CHUNK) %>%
   dplyr::mutate(
     check = any(OnWatch, Rectification, PerfFlag3m, UnderReview),
     date = dplyr::if_else(check, as.Date("2018-04-01"), as.Date(data.period %m-% months(6)))
     ) %>%
   dplyr::pull(date)
 
-perf_status_mps %>%
+perf_status_api %>%
   dplyr::filter(
     Period >= comment_date,
     Trading.Party.ID == TRADING.PARTY,
-    Standard == MPS_CHUNK,
+    Standard == API_CHUNK,
     Action != ""
     ) %>%
   dplyr::select(Period, Action, Rationale) %>%
   dplyr::mutate(Period = format(as.Date(Period), "%Y-%m")) %>%
   kableExtra::kable(
     format = "latex", 
-    caption = paste0("Rationale for Recent MOSL Actions for ", MPS_CHUNK),
+    caption = paste0("Rationale for Recent MOSL Actions for ", API_CHUNK),
     linesep = "",
     #longtable = TRUE, 
     booktabs = TRUE,
@@ -132,15 +133,15 @@ perf_status_mps %>%
 
 <br> 
 
-`r if (PFM_COMM_CHUNK) { paste0("The table below shows MOSL commentary regarding ",  paste0(MPS_CHUNK), ".") }`
+`r if (PFM_COMM_CHUNK) { paste0("The table below shows MOSL commentary regarding ",  paste0(API_CHUNK), ".") }`
 
 ``` {r message = FALSE, echo = FALSE, error = TRUE, warning = FALSE, results = "asis", eval = PFM_COMM_CHUNK}
 
-perf_status_mps %>%
+perf_status_api %>%
   dplyr::filter(
     Period >= comment_date,
     Trading.Party.ID == TRADING.PARTY,
-    Standard == MPS_CHUNK,
+    Standard == API_CHUNK,
     !is.na(PFM_Commentary), 
     PFM_Commentary != ""
     ) %>%
@@ -148,7 +149,7 @@ perf_status_mps %>%
   dplyr::mutate(Period = format(as.Date(Period), "%Y-%m")) %>%
   kableExtra::kable(
     format = "latex", 
-    caption = paste0("MOSL Commentary for ", MPS_CHUNK),
+    caption = paste0("MOSL Commentary for ", API_CHUNK),
     linesep = "",
     #longtable = TRUE, 
     booktabs = TRUE,
@@ -173,10 +174,10 @@ perf_status_mps %>%
 
 ``` {r message = FALSE, echo = FALSE, error = TRUE, warning = FALSE, results = "asis", eval = on_plan}
 
-table <- perf_status_mps %>%
+table <- perf_status_api %>%
   dplyr::filter(
     Trading.Party.ID == TRADING.PARTY,
-    Standard == MPS_CHUNK,
+    Standard == API_CHUNK,
     ) %>%
   dplyr::mutate_if(is.numeric, scales::percent_format(accuracy = 1)) %>%
   dplyr::select(Period, Performance, Planned_Perf, DeltaQuant, Status) %>%
@@ -217,5 +218,5 @@ if (nrow(table) > 0) {
 
 `r if (on_plan) { paste0("For this plan there have been:") }`
 
-`r if (on_plan) { paste0("* ",  perf_status_mps_temp$CumResubmit[perf_status_mps_temp$Standard == MPS_CHUNK], " resubmission(s)") }`
-`r if (on_plan) { paste0("* ",  sum(perf_status_mps_temp$UnderReview[perf_status_mps_temp$Standard == MPS_CHUNK]), " review(s)") }`
+`r if (on_plan) { paste0("* ",  perf_status_api_temp$CumResubmit[perf_status_api_temp$Standard == API_CHUNK], " resubmission(s)") }`
+`r if (on_plan) { paste0("* ",  sum(perf_status_api_temp$UnderReview[perf_status_api_temp$Standard == API_CHUNK]), " review(s)") }`
