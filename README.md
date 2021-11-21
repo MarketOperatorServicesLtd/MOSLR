@@ -20,7 +20,7 @@ devtools::install_github("MarketOperatorServicesLtd/MOSLR")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is an example script showing how to run the monthly performance reporting and produce the PFM reports:
 
 ``` r
 
