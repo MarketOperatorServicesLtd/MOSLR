@@ -15,7 +15,7 @@ The MOSLR package is intended for:
 You can install the released version of MOSLR from [GitHub](https://github.com) with:
 
 ``` r
-devtools::install_github("MarketOperatorServicesLtd/MOSLR")
+devtools::install_github("MarketOperatorServicesLtd/MOSLR", auth_code = "GITHUB_PAT")
 ```
 
 ## Example
