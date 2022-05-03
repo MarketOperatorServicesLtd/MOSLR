@@ -52,7 +52,23 @@ render_PFM_report <- function(
 
   }
 
+
+  Sys.setenv(R_CONFIG_ACTIVE = "digitaldata")
+
+  if(is.null(conf.loc)){
+    err <-  try(conf <- config::get(), TRUE)
+    if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else if( conf.loc == "select"){
+    conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  } else{
+    conf <- config::get(file = conf.loc, config = "digitaldata")
+  }
+
+  bl_endp_key <- AzureStor::storage_endpoint(endpoint = conf$endpoint, sas = conf$sas)
+  cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+
   if (load.data) {
+
 
     if(DataBase){
       Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
@@ -74,18 +90,26 @@ render_PFM_report <- function(
                              Port = conf$Port,
                              trusted_connection = conf$trusted_connection)
 
-      tp_details <- dplyr::tbl(con, "PERF_TPDetails") %>% dplyr::as_tibble()
-      spid_counts <- dplyr::tbl(con, "PERF_SPIDCounts") %>% dplyr::as_tibble()
-      Standards_details <- dplyr::tbl(con, "PERF_StandardsDetails") %>% dplyr::as_tibble()  %>%
+      tp_details <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/tp_details.csv")
+      spid_counts <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/spid_counts.csv")
+      Standards_details <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/standards_details.csv")  %>%
         dplyr::mutate(Standard = as.character(Standard))
+
+      # tp_details <- dplyr::tbl(con, "PERF_TPDetails") %>% dplyr::as_tibble()
+      # spid_counts <- dplyr::tbl(con, "PERF_SPIDCounts") %>% dplyr::as_tibble()
+      # Standards_details <- dplyr::tbl(con, "PERF_StandardsDetails") %>% dplyr::as_tibble()  %>%
+      #   dplyr::mutate(Standard = as.character(Standard))
 
       api_data_clean <- dplyr::tbl(con, "PERF_APIDataClean") %>% dplyr::as_tibble()  %>%
         dplyr::mutate(Period = as.Date(Period),
                       Threshold = as.numeric(Threshold))
 
-      perf_status_api <- dplyr::tbl(con, "PERF_APIPERFStatus") %>%
-        dplyr::as_tibble()  %>%
+      perf_status_api <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/perf_status_API.csv")%>%
         dplyr::mutate(Period = as.Date(Period))
+
+      # perf_status_api <- dplyr::tbl(con, "PERF_APIPERFStatus") %>%
+      #   dplyr::as_tibble()  %>%
+      #   dplyr::mutate(Period = as.Date(Period))
 
       api_summary <- api_data_clean %>%
         dplyr::group_by(Period, Standard) %>%
@@ -98,29 +122,48 @@ render_PFM_report <- function(
         dplyr::arrange(Standard, Period)
 
 
-      mps_data_clean <- dplyr::tbl(con, "PERF_MPSDataClean") %>%
-        dplyr::as_tibble()  %>%
+      mps_data_clean <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/MPS_data_clean.csv") %>%
         dplyr::mutate(Period = as.Date(Period))
-      perf_status_mps <- dplyr::tbl(con, "PERF_MPSPERFStatus") %>%
-        dplyr::as_tibble()  %>%
+      perf_status_mps <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/perf_status_MPS.csv") %>%
         dplyr::mutate(Period = as.Date(Period))
-      mps_summary <- dplyr::tbl(con, "PERF_MPSSummary") %>%
-        dplyr::as_tibble()  %>%
+      mps_summary <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/mps_summary.csv") %>%
         dplyr::mutate(Period = as.Date(Period))
 
-      ops_data_clean <- dplyr::tbl(con, "PERF_OPSDataClean") %>%
-        dplyr::as_tibble()  %>%
+      # mps_data_clean <- dplyr::tbl(con, "PERF_MPSDataClean") %>%
+      #   dplyr::as_tibble()  %>%
+      #   dplyr::mutate(Period = as.Date(Period))
+      # perf_status_mps <- dplyr::tbl(con, "PERF_MPSPERFStatus") %>%
+      #   dplyr::as_tibble()  %>%
+      #   dplyr::mutate(Period = as.Date(Period))
+      # mps_summary <- dplyr::tbl(con, "PERF_MPSSummary") %>%
+      #   dplyr::as_tibble()  %>%
+      #   dplyr::mutate(Period = as.Date(Period))
+      ops_data_clean <-  AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/OPS_data_clean.csv")%>%
         dplyr::mutate(Period = as.Date(Period),
                       Details = iconv(Details),
                       Context = iconv(Context))
-      perf_status_ops <- dplyr::tbl(con, "PERF_OPSPERFStatus") %>%
-        dplyr::as_tibble()  %>%
+
+      perf_status_ops <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/perf_status_OPS.csv") %>%
         dplyr::mutate(Period = as.Date(Period),
                       Details = iconv(Details),
                       Context = iconv(Context))
-      ops_summary <- dplyr::tbl(con, "PERF_OPSSummary") %>%
-        dplyr::as_tibble()  %>%
+
+      ops_summary <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/ops_summary.csv") %>%
         dplyr::mutate(Period = as.Date(Period))
+
+      # ops_data_clean <- dplyr::tbl(con, "PERF_OPSDataClean") %>%
+      #   dplyr::as_tibble()  %>%
+      #   dplyr::mutate(Period = as.Date(Period),
+      #                 Details = iconv(Details),
+      #                 Context = iconv(Context))
+      # perf_status_ops <- dplyr::tbl(con, "PERF_OPSPERFStatus") %>%
+      #   dplyr::as_tibble()  %>%
+      #   dplyr::mutate(Period = as.Date(Period),
+      #                 Details = iconv(Details),
+      #                 Context = iconv(Context))
+      # ops_summary <- dplyr::tbl(con, "PERF_OPSSummary") %>%
+      #   dplyr::as_tibble()  %>%
+      #   dplyr::mutate(Period = as.Date(Period))
 
       odbc::dbDisconnect(con)
     } else{
@@ -193,19 +236,6 @@ render_PFM_report <- function(
   }
 
 
-  Sys.setenv(R_CONFIG_ACTIVE = "digitaldata")
-
-  if(is.null(conf.loc)){
-    err <-  try(conf <- config::get(), TRUE)
-    if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
-  } else if( conf.loc == "select"){
-    conf <- config::get(file = choose.files(caption = "Select configuration file"))
-  } else{
-    conf <- config::get(file = conf.loc)
-  }
-
-  bl_endp_key <- AzureStor::storage_endpoint(endpoint = conf$endpoint, sas = conf$sas)
-  cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
 
 
 

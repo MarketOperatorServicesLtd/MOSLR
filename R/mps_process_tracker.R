@@ -53,25 +53,25 @@ mps_process_tracker <- function(
       )
   }
 
-  if(DataBase){
-    Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
-
-    if(is.null(conf.loc)){
-      err <-  try(conf <- config::get(), TRUE)
-      if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
-    } else if( conf.loc == "select"){
-      conf <- config::get(file = choose.files(caption = "Select configuration file"))
-    } else{
-      conf <- config::get(file = conf.loc)
-    }
-
-    con <- odbc::dbConnect(odbc::odbc(),
-                           Driver = conf$Driver,
-                           Server = conf$Server,
-                           Database = conf$Database,
-                           Port = conf$Port,
-                           trusted_connection = conf$trusted_connection)
-    }
+  # if(DataBase){
+  #   Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
+  #
+  #   if(is.null(conf.loc)){
+  #     err <-  try(conf <- config::get(), TRUE)
+  #     if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  #   } else if( conf.loc == "select"){
+  #     conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  #   } else{
+  #     conf <- config::get(file = conf.loc)
+  #   }
+  #
+  #   con <- odbc::dbConnect(odbc::odbc(),
+  #                          Driver = conf$Driver,
+  #                          Server = conf$Server,
+  #                          Database = conf$Database,
+  #                          Port = conf$Port,
+  #                          trusted_connection = conf$trusted_connection)
+  #   }
 
 
 # Importing data ----------------------------------------------------------
@@ -83,6 +83,7 @@ mps_process_tracker <- function(
   monthly_tracking_pre <-
     MOSLR::mps_create_tracker(
       my.dir = my_dir,
+      conf.loc = conf.loc,
       period = period.create,
       period.only = FALSE,
       save.output = FALSE,
@@ -161,14 +162,15 @@ mps_process_tracker <- function(
   if(save.output) {
 
     if(DataBase){
-      sql.field.types <- list(PFM_Commentary = "nvarchar(2100)")
-      odbc::dbWriteTable(con, paste0("PERF_", StandardKey, "PerfStatus"), perf_status, overwrite = TRUE, field.types = sql.field.types)
-    } else{
+      # sql.field.types <- list(PFM_Commentary = "nvarchar(2100)")
+      # odbc::dbWriteTable(con, paste0("PERF_", StandardKey, "PerfStatus"), perf_status, overwrite = TRUE, field.types = sql.field.types)
+      AzureStor::storage_write_csv(perf_status, cont, paste0("PerfReports/data/inputs/perf_status_",StandardKey,  ".csv"))
+      } else{
       utils::write.csv(perf_status, save.dir.csv, row.names = FALSE)
       saveRDS(perf_status, save.dir.rds)
     }
   }
- if(DataBase) odbc::dbDisconnect(con)
+
   invisible(perf_status)
 
 }

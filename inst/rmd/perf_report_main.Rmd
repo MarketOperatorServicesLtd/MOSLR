@@ -750,15 +750,15 @@ for(sub.type in unique(ops_aggregate_perf$sub_type[!is.na(ops_aggregate_perf$sub
 
 ### Status Summary
 
-There are currently `r nrow(perf_status_ops%>%dplyr::filter(Period == data.period, ActiveIPRP == T))` Active IPRPs for
-`r nrow(perf_status_ops%>%dplyr::filter(Period == data.period,ActiveIPRP == T)%>%  dplyr::count(Trading.Party.ID))` Trading Parties and
-`r nrow(perf_status_ops%>%dplyr::filter(Period == data.period,ActiveIPRP == T)%>%  dplyr::count(Standard, PerformanceMeasure))` different OPS standards.
+There are currently `r nrow(perf_status_ops%>%dplyr::filter(Period == data.period, ActiveIPRP == T))` Active IPRPs and `r nrow(perf_status_ops%>%dplyr::filter(Period == data.period, ActivePRP == T))` Active PRPs for
+`r nrow(perf_status_ops%>%dplyr::filter(Period == data.period,ActiveIPRP == T | ActivePRP == T)%>%  dplyr::count(Trading.Party.ID))` Trading Parties and
+`r nrow(perf_status_ops%>%dplyr::filter(Period == data.period,ActiveIPRP == T | ActivePRP == T)%>%  dplyr::count(Standard, PerformanceMeasure))` different OPS standards.
 
 ```{r message = FALSE, echo = FALSE, error = FALSE, warning = FALSE, results='markup'}
 perf_status_ops%>%
   dplyr::filter(
     Period == data.period,
-    ActiveIPRP == T)%>%
+    ActiveIPRP == T | ActivePRP == T)%>%
   dplyr::mutate(Standard = paste(Standard, PerformanceMeasure))%>%
   dplyr::count(Standard, Status)%>%
   tidyr::pivot_wider(names_from = Status, values_from = n,values_fill = list(n = 0))%>%
@@ -769,7 +769,7 @@ perf_status_ops%>%
     )%>%
   kableExtra::kable(
     format = "latex", 
-    caption = "Number of Active IPRPs by Standard",
+    caption = "Number of Active Rectifications by Standard",
     longtable = TRUE, 
     booktabs=TRUE,
     linesep=""
@@ -787,7 +787,7 @@ perf_status_ops%>%
 ```
 
 
-### IPRP count & matrix
+### Rectification count & matrix
 
 
 
@@ -795,14 +795,14 @@ perf_status_ops%>%
 perf_status_ops%>%
   dplyr::filter(
     Period == data.period,
-    ActiveIPRP == T)%>%
+    ActiveIPRP == T | ActivePRP == T)%>%
   dplyr::mutate(Standard = paste(Standard, PerformanceMeasure))%>%
   tidyr::pivot_wider(id_cols = Trading.Party.ID, names_from = Standard, values_from = Status, values_fill = list(Status = ""))%>%
   dplyr::rename("Trading Party" = Trading.Party.ID)%>%
   dplyr::select("Trading Party", sort(names(.)))%>%
   kableExtra::kable(
     format = "latex", 
-    caption = "Number of Active IPRPs by Trading Party",
+    caption = "Number of Active Rectification plans by Trading Party",
     linesep = "",
     format.args = list(big.mark = ","),
     booktabs = TRUE,
@@ -819,7 +819,7 @@ perf_status_ops%>%
       )
     ) %>%
   kableExtra::row_spec(0, bold = TRUE)%>%
-  kableExtra::column_spec(2:(nrow(perf_status_ops%>%dplyr::filter(Period == data.period,ActiveIPRP == T)%>% dplyr::count(Standard, PerformanceMeasure))+1),width = "2.5cm")
+  kableExtra::column_spec(2:(nrow(perf_status_ops%>%dplyr::filter(Period == data.period,ActiveIPRP == T | ActivePRP == T)%>% dplyr::count(Standard, PerformanceMeasure))+1),width = "2.5cm")
   
 ```
 
@@ -856,7 +856,7 @@ perf_status_ops%>%
 ```
 
 
-## Detailed IPRP Analysis
+## Detailed Rectification Analysis
 
 Below are the Performance graphs of IPRPs that are either Off-track or under review
 
@@ -864,7 +864,7 @@ Below are the Performance graphs of IPRPs that are either Off-track or under rev
 IPRP_details_list <- perf_status_ops%>%
   dplyr::filter(
     Period == data.period, 
-    (Status == "Below plan" | UnderReview == T)
+    (Status == "IPRP: Below plan" | Status == "PRP: Below plan" | UnderReview == T)
   )
 
 if(nrow(IPRP_details_list)>0){

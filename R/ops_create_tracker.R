@@ -29,8 +29,8 @@ ops_create_tracker <- function(
   dir.ops.tracking = paste0(my.dir, "/data/tracking/ops"),
   period.only = TRUE,
   save.output = TRUE,
-  keep.vars = FALSE,
   filter.category = c("IPRP: On-track", "PRP: On-track", "IPRP: Above plan", "PRP: Above plan", "Normal monitoring"),
+  keep.vars = FALSE,
   DataBase = TRUE
 ) {
 
@@ -47,51 +47,16 @@ ops_create_tracker <- function(
       c(
         "Period", "SecondaryCategory", "Trading.Party.ID", "Standard",
         "PerformanceMeasure",
-        "Action","Rationale", "PFM_Commentary", "ActiveIPRP", "IPRPend",
+        "Action","Rationale", "PFM_Commentary", "ActiveIPRP", "ActivePRP", "IPRPend", "PRPend",
         "MilestoneFlag", "PerfFlag3m", "PerfFlag6m", "OnWatch",
-        "OnWatchIPRPend",  "Consistency", "PerfRating"
+        "OnWatchRectificationEnd",  "Consistency", "PerfRating"
       )
   }
 
 
   # Importing data ----------------------------------------------------------
 
-  if(DataBase){
-    Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
 
-    if(is.null(conf.loc)){
-      err <-  try(conf <- config::get(), TRUE)
-      if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
-    } else if( conf.loc == "select"){
-      conf <- config::get(file = choose.files(caption = "Select configuration file"))
-    } else{
-      conf <- config::get(file = conf.loc)
-    }
-
-
-    con <- odbc::dbConnect(odbc::odbc(),
-                           Driver = conf$Driver,
-                           Server = conf$Server,
-                           Database = conf$Database,
-                           Port = conf$Port,
-                           trusted_connection = conf$trusted_connection)
-
-    ops_data_clean <- dplyr::tbl(con, "PERF_OPSDataClean") %>%
-      dplyr::as_tibble(
-      ) %>%
-      dplyr::mutate(
-        Period = as.Date(Period),
-        Threshold = as.numeric(Threshold),
-        Details = iconv(Details),
-        Context = iconv(Context)
-        )  %>%
-      dplyr::mutate(
-
-      )
-  } else{
-    ops_data_clean <- readRDS(paste0(my.dir, "/data/rdata/ops_data_clean.Rda"))
-
-  }
 
   Sys.setenv(R_CONFIG_ACTIVE = "digitaldata")
 
@@ -106,6 +71,31 @@ ops_create_tracker <- function(
 
   bl_endp_key <- AzureStor::storage_endpoint(endpoint = conf$endpoint, sas = conf$sas)
   cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+
+  if(DataBase){
+
+    ops_data_clean <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/OPS_data_clean.csv") %>%
+      dplyr::mutate(
+        Period = as.Date(Period),
+        Threshold = as.numeric(Threshold),
+        #Details = iconv(Details),
+        #Context = iconv(Context)
+      )
+
+
+    # ops_data_clean <- dplyr::tbl(con, "PERF_OPSDataClean") %>%
+    #   dplyr::as_tibble(
+    #   ) %>%
+    #   dplyr::mutate(
+    #     Period = as.Date(Period),
+    #     Threshold = as.numeric(Threshold),
+    #     Details = iconv(Details),
+    #     Context = iconv(Context)
+    #     )
+  } else{
+    ops_data_clean <- readRDS(paste0(my.dir, "/data/rdata/ops_data_clean.Rda"))
+
+  }
 
 
 
@@ -151,20 +141,22 @@ ops_create_tracker <- function(
       Delta = Performance - Planned_Perf,
       DeltaQuant = Delta / Planned_Perf,
       Status = dplyr::case_when(
-        (DeltaQuant > 0.05) ~ "Above plan",
-        (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ "On-track",
-        (DeltaQuant < -0.05) ~ "Below plan"
-        ),
+        (DeltaQuant > 0.05) ~ paste0(RectificationType, ": Above plan"),
+        (DeltaQuant <= 0.05 & DeltaQuant >= -0.05) ~ paste0(RectificationType, ": On-track"),
+        (DeltaQuant < -0.05) ~ paste0(RectificationType, ": Below plan")
+      ),
       OnWatch = Action == "watch: performance",
-      OnWatchIPRPend = Action == "de-escalate" | Action == "watch: iprp end",
+      OnWatchRectificationEnd = Action == "de-escalate" | Action == "watch: iprp end",
       MilestoneFlag = Performance < Planned_Perf,
-      IPRPend = PlanEndDate == Period,
+      IPRPend = PlanEndDate == Period & RectificationType == "IPRP",
+      PRPend = PlanEndDate == Period & RectificationType == "PRP",
       Pending = Template_Sent != "" & Response_Received_Template == "",
       UnderReview =
         Action == "review" | Action == "re-submit" | Action == "extend" | Action == "escalate",
-      ActiveIPRP = !is.na(Status),
-      InactiveIPRP = IPRPend | Pending | (UnderReview & !ActiveIPRP),
-      IPRP = ActiveIPRP | InactiveIPRP
+      ActiveIPRP = RectificationType == "IPRP",
+      ActivePRP = RectificationType == "PRP",
+      InactiveRectification = IPRPend | PRPend | Pending | (UnderReview & !ActiveIPRP & !ActivePRP),
+      Rectification = ActiveIPRP | ActivePRP | InactiveRectification
       ) %>%
     droplevels() %>%
     dplyr::arrange(Trading.Party.ID, Standard, Period) %>%
@@ -199,19 +191,20 @@ ops_create_tracker <- function(
     dplyr::mutate(
       PrimaryCategory =
         dplyr::case_when(
-          !IPRP ~ "Monitoring",
-          IPRP ~ "Resolution"
+          !Rectification ~ "Monitoring",
+          Rectification ~ "Resolution"
         ),
       SecondaryCategory =
         dplyr::case_when(
-          !IPRP & OnWatch ~ "Watch: performance",
-          OnWatchIPRPend ~ "Watch: IPRP end",
-          !IPRP & !OnWatch & PerfFlag6m & !PerfFlag3m & IPRPeligible ~ "Performance flag: 6 month",
-          !IPRP & !OnWatch & PerfFlag3m & IPRPeligible ~ "Performance flag: 3 month",
-          ActiveIPRP & MilestoneFlag & !IPRPend ~ "IPRP: below plan",
-          ActiveIPRP & !MilestoneFlag & !IPRPend ~ "IPRP: on-track",
+          OnWatch ~ "Watch: performance",
+          OnWatchRectificationEnd ~ "Watch: Rectification end",
+          !Rectification & !OnWatch & PerfFlag6m & !PerfFlag3m  & IPRPeligible ~ "Performance flag: 6 month",
+          !Rectification & !OnWatch & PerfFlag3m  & IPRPeligible ~ "Performance flag: 3 month",
+          ActiveIPRP & !IPRPend ~ "Rectification: IPRP",
+          ActivePRP & !PRPend ~ "Rectification: PRP",
+          PRPend ~ "PRP: end",
           IPRPend ~ "IPRP: end",
-          IPRP & UnderReview ~ "IPRP: under review",
+          Rectification & UnderReview ~ "Rectification: under review",
           TRUE ~ "Normal monitoring"
         ),
       Action = "tbd",
@@ -219,8 +212,9 @@ ops_create_tracker <- function(
       PFM_Commentary = "tbd"
       ) %>%
     dplyr::filter(
-      !(SecondaryCategory %in% filter.category)
-      ) %>%
+      !(SecondaryCategory %in% filter.category),
+      !Status %in% filter.category
+    )%>%
     {if (!keep.vars) {
       dplyr::select(., var_list)
       } else {
@@ -252,7 +246,7 @@ ops_create_tracker <- function(
                                  )
     }
 
-  if(DataBase) odbc::dbDisconnect(con)
+
   invisible(monthly_tracking)
 
 }

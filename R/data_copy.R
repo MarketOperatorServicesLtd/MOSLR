@@ -69,10 +69,15 @@ data_copy <- function(
   if(saveDB){
 
     Sys.setenv(R_CONFIG_ACTIVE = conf.to)
-    conf <- config::get(file = ifelse(
-      file.exists(paste0(my.dir, "/data/inputs/config.yml")),
-      paste0(my.dir, "/data/inputs/config.yml"),
-      choose.files(caption = "Select configuration file")))
+
+    if(is.null(conf.loc)){
+      err <-  try(conf <- config::get(), TRUE)
+      if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else if( conf.loc == "select"){
+      conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else{
+      conf <- config::get(file = conf.loc)
+    }
 
     con.to <- odbc::dbConnect(odbc::odbc(),
                            Driver = conf$Driver,

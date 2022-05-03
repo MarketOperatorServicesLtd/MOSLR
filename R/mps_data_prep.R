@@ -22,9 +22,6 @@
 mps_data_prep <- function(
   my.dir = getwd(),
   conf.loc = NULL,
-  mps.data,
-  mps.thresholds,
-  Standards.details,
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   save.output = TRUE,
@@ -172,8 +169,12 @@ mps_data_prep <- function(
   if (save.output) {
 
     if(DataBase){
-      odbc::dbWriteTable(con, "PERF_MPSSummary", mps_summary, overwrite = TRUE)
-      odbc::dbWriteTable(con, "PERF_MPSDataClean", mps_data_clean, overwrite = TRUE)
+      # odbc::dbWriteTable(con, "PERF_MPSSummary", mps_summary, overwrite = TRUE)
+      # odbc::dbWriteTable(con, "PERF_MPSDataClean", mps_data_clean, overwrite = TRUE)
+      #
+      AzureStor::storage_write_csv(mps_summary, cont, "PerfReports/data/inputs/mps_summary.csv")
+      AzureStor::storage_write_csv(mps_data_clean, cont, "PerfReports/data/inputs/MPS_data_clean.csv")
+
     } else{
         saveRDS(mps_summary, file = paste0(rda.outputs, "/mps_summary.Rda"))
     utils::write.csv(mps_data_clean, paste0(csv.outputs, "/MPS_data_clean.csv"))

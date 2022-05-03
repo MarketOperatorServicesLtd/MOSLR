@@ -59,55 +59,6 @@ mps_create_tracker <- function(
 
 # Importing data ----------------------------------------------------------
 
-  if(DataBase){
-    Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
-
-    if(is.null(conf.loc)){
-      err <-  try(conf <- config::get(), TRUE)
-      if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
-    } else if( conf.loc == "select"){
-      conf <- config::get(file = choose.files(caption = "Select configuration file"))
-    } else{
-      conf <- config::get(file = conf.loc)
-    }
-
-
-    con <- odbc::dbConnect(odbc::odbc(),
-                           Driver = conf$Driver,
-                           Server = conf$Server,
-                           Database = conf$Database,
-                           Port = conf$Port,
-                           trusted_connection = conf$trusted_connection)
-
-
-    if(StandardKey == 'MPS'){
-      data_clean <- dplyr::tbl(con, "PERF_MPSDataClean") %>%
-        dplyr::as_tibble() %>%
-        dplyr::mutate(Period = as.Date(Period),
-                      Threshold = as.numeric(Threshold))
-
-    } else if (StandardKey == 'API'){
-      data_clean <- dplyr::tbl(con, "PERF_APIDataClean") %>%
-        dplyr::as_tibble() %>%
-        dplyr::mutate(Period = as.Date(Period),
-                      Threshold = as.numeric(Threshold))
-    } else {
-      stop("Variable StandardKey has to be either 'MPS' or 'API'")}
-  } else{
-
-    if(StandardKey == 'MPS'){
-    data_clean <- readRDS(paste0(my.dir, "/data/rdata/mps_data_clean.Rda"))
-  } else if (StandardKey == 'API'){
-    data_clean <- read.csv(paste0(my.dir, "/data/outputs/API_data_clean.csv"), fileEncoding="UTF-8-BOM") %>%
-    dplyr::mutate(Period = as.Date(Period),
-                  Threshold = as.numeric(Threshold))
-  } else {
-    stop("Variable StandardKey has to be either 'MPS' or 'API'")}
-  }
-
-
-
-
 
   Sys.setenv(R_CONFIG_ACTIVE = "digitaldata")
 
@@ -136,6 +87,61 @@ mps_create_tracker <- function(
       key = as.factor(paste(Trading.Party.ID, Standard))
     ) %>%
     dplyr::select(Period, Action, key, Template_Sent, Response_Received_Template)
+
+
+  if(DataBase){
+    Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
+
+    if(is.null(conf.loc)){
+      err <-  try(conf <- config::get(), TRUE)
+      if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else if( conf.loc == "select"){
+      conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    } else{
+      conf <- config::get(file = conf.loc)
+    }
+
+
+    con <- odbc::dbConnect(odbc::odbc(),
+                           Driver = conf$Driver,
+                           Server = conf$Server,
+                           Database = conf$Database,
+                           Port = conf$Port,
+                           trusted_connection = conf$trusted_connection)
+
+
+    if(StandardKey == 'MPS'){
+      # data_clean <- dplyr::tbl(con, "PERF_MPSDataClean") %>%
+      #   dplyr::as_tibble() %>%
+      #   dplyr::mutate(Period = as.Date(Period),
+      #                 Threshold = as.numeric(Threshold))
+
+      data_clean <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/MPS_data_clean.csv")  %>%
+        dplyr::mutate(Period = as.Date(Period),
+                      Threshold = as.numeric(Threshold))
+
+    } else if (StandardKey == 'API'){
+      data_clean <- dplyr::tbl(con, "PERF_APIDataClean") %>%
+        dplyr::as_tibble() %>%
+        dplyr::mutate(Period = as.Date(Period),
+                      Threshold = as.numeric(Threshold))
+    } else {
+      stop("Variable StandardKey has to be either 'MPS' or 'API'")}
+  } else{
+
+    if(StandardKey == 'MPS'){
+    data_clean <- readRDS(paste0(my.dir, "/data/rdata/mps_data_clean.Rda"))
+  } else if (StandardKey == 'API'){
+    data_clean <- read.csv(paste0(my.dir, "/data/outputs/API_data_clean.csv"), fileEncoding="UTF-8-BOM") %>%
+    dplyr::mutate(Period = as.Date(Period),
+                  Threshold = as.numeric(Threshold))
+  } else {
+    stop("Variable StandardKey has to be either 'MPS' or 'API'")}
+  }
+
+
+
+
 
 
 

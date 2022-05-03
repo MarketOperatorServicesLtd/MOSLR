@@ -41,32 +41,32 @@ ops_process_tracker <- function(
       c(
         "Period", "SecondaryCategory", "Trading.Party.ID", "Standard", "PerformanceMeasure",
         "Action", "Rationale", "PFM_Commentary", "PerfFlag3m", "PerfFlag6m",
-        "ActiveIPRP", "IPRPend", "MilestoneFlag", "Pending", "UnderReview",
+        "ActiveIPRP", "ActivePRP", "IPRPend", "PRPend", "MilestoneFlag", "Pending", "UnderReview",
         "OnWatchIPRPend",  "OnWatch", "Consistency", "PerfRating", "IPRPeligible",
         "CumWatch", "CumIPRP", "CumResubmit", "CumEscalate", "CumExtend"
       )
   }
 
-  if(DataBase){
-    Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
-
-    if(is.null(conf.loc)){
-      err <-  try(conf <- config::get(), TRUE)
-      if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
-    } else if( conf.loc == "select"){
-      conf <- config::get(file = choose.files(caption = "Select configuration file"))
-    } else{
-      conf <- config::get(file = conf.loc)
-    }
-
-
-    con <- odbc::dbConnect(odbc::odbc(),
-                           Driver = conf$Driver,
-                           Server = conf$Server,
-                           Database = conf$Database,
-                           Port = conf$Port,
-                           trusted_connection = conf$trusted_connection)
-  }
+  # if(DataBase){
+  #   Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
+  #
+  #   if(is.null(conf.loc)){
+  #     err <-  try(conf <- config::get(), TRUE)
+  #     if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  #   } else if( conf.loc == "select"){
+  #     conf <- config::get(file = choose.files(caption = "Select configuration file"))
+  #   } else{
+  #     conf <- config::get(file = conf.loc)
+  #   }
+  #
+  #
+  #   con <- odbc::dbConnect(odbc::odbc(),
+  #                          Driver = conf$Driver,
+  #                          Server = conf$Server,
+  #                          Database = conf$Database,
+  #                          Port = conf$Port,
+  #                          trusted_connection = conf$trusted_connection)
+  # }
 
 
   # Importing data ----------------------------------------------------------
@@ -78,6 +78,7 @@ ops_process_tracker <- function(
   monthly_tracking_pre <-
     MOSLR::ops_create_tracker(
       my.dir = my_dir,
+      conf.loc = conf.loc,
       period = period.create,
       period.only = FALSE,
       save.output = FALSE,
@@ -106,8 +107,8 @@ ops_process_tracker <- function(
     monthly_tracking_post <- AzureStor::storage_read_csv(cont, paste0("/PerfReports/data/inputs/tracking_ops.csv")) %>%
       dplyr::mutate(
         Period = as.Date(Period, format = "%d/%m/%Y"),
-        Rationale = as.character(iconv(Rationale)),
-        PFM_Commentary = as.character(iconv(PFM_Commentary))
+        #Rationale = as.character(iconv(Rationale)),
+        #PFM_Commentary = as.character(iconv(PFM_Commentary))
       ) %>%
       dplyr::select(
         Period, Trading.Party.ID, Standard, PerformanceMeasure, Action,
@@ -162,14 +163,15 @@ ops_process_tracker <- function(
   if(save.output) {
 
     if(DataBase){
-      sql.field.types <- list(PFM_Commentary = "nvarchar(500)")
-      odbc::dbWriteTable(con, "PERF_OPSPerfStatus", perf_status_ops, overwrite = TRUE, field.types = sql.field.types)
-    } else{
+      # sql.field.types <- list(PFM_Commentary = "nvarchar(500)")
+      # odbc::dbWriteTable(con, "PERF_OPSPerfStatus", perf_status_ops, overwrite = TRUE, field.types = sql.field.types)
+      AzureStor::storage_write_csv(perf_status_ops, cont, "PerfReports/data/inputs/perf_status_OPS.csv")
+
+      } else{
       utils::write.csv(perf_status_ops, save.dir.csv, row.names = FALSE)
       saveRDS(perf_status_ops, save.dir.rds)
  }
   }
-  if(DataBase) odbc::dbDisconnect(con)
   invisible(perf_status_ops)
 
 }

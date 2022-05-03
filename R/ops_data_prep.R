@@ -22,9 +22,6 @@
 ops_data_prep <- function(
   my.dir = getwd(),
   conf.loc = NULL,
-  ops.data,
-  ops.details,
-  ops.thresholds,
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   save.output = TRUE,
@@ -48,12 +45,12 @@ ops_data_prep <- function(
     }
 
 
-    con <- odbc::dbConnect(odbc::odbc(),
-                           Driver = conf$Driver,
-                           Server = conf$Server,
-                           Database = conf$Database,
-                           Port = conf$Port,
-                           trusted_connection = conf$trusted_connection)
+    # con <- odbc::dbConnect(odbc::odbc(),
+    #                        Driver = conf$Driver,
+    #                        Server = conf$Server,
+    #                        Database = conf$Database,
+    #                        Port = conf$Port,
+    #                        trusted_connection = conf$trusted_connection)
 
     ops.data <- MOSLR::data_copy(my.dir = my.dir, conf.loc = conf.loc)
 
@@ -85,11 +82,11 @@ ops_data_prep <- function(
       Period = as.Date(Period, format = "%d/%m/%Y")
     )
 
-  ops.details <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/Standards_details.csv") %>%
-    dplyr::mutate(
-      Details = iconv(Details),
-      Context = iconv(Context)
-    )
+  ops.details <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/Standards_details.csv") #%>%
+    # dplyr::mutate(
+    #   Details = iconv(Details),
+    #   Context = iconv(Context)
+    # )
 
 
 
@@ -208,8 +205,11 @@ ops_data_prep <- function(
   if (save.output) {
 
     if(DataBase){
-      odbc::dbWriteTable(con, "PERF_OPSSummary", ops_summary, overwrite = TRUE)
-      odbc::dbWriteTable(con, "PERF_OPSDataClean", ops_data_clean, overwrite = TRUE)
+      # odbc::dbWriteTable(con, "PERF_OPSSummary", ops_summary, overwrite = TRUE)
+      # odbc::dbWriteTable(con, "PERF_OPSDataClean", ops_data_clean, overwrite = TRUE)
+
+      AzureStor::storage_write_csv(ops_summary, cont, "PerfReports/data/inputs/ops_summary.csv")
+      AzureStor::storage_write_csv(ops_data_clean, cont, "PerfReports/data/inputs/OPS_data_clean.csv")
     } else{
        saveRDS(ops_summary, file = paste0(rda.outputs, "/ops_summary.Rda"))
     utils::write.csv(ops_data_clean, paste0(csv.outputs, "/ops_data_clean.csv"))
@@ -218,7 +218,7 @@ ops_data_prep <- function(
 
   }
 
-  if(DataBase) odbc::dbDisconnect(con)
+  #if(DataBase) odbc::dbDisconnect(con)
   invisible(ops_data_clean)
 
 }

@@ -36,7 +36,7 @@ plot_perf_graphs_all <- function(
   ops.graphs = TRUE,
   iprp.graphs = TRUE,
   ops.iprp.graphs = TRUE,
-  database = TRUE
+  DataBase = TRUE
 ){
 
   perf_status_mps <- df.mps
@@ -44,46 +44,6 @@ plot_perf_graphs_all <- function(
 
   if(!dir.exists(output.dir)) {
     dir.create(output.dir)
-  }
-
-
-  if(load.data){
-    if(DataBase){
-      Sys.setenv(R_CONFIG_ACTIVE = "sandpit")
-      if(is.null(conf.loc)){
-        err <-  try(conf <- config::get(), TRUE)
-        if("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
-      } else if( conf.loc == "select"){
-        conf <- config::get(file = choose.files(caption = "Select configuration file"))
-      } else{
-        conf <- config::get(file = conf.loc)
-      }
-
-      con <- odbc::dbConnect(odbc::odbc(),
-                             Driver = conf$Driver,
-                             Server = conf$Server,
-                             Database = conf$Database,
-                             Port = conf$Port,
-                             trusted_connection = conf$trusted_connection)
-
-      perf_status_mps <- dplyr::tbl(con, "PERF_MPSPERFStatus") %>%
-        dplyr::as_tibble()  %>%
-        dplyr::mutate(Period = as.Date(Period))
-      perf_status_ops <- dplyr::tbl(con, "PERF_OPSPERFStatus") %>%
-        dplyr::as_tibble()  %>%
-        dplyr::mutate(Period = as.Date(Period),
-                      Details = iconv(Details),
-                      Context = iconv(Context),
-                      key = as.factor(paste(Trading.Party.ID, Standard)))
-      odbc::dbDisconnect(con)
-    }else{
-      perf_status_mps <- readRDS(paste0(my.dir, "/data/rdata/perf_status_mps.Rda"))%>%
-        dplyr::filter(TaskVolume > 0)
-      perf_status_ops <- readRDS(paste0(my.dir, "/data/rdata/perf_status_ops.Rda"))%>%
-        dplyr::filter(TaskVolume > 0) %>%
-        mutate(key = as.factor(paste(Trading.Party.ID, Standard)))
-    }
-
   }
 
   Sys.setenv(R_CONFIG_ACTIVE = "digitaldata")
@@ -99,6 +59,44 @@ plot_perf_graphs_all <- function(
 
   bl_endp_key <- AzureStor::storage_endpoint(endpoint = conf$endpoint, sas = conf$sas)
   cont <- AzureStor::blob_container(bl_endp_key, "digitaldata")
+
+
+
+  if(load.data){
+    if(DataBase){
+
+      perf_status_mps <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/perf_status_MPS.csv") %>%
+        dplyr::mutate(Period = as.Date(Period))
+
+
+      # perf_status_mps <- dplyr::tbl(con, "PERF_MPSPERFStatus") %>%
+      #   dplyr::as_tibble()  %>%
+      #   dplyr::mutate(Period = as.Date(Period))
+      #
+
+      perf_status_ops <- AzureStor::storage_read_csv(cont, "PerfReports/data/inputs/perf_status_OPS.csv")  %>%
+        dplyr::mutate(Period = as.Date(Period),
+                      Details = iconv(Details),
+                      Context = iconv(Context),
+                      key = as.factor(paste(Trading.Party.ID, Standard)))
+
+      # perf_status_ops <- dplyr::tbl(con, "PERF_OPSPERFStatus") %>%
+      #   dplyr::as_tibble()  %>%
+      #   dplyr::mutate(Period = as.Date(Period),
+      #                 Details = iconv(Details),
+      #                 Context = iconv(Context),
+      #                 key = as.factor(paste(Trading.Party.ID, Standard)))
+
+    }else{
+      perf_status_mps <- readRDS(paste0(my.dir, "/data/rdata/perf_status_mps.Rda"))%>%
+        dplyr::filter(TaskVolume > 0)
+      perf_status_ops <- readRDS(paste0(my.dir, "/data/rdata/perf_status_ops.Rda"))%>%
+        dplyr::filter(TaskVolume > 0) %>%
+        mutate(key = as.factor(paste(Trading.Party.ID, Standard)))
+    }
+
+  }
+
 
 
   if(run.parallel){

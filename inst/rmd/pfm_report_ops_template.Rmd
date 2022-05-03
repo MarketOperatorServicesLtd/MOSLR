@@ -35,11 +35,11 @@ For `r format(data.period, "%B-%Y")`, `r SHORT.NAME` had:
 * `r scales::comma(OPS_TASKS_COMP)` completed tasks for `r OPS_CHUNK` `r dplyr::if_else(!is.na(OPS_PERF_COMP), paste0("with on-time task completion of ", scales::percent(OPS_PERF_COMP)), "")`
 * `r scales::comma(OPS_TASKS_OUTS)` outstanding tasks for `r OPS_CHUNK` `r dplyr::if_else(!is.na(OPS_PERF_OUTS), paste0("with on-time task completion of ", scales::percent(OPS_PERF_OUTS)), "")`
 
-Below is a graph showing `r SHORT.NAME`'s historical performance for `r OPS_CHUNK`. MOSL action points and IPRP milestones are shown, if applicable. 
+Below is a graph showing `r SHORT.NAME`'s historical performance for `r OPS_CHUNK`. MOSL action points and Rectification milestones are shown, if applicable. 
 
 ```{r message = FALSE, echo = FALSE, error = TRUE, warning = FALSE, fig.width = 12, fig.height = 5}
 
-on_plan <- any(perf_status_ops_temp$IPRP[perf_status_ops_temp$Standard == OPS_CHUNK])
+on_plan <- any(perf_status_ops_temp$Rectification[perf_status_ops_temp$Standard == OPS_CHUNK])
 
 graph <- perf_status_ops %>%
   dplyr::filter(TaskVolume > 0) %>%
@@ -74,7 +74,7 @@ Over the last 12 months, for `r OPS_CHUNK` there have been:
 * `r OPS_SUMPERF3M_COMP` performance flag(s) for completed tasks
 * `r OPS_SUMPERF3M_OUTS` performance flag(s) for outstanding tasks
 
-`r if (on_plan) { paste0(OPS_CHUNK, " is currently on an IPRP. See below for further details.") }`
+`r if (on_plan) { paste0(OPS_CHUNK, " is currently on a Rectification plan. See below for further details.") }`
 
 ```{r message = FALSE, echo = FALSE, error = TRUE, warning = FALSE} 
 
@@ -106,7 +106,7 @@ PFM_COMM_CHUNK <- perf_status_ops %>%
 comment_date <- perf_status_ops_temp %>%
   dplyr::filter(Standard == OPS_CHUNK) %>%
   dplyr::mutate(
-    check = any(OnWatch, IPRP, PerfFlag3m, UnderReview),
+    check = any(OnWatch, Rectification, PerfFlag3m, UnderReview),
     date = dplyr::if_else(check, as.Date("2018-04-01"), data.period %m-% months(6))
     ) %>%
   dplyr::pull(date)
@@ -184,7 +184,7 @@ perf_status_ops %>%
 
 <br> 
 
-`r if (on_plan) { paste0("A summary of ", SHORT.NAME, "'s performance against its IPRP is shown in the table below.") }`
+`r if (on_plan) { paste0("A summary of ", SHORT.NAME, "'s performance against its Rectification plan is shown in the table below.") }`
 
 ``` {r message = FALSE, echo = FALSE, error = TRUE, warning = FALSE, results = "asis", eval = on_plan}
 
@@ -201,11 +201,11 @@ perf_status_ops %>%
   dplyr::mutate(Period = format(as.Date(Period), "%Y-%m")) %>%
   kableExtra::kable(
     format = "latex", 
-    caption = "IPRP Performance Tracking",
+    caption = "Rectification Performance Tracking",
     linesep = "",
     #longtable = TRUE, 
     booktabs = TRUE,
-    col.names = c("Period", "Performance Measure", "Actual Performance", "Planned Performance", "Relative Difference", "IPRP Status"),
+    col.names = c("Period", "Performance Measure", "Actual Performance", "Planned Performance", "Relative Difference", "Rectification Status"),
     align = rep("c", 5)
     ) %>%
   kableExtra::column_spec(2:6, width = "2.5cm") %>%
@@ -225,5 +225,5 @@ perf_status_ops %>%
 
 `r if (on_plan) { paste0("For this standard there have been:") }`
 
-`r if (on_plan) { paste0("* ",  sum(perf_status_ops_temp$CumResubmit[perf_status_ops_temp$Standard == OPS_CHUNK]), " IPRP resubmission(s)") }`
-`r if (on_plan) { paste0("* ",  sum(perf_status_ops_temp$UnderReview[perf_status_ops_temp$Standard == OPS_CHUNK]), " IPRP review(s)") }`
+`r if (on_plan) { paste0("* ",  sum(perf_status_ops_temp$CumResubmit[perf_status_ops_temp$Standard == OPS_CHUNK]), " resubmission(s)") }`
+`r if (on_plan) { paste0("* ",  sum(perf_status_ops_temp$UnderReview[perf_status_ops_temp$Standard == OPS_CHUNK]), " review(s)") }`
