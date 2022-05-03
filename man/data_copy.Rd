@@ -6,6 +6,7 @@
 \usage{
 data_copy(
   my.dir = getwd(),
+  conf.loc = NULL,
   conf.from = "datamgmt3",
   conf.to = "sandpit",
   query = NULL,

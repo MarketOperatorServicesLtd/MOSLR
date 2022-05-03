@@ -7,6 +7,7 @@
 mps_create_tracker(
   period = Sys.Date() \%m-\% months(1),
   my.dir = getwd(),
+  conf.loc = NULL,
   rda.outputs = paste0(my.dir, "/data/rdata"),
   dir.mps.tracking = paste0(my.dir, "/data/tracking/mps"),
   StandardKey = "MPS",

@@ -6,9 +6,7 @@
 \usage{
 mps_data_prep(
   my.dir = getwd(),
-  mps.data,
-  mps.thresholds,
-  Standards.details,
+  conf.loc = NULL,
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   save.output = TRUE,
@@ -18,17 +16,17 @@ mps_data_prep(
 \arguments{
 \item{my.dir}{character}
 
-\item{mps.data}{character}
-
-\item{mps.thresholds}{character}
-
-\item{Standards.details}{character}
-
 \item{csv.outputs}{character}
 
 \item{rda.outputs}{character}
 
 \item{save.output}{logical}
+
+\item{mps.data}{character}
+
+\item{mps.thresholds}{character}
+
+\item{Standards.details}{character}
 }
 \value{
 

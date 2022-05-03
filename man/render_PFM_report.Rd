@@ -6,6 +6,7 @@
 \usage{
 render_PFM_report(
   my.dir = getwd(),
+  conf.loc = NULL,
   tp.list = NULL,
   prep.data = TRUE,
   load.data = TRUE,

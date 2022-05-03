@@ -6,6 +6,7 @@
 \usage{
 plot_perf_graphs_all(
   my.dir = getwd(),
+  conf.loc = NULL,
   df.mps = NULL,
   df.ops = NULL,
   load.data = TRUE,

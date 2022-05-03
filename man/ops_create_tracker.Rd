@@ -7,12 +7,14 @@
 ops_create_tracker(
   period = Sys.Date() \%m-\% months(1),
   my.dir = getwd(),
+  conf.loc = NULL,
   rda.outputs = paste0(my.dir, "/data/rdata"),
   dir.ops.tracking = paste0(my.dir, "/data/tracking/ops"),
   period.only = TRUE,
   save.output = TRUE,
+  filter.category = c("IPRP: On-track", "PRP: On-track", "IPRP: Above plan",
+    "PRP: Above plan", "Normal monitoring"),
   keep.vars = FALSE,
-  filter.category = c("IPRP: on-track", "Normal monitoring"),
   DataBase = TRUE
 )
 }
@@ -29,9 +31,9 @@ ops_create_tracker(
 
 \item{save.output}{logical}
 
-\item{keep.vars}{logical}
-
 \item{filter.category}{character}
+
+\item{keep.vars}{logical}
 }
 \value{
 

@@ -6,6 +6,7 @@
 \usage{
 ops_process_tracker(
   my.dir = getwd(),
+  conf.loc = NULL,
   save.output = TRUE,
   save.dir.rds = paste0(my.dir, "/data/rdata/perf_status_ops.Rda"),
   save.dir.csv = paste0(my.dir, "/data/outputs/perf_status_ops.csv"),

@@ -6,6 +6,7 @@
 \usage{
 mps_process_tracker(
   my.dir = getwd(),
+  conf.loc = NULL,
   save.output = TRUE,
   StandardKey = "MPS",
   save.dir.rds = paste0(my.dir, "/data/rdata/perf_status_", tolower(StandardKey),

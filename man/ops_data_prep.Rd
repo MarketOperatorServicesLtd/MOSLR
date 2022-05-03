@@ -6,9 +6,7 @@
 \usage{
 ops_data_prep(
   my.dir = getwd(),
-  ops.data,
-  ops.details,
-  ops.thresholds,
+  conf.loc = NULL,
   csv.outputs = paste0(my.dir, "/data/outputs"),
   rda.outputs = paste0(my.dir, "/data/rdata"),
   save.output = TRUE,
@@ -18,12 +16,6 @@ ops_data_prep(
 \arguments{
 \item{my.dir}{character}
 
-\item{ops.data}{character}
-
-\item{ops.details}{character}
-
-\item{ops.thresholds}{character}
-
 \item{csv.outputs}{character}
 
 \item{rda.outputs}{character}
@@ -31,6 +23,12 @@ ops_data_prep(
 \item{save.output}{boolean}
 
 \item{DataBase}{boolean}
+
+\item{ops.data}{character}
+
+\item{ops.details}{character}
+
+\item{ops.thresholds}{character}
 }
 \value{
 
