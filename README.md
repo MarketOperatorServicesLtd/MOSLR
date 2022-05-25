@@ -36,20 +36,20 @@ if(!tinytex::is_tinytex()) {
 
 # Market Performance Standards (MPS) ---------------------------------------------------------------------
 
-mps_data <- MOSLR::mps_data_prep(my.dir = my.dir, conf.loc = conf.loc)
-mps_tracking <- MOSLR::mps_create_tracker(my.dir = my.dir, conf.loc = conf.loc) 
-mps_perf_status <- MOSLR::mps_process_tracker(my.dir = my.dir, conf.loc = conf.loc)
+mps_data <- mps_data_prep(my.dir = my.dir, conf.loc = conf.loc)
+mps_tracking <- mps_create_tracker(my.dir = my.dir, conf.loc = conf.loc) 
+mps_perf_status <- mps_process_tracker(my.dir = my.dir, conf.loc = conf.loc)
 
 # Additional Performance Indicators (APIs) ---------------------------------------------------------------------
 
-API_tracking <- MOSLR::mps_create_tracker(my.dir = my.dir, StandardKey = "API", conf.loc = conf.loc) 
-API_perf_status <- MOSLR::mps_process_tracker(my.dir = my.dir, StandardKey = "API", conf.loc = conf.loc)
+API_tracking <- mps_create_tracker(my.dir = my.dir, StandardKey = "API", conf.loc = conf.loc) 
+API_perf_status <- mps_process_tracker(my.dir = my.dir, StandardKey = "API", conf.loc = conf.loc)
 
 # Operational Performance Standards (OPS) ---------------------------------------------------------------------
 
-ops_data <- MOSLR::ops_data_prep(my.dir = my.dir, conf.loc = conf.loc)
-ops_tracking <- MOSLR::ops_create_tracker(my.dir = my.dir, conf.loc = conf.loc)
-ops_perf_status <- MOSLR::ops_process_tracker(my.dir = my.dir, conf.loc = conf.loc)
+ops_data <- ops_data_prep(my.dir = my.dir, conf.loc = conf.loc)
+ops_tracking <- ops_create_tracker(my.dir = my.dir, conf.loc = conf.loc)
+ops_perf_status <- ops_process_tracker(my.dir = my.dir, conf.loc = conf.loc)
 
 # Performance Graphs
 
