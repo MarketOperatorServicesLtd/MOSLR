@@ -18,9 +18,6 @@ mps_aggregate_perf(
 
 \item{tp.details}{dataframe}
 }
-\value{
-
-}
 \description{
 Summarise Trading Parties by MPS
 }

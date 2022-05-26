@@ -37,9 +37,6 @@ render_PFM_report(
 
 \item{data.period}{date}
 }
-\value{
-
-}
 \description{
 This functions prepares and loads the required
 datasets and renders the monthly Portfolio Manager

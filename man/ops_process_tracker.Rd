@@ -28,9 +28,6 @@ ops_process_tracker(
 
 \item{period.create}{date}
 }
-\value{
-
-}
 \description{
 This function processes the OPS performance data for each
 Trading Party by OPS after the analysis and PfM Commentary

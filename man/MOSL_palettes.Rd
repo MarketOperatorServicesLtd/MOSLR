@@ -14,12 +14,6 @@ MOSL_palettes(palette = "all", reverse = FALSE, ...)
 
 \item{...}{}
 }
-\value{
-
-}
 \description{
 A function containing three palettes with either MOSL's core colours, secondary colours or all colours.
-}
-\examples{
-
 }

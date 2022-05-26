@@ -45,13 +45,7 @@ plot_perf_graphs_all(
 
 \item{DataBase}{boolean}
 }
-\value{
-
-}
 \description{
 This function loads the MPS and OPS data
 and creates all MPS and OPS performance graphs
-}
-\examples{
-
 }

@@ -38,9 +38,6 @@ process_tracker(
 
 \item{period.create}{date}
 }
-\value{
-
-}
 \description{
 This function processes the performance data for each Trading
 Party by a given standard after the analysis and PfM Commentary

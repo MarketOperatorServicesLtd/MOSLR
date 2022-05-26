@@ -23,7 +23,11 @@
 #'
 
 
-MOSL_palettes <- function(palette = "all", reverse = FALSE, ...) {
+MOSL_palettes <- function(
+    palette = "all",
+    reverse = FALSE,
+    ...
+    ) {
 
   MOSL_pal <- list(
     `core` = MOSLR::MOSL_colours("grey", "light blue", "dark blue"),

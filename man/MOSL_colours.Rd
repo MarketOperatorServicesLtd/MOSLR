@@ -9,9 +9,6 @@ MOSL_colours(...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 A function containing all of MOSL brand colours
 }

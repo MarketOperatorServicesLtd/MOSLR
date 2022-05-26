@@ -36,7 +36,7 @@ assurance_process_data_move(
 \item{meter.col}{The column names of the meter file template}
 }
 \value{
-Returns a table which contains infomration about all of the files processed
+Returns a table which contains information about all of the files processed
 }
 \description{
 This function moves data from Trading Party Sharepoint sites

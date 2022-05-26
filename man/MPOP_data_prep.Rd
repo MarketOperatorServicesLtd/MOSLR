@@ -20,13 +20,7 @@ MPOP_data_prep(
 
 \item{by}{character}
 }
-\value{
-
-}
 \description{
 Prepares data for bubble charts and/or Trading
 Party ranking tables in MPOP reporting
-}
-\examples{
-
 }

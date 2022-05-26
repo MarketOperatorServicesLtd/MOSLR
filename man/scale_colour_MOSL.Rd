@@ -5,15 +5,15 @@
 \title{scale_colour_MOSL}
 \usage{
 scale_colour_MOSL(
-  colours = NA,
+  colours = NULL,
   reverse = FALSE,
-  palette = NA,
+  palette = NULL,
   discrete = TRUE,
   ...
 )
 }
 \arguments{
-\item{colours}{Specifies the MOSL colours when palette is NA. When not specified, all colours are selected. See \code{\link{MOSL_colours}} for all available colours}
+\item{colours}{Specifies the MOSL colours when palette is NULL. When not specified, all colours are selected. See \code{\link{MOSL_colours}} for all available colours}
 
 \item{reverse}{Boolean variable to indicate whether to reverse the order of the scale or not}
 
@@ -23,12 +23,6 @@ scale_colour_MOSL(
 
 \item{...}{}
 }
-\value{
-
-}
 \description{
 This function offers a MOSL colour scale for ggplot2
-}
-\examples{
-
 }

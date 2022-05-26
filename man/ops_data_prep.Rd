@@ -30,9 +30,6 @@ ops_data_prep(
 
 \item{ops.thresholds}{character}
 }
-\value{
-
-}
 \description{
 Prepares the raw OPS data  so it is ready to be processed.
 }

@@ -33,9 +33,6 @@ render_PERF_report(
 
 \item{...}{foo}
 }
-\value{
-
-}
 \description{
 This function renders the Monthly Performance Report
 to be shared with MPC.

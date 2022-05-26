@@ -39,9 +39,6 @@ mps_create_tracker(
 
 \item{filter.category}{character}
 }
-\value{
-
-}
 \description{
 Compares the performance across MPS for each Trading Party
 by MPS and compares IPRP performance versus planned milestones.

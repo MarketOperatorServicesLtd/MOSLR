@@ -37,9 +37,6 @@ dragon_drop(
 
 \item{distribute}{logical}
 }
-\value{
-
-}
 \description{
 Drag and drop files from one location to another based on folder name to a specified directory
 }

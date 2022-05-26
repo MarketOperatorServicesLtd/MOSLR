@@ -47,9 +47,6 @@ create_tracker(
 
 \item{filter.category}{character}
 }
-\value{
-
-}
 \description{
 Compares the performance across a given standard for each Trading Party
 by Standard and compares IPRP performance versus planned milestones.

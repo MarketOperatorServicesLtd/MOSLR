@@ -18,9 +18,6 @@ ops_aggregate_perf(
 
 \item{tp.details}{dataframe}
 }
-\value{
-
-}
 \description{
 Aggregates Trading Party OPS Performance
 }

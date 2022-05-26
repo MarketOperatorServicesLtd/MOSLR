@@ -65,9 +65,6 @@ plot_perf_graph(
 
 \item{demo.graph}{logical}
 }
-\value{
-
-}
 \description{
 This function produces a grasph with two #' independent
 axis. The left-handside corresponds to a single variable

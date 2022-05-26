@@ -25,7 +25,15 @@
 #' Boolean variable to indicate whether to use a discrete scale or not
 
 
-scale_colour_MOSL <- function(colours = NULL, reverse = FALSE, palette = NULL, discrete = TRUE, ...) {
+scale_colour_MOSL <-
+  function(
+    colours = NULL,
+    reverse = FALSE,
+    palette = NULL,
+    discrete = TRUE,
+    ...
+    ) {
+
   suppressWarnings({
 
     if(is.null(palette)) {

@@ -16,26 +16,52 @@
 #' @param prem.col The column names of the Premises file template
 #' @param meter.col The column names of the meter file template
 #'
-#' @return Returns a table which contains infomration about all of the files processed
+#' @return Returns a table which contains information about all of the files processed
 #'
-#'
+#' @export
+#' @importFrom lubridate %m-%
+#' @importFrom lubridate %m+%
 #' @examples
 
 assurance_process_data_move <- function(
-  period.from = NULL,
-  period.to = NULL,
-  onedrive.path = NULL,
-  conf.loc = NULL,
-  tp_sites = NULL,
-  folder = "Data Assurance",
-  combine = FALSE,
-  prem.col = NULL,
-  meter.col = NULL) {
+    period.from = NULL,
+    period.to = NULL,
+    onedrive.path = NULL,
+    conf.loc = NULL,
+    tp_sites = NULL,
+    folder = "Data Assurance",
+    combine = FALSE,
+    prem.col = NULL,
+    meter.col = NULL
+    ) {
 
-  if (is.null(period.from)) period.from <- Sys.Date() %m-% months(1)
-  if (is.null(period.to)) period.to <- Sys.Date() %m+% days(1)
-  if(is.null(prem.col)) prem.col <- c("DateOfReview", "Spidcore", "Measure", "Action", "Issue", "TypeOfReviewDropdown", "Explanation")
-  if(is.null(meter.col)) meter.col <- c("DateOfReview", "Spid", "MeterManufacturer", "MeterSerialNo", "InitialReadDate", "Action", "Issue", "Explanation")
+  if (is.null(period.from))
+    period.from <- Sys.Date() %m-% months(1)
+  if (is.null(period.to))
+    period.to <- Sys.Date() %m+% days(1)
+  if (is.null(prem.col))
+    prem.col <-
+      c(
+        "DateOfReview",
+        "Spidcore",
+        "Measure",
+        "Action",
+        "Issue",
+        "TypeOfReviewDropdown",
+        "Explanation"
+      )
+  if (is.null(meter.col))
+    meter.col <-
+      c(
+        "DateOfReview",
+        "Spid",
+        "MeterManufacturer",
+        "MeterSerialNo",
+        "InitialReadDate",
+        "Action",
+        "Issue",
+        "Explanation"
+      )
 
 
   period.to <- as.Date(period.to)
@@ -48,13 +74,15 @@ assurance_process_data_move <- function(
 
   if (is.null(conf.loc)) {
     err <- try(conf <- config::get(), TRUE)
-    if ("try-error" %in% class(err)) conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    if ("try-error" %in% class(err))
+      conf <-
+        config::get(file = choose.files(caption = "Select configuration file"))
   } else if (conf.loc == "select") {
-    conf <- config::get(file = choose.files(caption = "Select configuration file"))
+    conf <-
+      config::get(file = choose.files(caption = "Select configuration file"))
   } else {
     conf <- config::get(file = conf.loc, config = "data-assurance")
   }
-
 
 
   # Connecting to the blob storage
@@ -62,8 +90,12 @@ assurance_process_data_move <- function(
   bl_endp_key <- AzureStor::storage_endpoint(
     endpoint = conf$endpoint,
     sas = conf$sas
-  )
-  cont <- AzureStor::blob_container(bl_endp_key, "data-assurance-container")
+    )
+
+  cont <- AzureStor::blob_container(
+    bl_endp_key,
+    "data-assurance-container"
+    )
 
   # If the path to onedrive isn't given, attempt to guess it
 
@@ -103,15 +135,19 @@ assurance_process_data_move <- function(
         tp_type <- "-W"
       }
 
-      tp <- strsplit(tp_site, split = "/")[[1]][grepl("(-R)|(-W)", strsplit(tp_site, split = "/")[[1]])]
-      tp_clean <- substr(tp, 1, unlist(gregexpr(tp_type, tp))[1] + 1)
+      tp <-
+        strsplit(tp_site, split = "/")[[1]][grepl("(-R)|(-W)", strsplit(tp_site, split = "/")[[1]])]
+      tp_clean <-
+        substr(tp, 1, unlist(gregexpr(tp_type, tp))[1] + 1)
 
       # Get a list of all the files in the Data Assurance folder
 
       all_files <- list.files(tp_site, full.names = TRUE)
 
       iscsv <- tools::file_ext(all_files) == "csv"
-      isnew <- file.info(all_files, extra_cols = FALSE)$ctime >= period.from & file.info(all_files, extra_cols = FALSE)$ctime <= period.to
+      isnew <-
+        file.info(all_files, extra_cols = FALSE)$ctime >= period.from &
+        file.info(all_files, extra_cols = FALSE)$ctime <= period.to
       ismosl <- grepl("MOSL_Reviewed.csv", all_files)
 
       # Filter for only the files that are csv files, new and aren't MOSL's responses
@@ -125,17 +161,29 @@ assurance_process_data_move <- function(
           tryCatch(
             expr = {
               # Read the csv file into R and clean the column names
-              File <- vroom::vroom(FilePath,
-                                   progress = FALSE,
-                                   col_types = vroom::cols(),
-                                   .name_repair = ~ janitor::make_clean_names(., case = "upper_camel")
+              File <- vroom::vroom(
+                FilePath,
+                progress = FALSE,
+                col_types = vroom::cols(),
+                .name_repair = ~ janitor::make_clean_names(., case = "upper_camel")
               )
 
 
               Filename <- strsplit(FilePath, split = "/")
               Filename <- Filename[[1]][length(Filename[[1]])]
               FileCreated <- file.info(FilePath)$ctime
-              AzureStor::storage_write_csv(File, cont, paste0("Data Assurance/data/New/",tp_clean, "_", format(FileCreated, "%Y-%m-%d %H:%M"), "_", Filename))
+              AzureStor::storage_write_csv(
+                File,
+                cont,
+                paste0(
+                  "Data Assurance/data/New/",
+                  tp_clean,
+                  "_",
+                  format(FileCreated, "%Y-%m-%d %H:%M"),
+                  "_",
+                  Filename
+                )
+              )
 
               # If all the column names match with the Premises template, consider it to be the Premises file
 
@@ -143,41 +191,85 @@ assurance_process_data_move <- function(
                 assurance_type <- "Premises"
                 # Change the DateOfReview column into a Date type
 
-                if (class(File$DateOfReview) == "character") File$DateOfReview <- as.Date(File$DateOfReview, tryFormats = c("%d/%m/%Y", "%Y-%m-%d"))
+                if (class(File$DateOfReview) == "character")
+                  File$DateOfReview <-
+                    as.Date(File$DateOfReview,
+                            tryFormats = c("%d/%m/%Y", "%Y-%m-%d"))
 
                 # Check whether each of the rows in the file is valid and matches the template
 
                 File <- File %>%
                   dplyr::mutate(
                     ValidMeasure = dplyr::if_else(Measure %in% c("UPRN", "VOA", "LTV", "VAC"), TRUE, FALSE),
-                    ValidAction = dplyr::if_else(Action %in% c("V", "R", "Verified", "Removed"), TRUE, FALSE),
-                    ValidReview = dplyr::if_else(TypeOfReviewDropdown %in% c("Desktop Review", "Phonecall to or From Site", "Site Visit", "Other", "Other (Comment)"), TRUE, FALSE),
-                    ValidExplanation = dplyr::if_else(Explanation %in% c("Verified Vacant Leak on Coms Pipe",
-                                                                         "Verified Vacant Leak on Supply",
-                                                                         "Verified Vacant Security Guard",
-                                                                         "Verified Vacant TBS",
-                                                                         "Verified Vacant Permanent Disconnection Request",
-                                                                         "Verified Vacant Temporary Disconnection Request",
-                                                                         "Verified Vacant HH Deregistration",
-                                                                         "Verified Vacant HH Other (Comment)",
-                                                                         "Verified Vacant HH Other"),
-                                                      TRUE, FALSE),
-                    ValidEntry = dplyr::if_else(ValidMeasure & ValidAction & ValidReview & ValidExplanation, TRUE, FALSE)
+                    ValidAction = dplyr::if_else(
+                      Action %in% c("V", "R", "Verified", "Removed"),
+                      TRUE,
+                      FALSE
+                    ),
+                    ValidReview = dplyr::if_else(
+                      TypeOfReviewDropdown %in% c(
+                        "Desktop Review",
+                        "Phonecall to or From Site",
+                        "Site Visit",
+                        "Other",
+                        "Other (Comment)"
+                      ),
+                      TRUE,
+                      FALSE
+                    ),
+                    ValidExplanation = dplyr::if_else(
+                      Explanation %in% c(
+                        "Verified Vacant Leak on Coms Pipe",
+                        "Verified Vacant Leak on Supply",
+                        "Verified Vacant Security Guard",
+                        "Verified Vacant TBS",
+                        "Verified Vacant Permanent Disconnection Request",
+                        "Verified Vacant Temporary Disconnection Request",
+                        "Verified Vacant HH Deregistration",
+                        "Verified Vacant HH Other (Comment)",
+                        "Verified Vacant HH Other"
+                      ),
+                      TRUE,
+                      FALSE
+                    ),
+                    ValidEntry = dplyr::if_else(
+                      ValidMeasure &
+                        ValidAction & ValidReview & ValidExplanation,
+                      TRUE,
+                      FALSE
+                    )
                   )
 
                 # If all the column names match with the meter template, consider it to be the meter file
               } else if (all(meter.col == colnames(File))) {
                 assurance_type <- "Meters"
-                if (class(File$DateOfReview) == "character") File$DateOfReview <- as.Date(File$DateOfReview, tryFormats = c("%d/%m/%Y", "%Y-%m-%d"))
+                if (class(File$DateOfReview) == "character")
+                  File$DateOfReview <-
+                    as.Date(File$DateOfReview,
+                            tryFormats = c("%d/%m/%Y", "%Y-%m-%d"))
 
                 # Check whether each of the rows in the file is valid and matches the meter template
 
                 File <- File %>%
-                  dplyr::mutate( # ValidMeasure = dplyr::if_else(Measure %in% c("GIS"), TRUE, FALSE),
-                    ValidAction = dplyr::if_else(Action %in% c("V", "R", "Verified", "Removed"), TRUE, FALSE),
-                    ValidIssue = dplyr::if_else(Issue %in% c("UPRN / POSTCODE CENTRE", "FAR UPRN / POSTCODE CENTRE", ">20 METERS STACKED"), TRUE, FALSE),
+                  dplyr::mutate(
+                    # ValidMeasure = dplyr::if_else(Measure %in% c("GIS"), TRUE, FALSE),
+                    ValidAction = dplyr::if_else(
+                      Action %in% c("V", "R", "Verified", "Removed"),
+                      TRUE,
+                      FALSE
+                    ),
+                    ValidIssue = dplyr::if_else(
+                      Issue %in% c(
+                        "UPRN / POSTCODE CENTRE",
+                        "FAR UPRN / POSTCODE CENTRE",
+                        ">20 METERS STACKED"
+                      ),
+                      TRUE,
+                      FALSE
+                    ),
                     ValidExplanation = dplyr::if_else(is.na(Explanation), FALSE, TRUE),
-                    ValidEntry = dplyr::if_else(ValidAction & ValidIssue & ValidExplanation, TRUE, FALSE)
+                    ValidEntry = dplyr::if_else(ValidAction &
+                                                  ValidIssue & ValidExplanation, TRUE, FALSE)
                   )
               } else {
                 assurance_type <- "Unknown"
@@ -190,9 +282,16 @@ assurance_process_data_move <- function(
                 FileName = FilePath,
                 FileCreated = file.info(FilePath)$ctime,
                 assurance_type = assurance_type,
-                Action = ifelse(assurance_type == "Unknown", "Failed Validation", "Uploaded"),
+                Action = ifelse(
+                  assurance_type == "Unknown",
+                  "Failed Validation",
+                  "Uploaded"
+                ),
                 NrRows = nrow(File),
-                PropValidEntries = scales::percent(dplyr::if_else(assurance_type == "Unknown", 0, mean(File$ValidEntry)), accuracy = 0.1)
+                PropValidEntries = scales::percent(
+                  dplyr::if_else(assurance_type == "Unknown", 0, mean(File$ValidEntry)),
+                  accuracy = 0.1
+                )
               )
 
               # Keep a log of all the files and their information
@@ -207,17 +306,49 @@ assurance_process_data_move <- function(
                   meter_table <- dplyr::bind_rows(meter_table, File)
                 } else if (assurance_type == "Premises") {
                   File$FileCreated <- entry$FileCreated
-                  premises_table <- dplyr::bind_rows(premises_table, File)
+                  premises_table <-
+                    dplyr::bind_rows(premises_table, File)
                 }
                 # Otherwise save the file in a Blob storage and also put a copy of the file with added information on the Trading Party Sharepoint site
               } else {
                 if (assurance_type == "Meters" | assurance_type == "Premises") {
                   File$FileCreated <- as.Date(entry$FileCreated)
-                  File$MOSLReviewDate <- format(Sys.Date(), "%Y-%m-%d")
-                  AzureStor::storage_write_csv(File, cont, paste0("Data Assurance/data/Processed/",tp_clean, "_", assurance_type, "_", format(entry$FileCreated, "%Y-%m-%d %H:%M"), ".csv"))
-                  vroom::vroom_write(File, paste0(stringr::str_sub(FilePath, end = nchar(FilePath) - 4), "_MOSL_Reviewed.csv"), delim = ",", na = "")
+                  File$MOSLReviewDate <-
+                    format(Sys.Date(), "%Y-%m-%d")
+                  AzureStor::storage_write_csv(
+                    File,
+                    cont,
+                    paste0(
+                      "Data Assurance/data/Processed/",
+                      tp_clean,
+                      "_",
+                      assurance_type,
+                      "_",
+                      format(entry$FileCreated, "%Y-%m-%d %H:%M"),
+                      ".csv"
+                    )
+                  )
+                  vroom::vroom_write(
+                    File,
+                    paste0(
+                      stringr::str_sub(FilePath, end = nchar(FilePath) - 4),
+                      "_MOSL_Reviewed.csv"
+                    ),
+                    delim = ",",
+                    na = ""
+                  )
                 } else{
-                  AzureStor::storage_write_csv(File, cont, paste0("Data Assurance/data/Rejected/",tp_clean, "_Rejected_", format(entry$FileCreated, "%Y-%m-%d %H:%M"), ".csv"))
+                  AzureStor::storage_write_csv(
+                    File,
+                    cont,
+                    paste0(
+                      "Data Assurance/data/Rejected/",
+                      tp_clean,
+                      "_Rejected_",
+                      format(entry$FileCreated, "%Y-%m-%d %H:%M"),
+                      ".csv"
+                    )
+                  )
                 }
               }
             },
@@ -236,12 +367,26 @@ assurance_process_data_move <- function(
 
   # If we combined any of the tables in the previous steps, we upload them to the Blob storage here
 
-  if(combine){
+  if (combine) {
     if (nrow(meter_table) > 0) {
-      AzureStor::storage_write_csv(meter_table, cont, paste0("Data Assurance/data/meter_Data_", format(Sys.Date(), "%Y-%m-%d"), ".csv"))
+      AzureStor::storage_write_csv(meter_table,
+                                   cont,
+                                   paste0(
+                                     "Data Assurance/data/meter_Data_",
+                                     format(Sys.Date(), "%Y-%m-%d"),
+                                     ".csv"
+                                   ))
     }
     if (nrow(premises_table) > 0) {
-      AzureStor::storage_write_csv(premises_table, cont, paste0("Data Assurance/data/Premises_Data_", format(Sys.Date(), "%Y-%m-%d"), ".csv"))
+      AzureStor::storage_write_csv(
+        premises_table,
+        cont,
+        paste0(
+          "Data Assurance/data/Premises_Data_",
+          format(Sys.Date(), "%Y-%m-%d"),
+          ".csv"
+        )
+      )
     }
   }
 

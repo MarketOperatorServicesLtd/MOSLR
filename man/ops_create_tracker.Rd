@@ -35,9 +35,6 @@ ops_create_tracker(
 
 \item{keep.vars}{logical}
 }
-\value{
-
-}
 \description{
 Compares the performance across OPS for each Trading Party
 by OPS and compares IPRP performance versus planned milestones.

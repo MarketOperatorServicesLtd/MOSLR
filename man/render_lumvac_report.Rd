@@ -30,13 +30,7 @@ render_lumvac_report(
 
 \item{...}{}
 }
-\value{
-
-}
 \description{
 This functions prepares and loads the required
 datasets and renders the monthly LUMs and vacancy report
-}
-\examples{
-
 }

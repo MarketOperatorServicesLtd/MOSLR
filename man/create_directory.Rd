@@ -17,9 +17,6 @@ create_directory(
 
 \item{projectname}{character}
 }
-\value{
-
-}
 \description{
 This function creates the required directory for
 running the MOSLR performance package.

@@ -16,15 +16,8 @@ render_report(
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 A generic function to prepare and load the required
 datasets and run either PFM, Performance
 or MPOP report
-}
-\examples{
-
-
 }

@@ -31,9 +31,6 @@ mps_process_tracker(
 
 \item{period.create}{date}
 }
-\value{
-
-}
 \description{
 This function processes the MPS performance data for each
 Trading Party by MPS after the analysis and PfM Commentary

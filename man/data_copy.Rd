@@ -41,14 +41,8 @@ data_copy(
 
 \item{db.to}{database name to where data is copied to}
 }
-\value{
-
-}
 \description{
 data_copy() is designed to copy data from one database to another.
 By default, it copies the OPS data from data-mgmt3 to data-mgmt.
 Can also save the table as .csv file
-}
-\examples{
-
 }

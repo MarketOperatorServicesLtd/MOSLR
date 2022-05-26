@@ -28,9 +28,6 @@ mps_data_prep(
 
 \item{Standards.details}{character}
 }
-\value{
-
-}
 \description{
 Prepares the raw MPS data so it is ready to be processed.
 }
