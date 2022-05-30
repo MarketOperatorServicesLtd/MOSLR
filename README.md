@@ -26,6 +26,15 @@ This is an example script showing how to run the monthly performance reporting a
 
 library(MOSLR)
 
+# Data Assurance Process ------------------------------------------------------------------------------------
+
+log_table <- tibble::tibble()
+log_book <- MOSLR::data_assurance_process(conf.loc = config_loc, clean.sharepoint = FALSE, upload.blob = FALSE, upload.log = FALSE)
+log_table <- MOSLR::data_assurance_process()
+
+
+# Performance Reporting ----------------------------------------------------------------------------------------
+
 tinytex.loc <- "F:\\TinyTex"
 my.dir <- "F:\\Market Performance\\MOSLR"
 conf.loc <- "F:\\GitAnalysisRepo\\config.yml"
@@ -34,7 +43,7 @@ if(!tinytex::is_tinytex()) {
   tinytex::use_tinytex(tinytex.loc)
 }
 
-# Market Performance Standards (MPS) ---------------------------------------------------------------------
+# Market Performance Standards (MPS) ---------------------------------------------------------------------------
 
 mps_data <- mps_data_prep(my.dir = my.dir, conf.loc = conf.loc)
 mps_tracking <- mps_create_tracker(my.dir = my.dir, conf.loc = conf.loc) 

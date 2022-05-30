@@ -19,8 +19,6 @@
 #' @return Returns a table which contains information about all of the files processed
 #'
 #' @export
-#' @importFrom lubridate %m-%
-#' @importFrom lubridate %m+%
 #' @examples
 
 assurance_process_data_move <- function(
@@ -35,10 +33,14 @@ assurance_process_data_move <- function(
     meter.col = NULL
     ) {
 
+  .Deprecated(new = "data_assurance_process", old = "assurance_process_data_move")
+
   if (is.null(period.from))
     period.from <- Sys.Date() %m-% months(1)
+
   if (is.null(period.to))
     period.to <- Sys.Date() %m+% days(1)
+
   if (is.null(prem.col))
     prem.col <-
       c(
@@ -50,6 +52,7 @@ assurance_process_data_move <- function(
         "TypeOfReviewDropdown",
         "Explanation"
       )
+
   if (is.null(meter.col))
     meter.col <-
       c(
@@ -135,10 +138,8 @@ assurance_process_data_move <- function(
         tp_type <- "-W"
       }
 
-      tp <-
-        strsplit(tp_site, split = "/")[[1]][grepl("(-R)|(-W)", strsplit(tp_site, split = "/")[[1]])]
-      tp_clean <-
-        substr(tp, 1, unlist(gregexpr(tp_type, tp))[1] + 1)
+      tp <- strsplit(tp_site, split = "/")[[1]][grepl("(-R)|(-W)", strsplit(tp_site, split = "/")[[1]])]
+      tp_clean <- substr(tp, 1, unlist(gregexpr(tp_type, tp))[1] + 1)
 
       # Get a list of all the files in the Data Assurance folder
 
@@ -300,6 +301,7 @@ assurance_process_data_move <- function(
 
               # If we want to combine all the files into one, we do that here
 
+
               if (combine) {
                 if (assurance_type == "Meters") {
                   File$FileCreated <- entry$FileCreated
@@ -309,6 +311,8 @@ assurance_process_data_move <- function(
                   premises_table <-
                     dplyr::bind_rows(premises_table, File)
                 }
+
+
                 # Otherwise save the file in a Blob storage and also put a copy of the file with added information on the Trading Party Sharepoint site
               } else {
                 if (assurance_type == "Meters" | assurance_type == "Premises") {
@@ -369,13 +373,15 @@ assurance_process_data_move <- function(
 
   if (combine) {
     if (nrow(meter_table) > 0) {
-      AzureStor::storage_write_csv(meter_table,
-                                   cont,
-                                   paste0(
-                                     "Data Assurance/data/meter_Data_",
-                                     format(Sys.Date(), "%Y-%m-%d"),
-                                     ".csv"
-                                   ))
+      AzureStor::storage_write_csv(
+        meter_table,
+        cont,
+        paste0(
+          "Data Assurance/data/meter_Data_",
+          format(Sys.Date(), "%Y-%m-%d"),
+          ".csv"
+          )
+        )
     }
     if (nrow(premises_table) > 0) {
       AzureStor::storage_write_csv(
