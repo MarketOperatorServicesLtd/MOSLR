@@ -65,7 +65,7 @@ data_assurance_process <- function(
 
   # Check for relevant template files
 
-  template_files <- check_for_templates(template_folders)
+  template_files <- check_for_templates(template_folders, convert.xlsx = TRUE)
 
 
   # Connect to blob storage for copying file using details on config file
@@ -194,9 +194,30 @@ get_template_paths_from_onedrive <- function(root.folder, onedrive.folder) {
 #'
 #' @examples
 
-check_for_templates <- function(template.folders, excluded = "MOSL-Reviewed") {
+check_for_templates <- function(template.folders, excluded = "MOSL-Reviewed", convert.xlsx) {
 
   folder_files <- list.files(template.folders, full.names = TRUE)
+
+  # Optionally check for excel files and convert to csv
+
+  is_xlsx <- tools::file_ext(folder_files) == "xlsx"
+
+  if (NROW(is_xlsx) > 0 & convert.xlsx) {
+
+    lapply(folder_files[is_xlsx], function(f) {
+      df <- readxl::read_excel(f, sheet = 1)
+      write.csv(df, gsub("xlsx", "csv", f), row.names = FALSE)
+      message(paste(f, "converted to csv file"))
+
+      if (file.exists(gsub("xlsx", "csv", f))) {
+        file.remove(f) } else {
+          message(paste("Write csv failed for", f))
+        }
+      }
+      )
+
+    folder_files <- list.files(template.folders, full.names = TRUE)
+  }
 
   # Check if CSV or already reviewed by MOSL
 
@@ -480,12 +501,12 @@ process_template_default <- function(template_file, prem.col = NULL, meter.col =
 
   actions <- tibble::tibble(
     Type = "Premises",
-    Action = c("V", "R", "Verified", "Removed")
+    Action = c("V", "R", "Verified", "Removed", "A", "Assured", "A/ Assured")
   ) %>%
     dplyr::bind_rows(
       tibble::tibble(
         Type = "Meters",
-        Action = c("V", "R", "Verified", "Removed")
+        Action = c("V", "R", "Verified", "Removed", "A", "Assured", "A/ Assured")
       )
     )
 

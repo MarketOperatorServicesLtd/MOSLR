@@ -4,7 +4,7 @@
 \alias{check_for_templates}
 \title{Check For Templates}
 \usage{
-check_for_templates(template.folders, excluded = "MOSL-Reviewed")
+check_for_templates(template.folders, excluded = "MOSL-Reviewed", convert.xlsx)
 }
 \arguments{
 \item{template.folders}{List of folders that could contain templates}
