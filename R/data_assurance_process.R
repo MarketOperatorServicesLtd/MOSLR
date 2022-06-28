@@ -48,6 +48,7 @@
 data_assurance_process <- function(
     onedrive.folder = "Data Assurance/New",
     conf.loc = NULL,
+    config.name = "data-assurance",
     upload.blob = TRUE,
     clean.sharepoint = TRUE,
     upload.log = TRUE,
@@ -70,12 +71,11 @@ data_assurance_process <- function(
 
   # Connect to blob storage for copying file using details on config file
 
-    conf <- get_config(conf.loc = conf.loc, config.name = "data-assurance")
+    conf <- get_config(conf.loc = conf.loc, config.name = config.name)
 
     bl_endp_key <- AzureStor::storage_endpoint(
       endpoint = conf$endpoint,
-      sas = conf$sas,
-      service = conf$service
+      sas = conf$sas
     )
 
     cont <- AzureStor::blob_container(
@@ -108,7 +108,7 @@ data_assurance_process <- function(
       object = log_table,
       container = cont,
       file = paste0(
-        "Data Assurance/data/logs/data-assurance-process-log_",
+        "data/logs/data-assurance-process-log_",
         format(Sys.time(), "%Y-%m-%d %H:%M"), ".csv"
         )
       )
@@ -328,10 +328,7 @@ process_and_upload_templates_to_blob <- function(
       col_types = vroom::cols(),
       .name_repair = ~ janitor::make_clean_names(., case = "upper_camel")
       ) %>%
-      dplyr::mutate(
-        DateOfReview = as.Date(DateOfReview, tryFormats = c("%d/%m/%Y", "%Y-%m-%d")),
-        InitialReadDate = as.Date(InitialReadDate, tryFormats = c("%d/%m/%Y", "%Y-%m-%d"))
-        )
+      dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
 
   } else {
 
@@ -340,7 +337,7 @@ process_and_upload_templates_to_blob <- function(
   }
 
 
-  # upload cleaned template to Blob New
+  # upload cleaned template to Blob raw
 
   file_name <- tools::file_path_sans_ext(basename(template.path))
   file_created <- file.info(template.path)$ctime
@@ -351,9 +348,9 @@ process_and_upload_templates_to_blob <- function(
       object = template_file,
       container = cont,
       file = paste0(
-        "Data Assurance/data/New/",
+        "data/raw/",
         org_id, "_", format(file_created, "%Y-%m-%d %H:%M"),
-        "_", file_name, ".csv"
+        "__", file_name, ".csv"
         )
       )
 
@@ -371,37 +368,15 @@ process_and_upload_templates_to_blob <- function(
 
   if (upload.blob) {
 
-    if (sum(processed_template$ValidEntry) > 0) {
-
-      upload_to_blob_with_meta(
-        cont = cont,
-        processed.template = processed_template[processed_template$ValidEntry,],
-        container.path = "Data Assurance/data/Processed/",
-        org.id = org_id,
-        assurance.type = assurance_type,
-        file.created = file_created,
-        template.path = template.path
-      )
-
-    }
-
-
-    # Upload Invalid templates to Blob Rejected
-
-    if (sum(!processed_template$ValidEntry) > 0) {
-
-      upload_to_blob_with_meta(
-        cont = cont,
-        processed.template = processed_template[!processed_template$ValidEntry,],
-        container.path = "Data Assurance/data/Rejected/",
-        org.id = org_id,
-        assurance.type = assurance_type,
-        file.created = file_created,
-        template.path = template.path
-      )
-
-    }
-
+    upload_to_blob_with_meta(
+      cont = cont,
+      processed.template = processed_template,
+      container.path = "data/new/",
+      org.id = org_id,
+      assurance.type = assurance_type,
+      file.created = file_created,
+      template.path = template.path
+    )
   }
 
 
@@ -532,7 +507,8 @@ process_template_default <- function(template_file, prem.col = NULL, meter.col =
       "Verified Vacant Temporary Disconnection Request",
       "Verified Vacant HH Deregistration",
       "Verified Vacant HH Other (Comment)",
-      "Verified Vacant HH Other"
+      "Verified Vacant HH Other",
+      "Verified Non-Addressable"
     )
   )
 
@@ -577,17 +553,24 @@ process_template_default <- function(template_file, prem.col = NULL, meter.col =
 
   cols <- unique(c(prem.col, meter.col))
 
-  cols_df <- tibble::as_tibble(matrix(nrow = 0, ncol = length(cols)), .name_repair = ~ cols) %>%
-    dplyr::mutate_at(dplyr::vars(DateOfReview, InitialReadDate), as.Date) %>%
-    dplyr::mutate_at(dplyr::vars(
-      Spidcore, Measure, Action, Issue, TypeOfReviewDropdown,
-      Explanation, Spid, MeterManufacturer, MeterSerialNo), as.character
-    )
+  cols_df <- tibble::as_tibble(
+    matrix(nrow = 0, ncol = length(cols)),
+    .name_repair = ~ cols
+    ) %>%
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
 
   # Processsing template file using col names and set of measure and metrics
 
   processed_template <- template_file %>%
     dplyr::bind_rows(cols_df) %>%
+    dplyr::mutate_at(dplyr::vars(
+      Spidcore, Measure, Action, Issue, TypeOfReviewDropdown,
+      Explanation, Spid, MeterManufacturer, MeterSerialNo), as.character
+    ) %>%
+    dplyr::mutate(
+      DateOfReview = as.Date(DateOfReview, tryFormats = c("%d/%m/%Y", "%Y-%m-%d")),
+      InitialReadDate = as.Date(InitialReadDate, tryFormats = c("%d/%m/%Y", "%Y-%m-%d"))
+    ) %>%
     dplyr::mutate(
       AssuranceType = dplyr::case_when(
         all(colnames(template_file) %in% prem.col) ~ "Premises",
