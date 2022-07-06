@@ -14,6 +14,6 @@ process_template_default(template_file, prem.col = NULL, meter.col = NULL)
 \item{meter.col}{Optional list of columns detailing expected to be in a meter template}
 }
 \description{
-This function is the default function for processing a given template, and outputs
-a processed file.
+This function is the default function for processing a given template, and
+outputs a processed file.
 }

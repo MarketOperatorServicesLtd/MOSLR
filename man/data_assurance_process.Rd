@@ -7,6 +7,7 @@
 data_assurance_process(
   onedrive.folder = "Data Assurance/New",
   conf.loc = NULL,
+  config.name = "data-assurance",
   upload.blob = TRUE,
   clean.sharepoint = TRUE,
   upload.log = TRUE,

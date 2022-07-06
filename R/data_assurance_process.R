@@ -132,7 +132,9 @@ data_assurance_process <- function(
 #'
 #' @examples
 
-get_onedrive_path <- function(manual.select = FALSE, root.folder = "Market Operator Services Limited") {
+get_onedrive_path <- function(
+    manual.select = FALSE, root.folder = "Market Operator Services Limited"
+    ) {
 
   if (manual.select) {
 
@@ -163,7 +165,9 @@ get_template_paths_from_onedrive <- function(root.folder, onedrive.folder) {
 
   # Check which OneDrive directories in root have a Data Assurance folder
 
-  root_onedrive_path <- get_onedrive_path(manual.select = FALSE, root.folder = root.folder)
+  root_onedrive_path <- get_onedrive_path(
+    manual.select = FALSE, root.folder = root.folder
+    )
 
   root_onedrive_folders <- list.dirs(root_onedrive_path, recursive = FALSE)
 
@@ -194,7 +198,9 @@ get_template_paths_from_onedrive <- function(root.folder, onedrive.folder) {
 #'
 #' @examples
 
-check_for_templates <- function(template.folders, excluded = "MOSL-Reviewed", convert.xlsx) {
+check_for_templates <- function(
+    template.folders, excluded = "MOSL-Reviewed", convert.xlsx
+    ) {
 
   folder_files <- list.files(template.folders, full.names = TRUE)
 
@@ -316,7 +322,8 @@ process_and_upload_templates_to_blob <- function(
 
   # load raw file from OneDrive + clean column names
 
-  org_site <- strsplit(template.path, split = "/")[[1]][grepl(org.site.regex, strsplit(template.path, split = "/"))][5]
+  org_site <- strsplit(template.path, split = "/")[[1]][grepl(
+    org.site.regex, strsplit(template.path, split = "/"))][5]
 
   org_id <- unlist(regmatches(org_site, gregexpr(org.id.regex, org_site)))[1]
 
@@ -388,7 +395,12 @@ process_and_upload_templates_to_blob <- function(
       vroom::vroom_write(
         processed_template,
         paste0(
-          stringr::str_replace(stringr::str_sub(template.path, end = nchar(template.path) - 4), pattern = "New", "Processed"),
+          stringr::str_replace(stringr::str_sub(
+            template.path,
+            end = nchar(template.path) - 4
+            ),
+            pattern = "New", "Processed"
+            ),
           "_MOSL-Reviewed_",
           format(Sys.Date(), "%Y-%m-%d"),
           ".csv"
@@ -399,7 +411,12 @@ process_and_upload_templates_to_blob <- function(
         message(
           "Write failure: ",
           paste0(
-            stringr::str_replace(stringr::str_sub(template.path, end = nchar(template.path) - 4), pattern = "New", "Processed"),
+            stringr::str_replace(stringr::str_sub(
+              template.path,
+              end = nchar(template.path) - 4
+              ),
+              pattern = "New", "Processed"
+              ),
             "_MOSL-Reviewed_",
             format(Sys.Date(), "%Y-%m-%d"),
             ".csv"
@@ -411,7 +428,8 @@ process_and_upload_templates_to_blob <- function(
 
     # Cleanup OneDrive files
 
-    if (!any(class(write_success) == "error")) file.remove(template.path) else message(paste0("Not removed: ", template.path))
+    if (!any(class(write_success) == "error")) file.remove(template.path)
+    else message(paste0("Not removed: ", template.path))
 
   } else {
 
@@ -447,8 +465,8 @@ process_and_upload_templates_to_blob <- function(
 
 #' Process Template Default
 #'
-#' This function is the default function for processing a given template, and outputs
-#' a processed file.
+#' This function is the default function for processing a given template, and
+#' outputs a processed file.
 #'
 #' @param template_file The template file to be processed
 #' @param prem.col Optional list of columns detailing expected to be in a premises template
@@ -459,7 +477,9 @@ process_and_upload_templates_to_blob <- function(
 #'
 #' @examples
 
-process_template_default <- function(template_file, prem.col = NULL, meter.col = NULL) {
+process_template_default <- function(
+    template_file, prem.col = NULL, meter.col = NULL
+    ) {
 
   # Sets the expected measures and actions for validating templates
 
@@ -522,7 +542,8 @@ process_template_default <- function(template_file, prem.col = NULL, meter.col =
   )
 
 
-  # Sets the default expected columns from templates if not specified in the function call.
+  # Sets the default expected columns from templates if not specified in the
+  # function call.
 
   if (is.null(prem.col))
     prem.col <-
@@ -559,7 +580,7 @@ process_template_default <- function(template_file, prem.col = NULL, meter.col =
     ) %>%
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
 
-  # Processsing template file using col names and set of measure and metrics
+  # Processing template file using col names and set of measure and metrics
 
   processed_template <- template_file %>%
     dplyr::bind_rows(cols_df) %>%
@@ -568,8 +589,12 @@ process_template_default <- function(template_file, prem.col = NULL, meter.col =
       Explanation, Spid, MeterManufacturer, MeterSerialNo), as.character
     ) %>%
     dplyr::mutate(
-      DateOfReview = as.Date(DateOfReview, tryFormats = c("%d/%m/%Y", "%Y-%m-%d")),
-      InitialReadDate = as.Date(InitialReadDate, tryFormats = c("%d/%m/%Y", "%Y-%m-%d"))
+      DateOfReview = as.Date(
+        DateOfReview, tryFormats = c("%d/%m/%Y", "%Y-%m-%d")
+        ),
+      InitialReadDate = as.Date(
+        InitialReadDate, tryFormats = c("%d/%m/%Y", "%Y-%m-%d")
+        )
     ) %>%
     dplyr::mutate(
       AssuranceType = dplyr::case_when(
@@ -578,32 +603,42 @@ process_template_default <- function(template_file, prem.col = NULL, meter.col =
         TRUE ~ "InvalidColumns"
       ),
       ValidMeasure = dplyr::case_when(
-        AssuranceType == "Premises" & Measure %in% measures$Measure[measures$Type=="Premises"] ~ TRUE,
+        AssuranceType == "Premises" & Measure %in%
+          measures$Measure[measures$Type=="Premises"] ~ TRUE,
         AssuranceType == "Meters" ~ TRUE,
         TRUE ~ FALSE
       ),
       ValidAction = dplyr::case_when(
-        AssuranceType == "Premises" & Action %in% actions$Action[actions$Type=="Premises"] ~ TRUE,
-        AssuranceType == "Meters" & Action %in% actions$Action[actions$Type=="Meters"] ~ TRUE,
+        AssuranceType == "Premises" & Action %in%
+          actions$Action[actions$Type=="Premises"] ~ TRUE,
+        AssuranceType == "Meters" & Action %in%
+          actions$Action[actions$Type=="Meters"] ~ TRUE,
         TRUE ~ FALSE
       ),
       ValidReview = dplyr::case_when(
-        AssuranceType == "Premises" & TypeOfReviewDropdown %in% reviews$Review[reviews$Type=="Premises"] ~ TRUE,
+        AssuranceType == "Premises" & TypeOfReviewDropdown %in%
+          reviews$Review[reviews$Type=="Premises"] ~ TRUE,
         AssuranceType == "Meters" ~ TRUE,
         TRUE ~ FALSE
       ),
       ValidExplanation = dplyr::case_when(
-        AssuranceType == "Premises" & Explanation %in% explanations$Explanation[explanations$Type=="Premises"] ~ TRUE,
+        AssuranceType == "Premises" & Explanation %in%
+          explanations$Explanation[explanations$Type=="Premises"] ~ TRUE,
         AssuranceType == "Meters" ~ TRUE,
         TRUE ~ FALSE
       ),
       ValidIssue = dplyr::case_when(
         AssuranceType == "Premises" ~ TRUE,
-        AssuranceType == "Meters" & Issue %in% issues$Issue[issues$Type=="Meters"] ~ TRUE,
+        AssuranceType == "Meters" & Issue %in%
+          issues$Issue[issues$Type=="Meters"] ~ TRUE,
         TRUE ~ FALSE
       ),
-      ValidEntry = dplyr::if_else(ValidMeasure & ValidAction & ValidReview & ValidExplanation & ValidIssue, TRUE, FALSE)
+      ValidEntry = dplyr::if_else(
+        ValidMeasure & ValidAction & ValidReview &
+          ValidExplanation & ValidIssue, TRUE, FALSE
+        )
     ) %>%
-    tidyr::drop_na(intersect(prem.col, meter.col))
+    tidyr::drop_na(intersect(prem.col, meter.col)) %>%
+    dplyr::select(dplyr::all_of(cols))
 
 }
